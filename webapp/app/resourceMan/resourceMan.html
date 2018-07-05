@@ -57,13 +57,13 @@
 								<button class="btn btn-primary" type="button" ng-click="deleteNode()" ng-hide="isButtonDisabled('delete')" uib-tooltip="删除选中的行" ><i class="iconfont icon-delete"></i>删除</button>
 								<button class="btn btn-primary" type="button" ng-click="moveNode('rows')" ng-hide="isButtonDisabled('move')" uib-tooltip="移动选中的行" ><i class="icon icon-move"></i>移动</button>
 
-								<div class="btn-group" >
+								<div class="btn-group" ng-hide="isButtonsDisabled(['deleteDir','moveDir','reNameDir','shareDir'])">
 									<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="iconfont icon-arrow-bottom"></i></a>
 									<ul class="dropdown-menu">
-										<li ><a ng-click="deleteDir()"  uib-tooltip="目录删除" >删除目录</a></li>
-										<li ><a ng-click="moveNode('dir')" uib-tooltip="移动目录" >移动目录</a></li>
-										<li><a ng-click="reNameDir('dir')"  uib-tooltip="目录改名" >目录改名</a></li>
-										<li ><a ng-click="shareDir()"  uib-tooltip="目录共享..." data-ng-disabled="">共享...</a></li>
+										<li ng-hide="isButtonDisabled('deleteDir')"><a ng-click="deleteDir()"  uib-tooltip="目录删除" >删除目录</a></li>
+										<li ng-hide="isButtonDisabled('moveDir')"><a ng-click="moveNode('dir')" uib-tooltip="移动目录" >移动目录</a></li>
+										<li ng-hide="isButtonDisabled('reNameDir')"><a ng-click="reNameDir('dir')"  uib-tooltip="目录改名" >目录改名</a></li>
+										<li ng-hide="isButtonDisabled('shareDir')"><a ng-click="shareDir()"  uib-tooltip="目录共享..." data-ng-disabled="">共享...</a></li>
 									</ul>
 
 								</div>
@@ -91,6 +91,7 @@
 											 <span ng-switch-when="dataset_db" class="mdi mdi-table-large" aria-hidden="true"></span>
 											 <span ng-switch-when="dataset_spool" class="mdi mdi-table-large" style="color:dodgerblue;" aria-hidden="true"></span>
 										 </span>
+
 										<span ng-if="node.sharedUsers && node.sharedUsers.length>0 &&node.owner==auxo.Auth.user.name" class="mdi mdi-redo"></span>
 
 										{{node.name}}

@@ -415,19 +415,19 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             return !$scope.selectedNode || $scope.getRoot($scope.selectedNode).name !== SCHEMA_ROOT_DIR || ALL_DIR.indexOf($scope.selectedNode.resType)<0;
         }
         if("moveDir" === name) {
-            return !$scope.selectedNode || !$scope.selectedNode.parentId;
+            return !$scope.selectedNode || !($scope.selectedNode.parent && $scope.selectedNode.parent.id);
         }
         if("deleteDir" === name) {
-            return !$scope.selectedNode || !$scope.selectedNode.parentId;
+            return !$scope.selectedNode || !($scope.selectedNode.parent && $scope.selectedNode.parent.id);
         }
         if("shareDir" === name) {
-            return !$scope.selectedNode || !$scope.selectedNode.parentId;
+            return !$scope.selectedNode || !($scope.selectedNode.parent && $scope.selectedNode.parent.id);
         }
         if("move" === name) {
             return !$scope.selectedNode || $scope.selectedRows.length === 0;
         }
         if("reNameDir" === name) {
-            return !$scope.selectedNode || !$scope.selectedNode.parentId;
+            return !$scope.selectedNode || !($scope.selectedNode.parent && $scope.selectedNode.parent.id);
         }
         if("Workflow" === name) {
             return !$scope.selectedNode || $scope.getRoot($scope.selectedNode).name !== "Flows" || ALL_DIR.indexOf($scope.selectedNode.resType)<0;
@@ -496,7 +496,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                         resType:$scope.selectedNode.resType,
                         excludes: [type==='dir'? $scope.selectedNode.id:''],
                         callback: function (dirId, yes, cancel) {
-                            if(type === "dir" && (dirId === $scope.selectedNode.parentId || dirId === $scope.selectedNode.id)) {
+                            if(type === "dir" && (dirId === $scope.selectedNode.parent.id || dirId === $scope.selectedNode.id)) {
                                 if(yes)
                                     yes("")
                                 return;
@@ -521,7 +521,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                         if(type === "rows")
                             $scope.onSelected($scope.selectedNode, true);
                         else if(type === "dir") {
-                            var parent = $scope.findNode($scope.selectedNode.parentId);
+                            var parent = $scope.findNode($scope.selectedNode.parent.id);
                             if(parent)
                                 $scope.onSelected(parent, true);
                         }
@@ -952,7 +952,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 //controller : 'StepFormController', // specify controller for modal
                 data:{editingNode: entity,
                     rootId: $scope.goThroughTree(function (value) {
-                        if(value && !value.parentId && value.name === '存储池') return value;
+                        if(value && !value.parent.id && value.name === '存储池') return value;
                     }).id
                 },
                 callback: function(newData){
@@ -970,7 +970,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
 
     $scope.getRoot = function(node) {
         while(true) {
-            var parentId = node.parentId;
+            var parentId = node.parent?node.parent.id:"";
             if(!parentId)
                 return node;
             node = $scope.findNode(parentId);
@@ -1280,7 +1280,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 //controller : 'StepFormController', // specify controller for modal
                 data:{editingNode:{path: $scope.selectedNode.path},
                     rootId: $scope.goThroughTree(function (value) {
-                        if(value && !value.parentId ) return value;
+                        if(value && !value.parent.id ) return value;
                     }).id},
                 callback: function(newData){
                     if(newData) {
@@ -1303,7 +1303,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 //controller : 'StepFormController', // specify controller for modal
                 data:{editingNode:{path: $scope.selectedNode.path, resType:"dataset_db"},
                     rootId: $scope.goThroughTree(function (value) {
-                        if(value && !value.parentId && value.name === 'Datasources')
+                        if(value && !value.parent.id && value.name === 'Datasources')
                             return value;
                     }).id},
                 callback: function(newData){
@@ -1472,7 +1472,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 //controller : 'StepFormController', // specify controller for modal
                 data:{editingNode:entity,
                     rootId: $scope.goThroughTree(function (value) {
-                        if(value && !value.parentId && value.name === 'Datasources') return value;
+                        if(value && !value.parent.id && value.name === 'Datasources') return value;
                     }).id
                 },
                 callback: function(newData){
@@ -1504,7 +1504,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 var id = $scope.selectedNode.id;
                 Restangular.one($scope.url, id).remove().then(function () {
                     removeTreeNode($scope.selectedNode);
-                    var parent = $scope.findNode($scope.selectedNode.parentId);
+                    var parent = $scope.findNode($scope.selectedNode.parent.id);
                     //$scope.selectedNode = null;
                     $scope.onSelected(parent);
                 })
