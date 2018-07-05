@@ -1,0 +1,134 @@
+<div class="" ng-controller="DatasetSpoolController">
+    <ul  class="nav nav-tabs"  data-ng-init="">
+        <li data-ng-init="" ng-class="{active:page==3}">
+            <a data-ng-click="selectPage(3)" data-toggle="tab" >
+                <span uib-tooltip="{{}}">&nbsp;&nbsp;基本信息</span></a>
+        </li>
+        <li data-ng-init="" ng-class="{active:page==2}">
+            <a data-ng-click="selectPage(2)" data-toggle="tab" >
+                <span uib-tooltip="{{}}">&nbsp;&nbsp;存储参数</span></a>
+        </li>
+        <li data-ng-init="" ng-class="{active:page==1}" data-ng-if="isShow">
+            <a data-ng-click="selectPage(1)" data-toggle="tab" >
+                <span uib-tooltip="">&nbsp;&nbsp;存储池</span></a>
+        </li>
+        <li data-ng-init="" ng-class="{active:page==4}" data-ng-if="isES">
+            <a data-ng-click="selectPage(4)" data-toggle="tab">
+                <span uib-tooltip="{{}}">&nbsp;&nbsp;数据分析</span></a>
+        </li>
+    </ul>
+
+    <div class="tab-content top-margin-5">
+        <div class="tab-pane clearfix" data-ng-class="{active: page==1}"   id="tab_1">
+            <table tt-table tt-params="dynamic_params" class="table" >
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Path</th>
+                </tr>
+                </thead>
+                <tbody ng-mousedown="onNodeSelected(node)"></tbody>
+            </table>
+        </div>
+        <div class="tab-pane clearfix" data-ng-class="{active: page==2}"   id="tab_2">
+            <div name="storeForm">
+                <div style="width: 100%; "  class="clearfix">
+                    <div ng-repeat="item in storeMeta.fields"  class="bottom-margin-2">
+                        <div class="clearfix" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+
+                        <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+                        </div>
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <br>
+                <div ng-show="error">
+                    <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane clearfix" data-ng-class="{active: page==3}"   id="tab_3">
+            <div name="entityForm">
+                <div style="width: 100%; "  class="clearfix">
+                    <div ng-repeat="item in meta.fields"  class="bottom-margin-2">
+                        <div class="clearfix" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+
+                        <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+                        </div>
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <br>
+                <div ng-show="error">
+                    <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+                </div>
+            </div>
+            <div ng-hide="datasetEntity.attributes.schema.reference==='true'">
+                <div ng-include="'app/resourceMan/SchemaForm.html'" ng-controller="SchemaFieldsController2"></div>
+            </div>
+        </div>
+        <div class="tab-pane clearfix" data-ng-class="{active: page==4}" id="tab_4">
+            <div name="entityForm">
+                <div style="width: 100%; "  class="clearfix">
+                    <form class="form-inline">
+                        <div class="form-group" style="margin-left: 25px">
+                            <label class="form-label" style="margin-right: 38px">Rows</label>
+                            <input type="text" name="rows" class="form-control warning_placeholder" data-ng-model="anaRowCount" readOnly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="margin-left: 100px">LastAnalyzeTime</label>
+                            <input type="text" name="lastAnalyzeTime" class="form-control warning_placeholder" data-ng-model="lastAnalyzeTime" style="width: 200px" readOnly>
+                        </div>
+                    </form>
+                    <form class="form-inline" style="margin-top: 10px">
+                        <div class="form-group" style="margin-left: 25px">
+                            <label class="form-label">Size(bytes)</label>
+                            <input type="text" name="size" class="form-control warning_placeholder" data-ng-model="sizeInBytes"  readOnly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="margin-left: 100px">FinishedTime</label>
+                            <input type="text" name="finishTime" class="form-control warning_placeholder" data-ng-model="finishTime" style="width: 200px;margin-left: 23px" readOnly>
+                        </div>
+                    </form>
+                    <form class="form-inline" style="margin-top: 10px">
+                        <div class="form-group" style="margin-left: 25px">
+                            <label class="form-label" style="margin-right: 33px">Status</label>
+                            <input type="text" name="status" class="form-control warning_placeholder" data-ng-model="status"  readOnly>
+                        </div>
+                        <button class="btn btn-success" style="margin-left: 330px" ng-click="getLastAnalyzeTime()" ng-disabled="isDisable">执行分析</button>
+                    </form>
+                    <div class="clear"></div>
+                </div>
+                <div class="col-xs-12" style="margin-top: 25px;max-height: 250px;overflow-y: scroll">
+                    <table  st-table="rowCollectionAna" class="table">
+                        <thead>
+                        <tr>
+                            <th st-sort="{{rh}}" st-skip-natural="true" ng-repeat="rh in rowHeadersAna track by $index">{{rh}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in rowCollectionAna">
+                            <td ng-repeat="rh in rowHeadersAna track by $index" >
+                                <span >{{row[$index]}}</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <div ng-show="error">
+                    <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

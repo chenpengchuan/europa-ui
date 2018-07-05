@@ -1,0 +1,87 @@
+<div class="DraggableList" data-ng-controller="StepWInputFormController">
+
+    <div class="col-sm-4" style="padding-left: 0; padding-right: 0;">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"> {{leftList.label}}
+
+                    <span class="pull-right" style="padding: 2px 3px" >全选</span><input type="checkbox" data-ng-model="allSelected" class="pull-right" data-ng-click="selectAll()" />
+                </h3>
+            </div>
+            <div class="panel-body" ng-style="{'max-height': '{{windowHeight-550}}px', 'overflow-y': 'auto'}">
+                <ul dnd-list="leftList.items"
+                    dnd-allowed-types="leftList.allowedTypes"
+                    dnd-drop="">
+                    <li ng-repeat="item in leftList.items"
+                        dnd-draggable="getSelectedItemsIncluding(leftList, item)"
+                        dnd-type="item.type"
+                        dnd-effect-allowed="copy"
+                        dnd-copied=""
+                        dnd-selected="onSelected('left', item,event)"
+                        ng-class="{'selected': item.selected}"
+                        style="padding: 10px 5px; overflow:hidden;  text-overflow: ellipsis;"
+                    >
+                        <span uib-tooltip="{{item.source}}"> {{$index+1}}.&nbsp;{{item.source}}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-8" style="padding-left: 15px; padding-right: 0;">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"> {{rightList.label}}
+                    <a class="btn pull-right" style="padding-top: 0px;" data-ng-click="deleteAll()"><span class="glyphicon glyphicon-remove" style="margin-right: 3px;"></span>删除全部</a>
+                </h3>
+            </div>
+            <div class="panel-body" ng-style="{'max-height': '{{windowHeight-550}}px', 'overflow-y': 'auto'">
+                <ul dnd-list="rightList.items" dnd-drop="onDrop(rightList, item, index)">
+                    <li ng-repeat="item in rightList.items"
+                        dnd-draggable="getSelectedItemsIncluding(rightList, item)"
+                        dnd-moved="onMoved(rightList)"
+                        dnd-effect-allowed="move"
+                        dnd-disable-if="dragDisabled"
+                        dnd-dragend="rightList.dragging = false"
+                        dnd-selected="onSelected('right',item,event)"
+                        ng-class="{'selected': item.selected}"
+                        ng-hide="rightList.dragging && item.selected"
+                        data-ng-mousedown="mouseDown($event)"
+                        class="clearfix"
+                        style="padding: 2px 0px"
+                    >
+                        <div class="col-sm-12 " style="padding: 0">
+                            <div class="col-sm-1" style="padding: 6px 5px 5px 6px;">
+                                {{$index+1}}.
+                            </div>
+                            <div class="col-sm-5" style="padding-left: 0px;" >
+                                <div style="padding-top: 6px; overflow: hidden; text-overflow: ellipsis;" ng-style="!item.valid && {'color': 'red'}">
+                                    <span uib-tooltip="{{item.source}}">{{item.source}}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 input-group">
+                                <select class="form-control select-placeholder"  ng-model="item.target"
+                                        ng-change="onChange(item)"
+                                        required
+                                >
+                                    <option ng-init="!item.target||selectTargetList.indexOf(item.target)<0?item.target='':''" value="" disabled selected>选择目标（必填项）...</option>
+                                    <option data-ng-repeat="v in selectTargetList" data-ng-show="item.target==v || hasItemWithAttr(rightList.items,'target',v)" value="{{v}}">{{v}}</option>
+                                </select>
+
+                                <div class="input-group-btn"  >
+                                    <a  class="btn " data-ng-model="item.alias" ng-click="deleteItem($index)">
+                                        <span class="glyphicon glyphicon-remove"></span> </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear" />
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 no-padding" style="">
+        <h5 style="color: #0a0a0a;">提示：点击单选；多选需同时按下Ctrl或者Shift；拖动左边列表选中项到右边，即完成添加；调整右边列表顺序，需拖动选中项到目标位置。别名允许的字符包括字母,数字和下划线.</h5>
+    </div>
+
+</div>

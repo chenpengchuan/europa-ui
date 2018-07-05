@@ -1,0 +1,31 @@
+<div class="panel panel-default" ng-controller="EditDqFlowController">
+	<div class="panel-heading">
+		{{isNew ? "创建" : "查看"}} 任务执行信息
+		<button ng-show="false" class="btn {{disableEdit ? 'btn-warning' : 'btn-info'}} mdi {{ disableEdit ? 'mdi-lock' : 'mdi-lock-open'}}" type="button" ng-click="switchLock()">{{disableEdit ? '解锁' : '锁定'}}</button>
+		<button type="button" class="btn btn-warning" ng-click="cancel()">返回</button>
+	</div>
+	<div class="panel-body">
+		<div class="row top-buffer">
+			<div class="col-md-4">
+				<form name="entityForm" novalidate>
+
+					<div ng-repeat="f in baseRowHeaders" class="form-group" ng-class="{ 'has-error': entityForm['format_'+f.name].$touched && entityForm['format_'+f.name].$invalid }">
+						<div ng-if="f.name !=='processDataType' && f.name !=='result'">
+							<label>{{f.disName}}</label>
+							<input ng-if="true"  type="text" name="{{'format_'+f.name}}" class="form-control"
+								   ng-readonly="true" ng-value="f.converter(entity[f.name])" ng-required="false"
+								   ng-trim="false">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<button ng-show="!saving" type="button" class="btn btn-warning" ng-click="cancel()">返回</button>
+					</div>
+					<div ng-show="error">
+						<uib-alert type="danger">操作失败:{{error.err}}</uib-alert>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>系统类型</span>
+    </span>
+    <select  class="form-control" id="system_type_select"  ng-model="systemTypeFilter" ng-change="onSystemTypeChange(systemTypeFilter)">
+        <option ng-repeat="o in auxo.systemTypeArray" ng-value="'{{o.value}}'">{{o.name}}</option>
+    </select>
+</div>

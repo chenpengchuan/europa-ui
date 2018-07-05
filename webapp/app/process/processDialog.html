@@ -1,0 +1,20 @@
+<div class="" ng-controller="ProcessDialogController">
+    <div treecontrol class="tree-light"
+         tree-model="dataForTheTree"
+         options="treeOptions"
+         on-selection="onSelected(node, $parentNode, $path)"
+         on-node-toggle="onNodeToggle(node,expanded)"
+         selected-node="selectedNode">
+
+        <span ng-switch="" on="node.processType">
+            <span ng-switch-when="dir" class="mdi mdi-folder" aria-hidden="true">
+                <span ng-class="{ 'mdi-share':auxo.isMyShared(node), 'mdi-share-variant': auxo.sharedWithMe(node) }"></span>
+            </span>
+            <span ng-switch-when="user_dir" ng-if="node.name==auxo.Auth.user.name" class="mdi mdi-account-circle" aria-hidden="true">(我的)</span>
+            <span ng-switch-when="user_dir" ng-if="node.name!=auxo.Auth.user.name" class="mdi mdi-account" aria-hidden="true"></span>
+            <span ng-switch-when="share_dir" class="mdi mdi-share-variant" aria-hidden="true"></span>
+            <span ng-switch-when="admin_dir" class="mdi mdi-account-multiple" aria-hidden="true"></span>
+        {{transform(node.name)}}
+        </span>
+    </div>
+</div>

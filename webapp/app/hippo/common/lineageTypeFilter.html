@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>查看选项</span>
+    </span>
+    <select class="form-control" id="field_select" ng-model="valueTypeFilter" ng-change="onValueTypeChange(valueTypeFilter)">
+        <option ng-repeat="o in valueGroupArray" value="{{o.value}}">{{o.name}}</option>
+    </select>
+</div>

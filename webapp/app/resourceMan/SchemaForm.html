@@ -1,0 +1,84 @@
+<div class="DraggableList" style="max-width: 1000px;" window-size-getter>
+    <div class="panel panel-info" style="">
+        <div class="panel-heading">Schema</div>
+        <div class="panel-body"  ng-style="{'max-height':'{{windowHeight-420}}px', 'overflow': 'auto'} " >
+            <form name="entityForm" novalidate class="clearfix" style="overflow: auto">
+                <div class="col-md-12" class="clearfix">
+                    <ul dnd-list="fields" dnd-drop="onDrop(fields, item, index)">
+                        <li ng-repeat="item in fields"
+                            dnd-draggable="getSelectedItemsIncluding(fields, item)"
+                            dnd-moved="onMoved(fields)"
+                            dnd-effect-allowed="move"
+                            dnd-disable-if="dragDisabled"
+                            dnd-dragend="fields.dragging = false"
+                            dnd-selected="onSelected(fields,item,event)"
+                            ng-class="{'selected': item.selected}"
+                            ng-hide="fields.dragging && item.selected"
+                            data-ng-mousedown="mousedown($event)"
+                            class="clearfix"
+                        >
+
+                            <div class="col-sm-12" class="clearfix">
+                                <div class="col-sm-1" style="padding-top: 8px;">
+                                    {{$index+1}}.
+                                </div>
+                                <div    class="col-sm-6" style="padding-left: 0px;" >
+                                    <input  type="text" class="form-control" name="{{item.id}}"
+                                            ng-model="item.name"
+                                            validate-errors-directive
+                                            placeholder="{{fieldDef.name.placeholder}}"
+                                            ng-disabled="isReadOnly()"
+                                            ng-change="synchData()"
+                                            data-ng-mousedown="mousedown($event)"  draggable="false" required>
+                                </div>
+                                <div class="col-sm-5 input-group">
+                                    <select  class="form-control group_select" name="{{item.id+'sel'}}"  ng-model="item.type"
+                                             ng-change="onTypeChange(item)"
+                                             ng-options="v for v in fieldDef.type.enum" ng-disabled="isReadOnly()"></select>
+                                    <div class="input-group-btn">
+                                        <select class="form-control group_select" ng-if="item.type==='decimal'" ng-model="item.wholeLength" ng-change="onDecimalChange(item,'wholeLength')" ng-disabled="isReadOnly()" ng-readonly="isReadOnly()">
+                                            <option ng-repeat="a in decimalFormat.allowArray()" value="{{a}}">{{a}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group-btn">
+                                        <select class="form-control group_select" ng-if="item.type==='decimal'"
+                                                style="margin-right: 5px;"
+                                                ng-model="item.fractionLength" ng-change="onDecimalChange(item,'fractionLength')" ng-disabled="isReadOnly()" ng-readonly="isReadOnly()">
+                                            <option ng-repeat="a in decimalFormat.allowArray()" value="{{a}}">{{a}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group-btn">
+                                        <a  ng-show="!isReadOnly()" ng-click="addFields($index)" class="btn" style="padding-left: 0;padding-right: 5px;">
+                                            <span class="glyphicon glyphicon-plus-sign icon-green"></span></a>
+                                        <a  ng-show="!isReadOnly()" class="btn" ng-click="deleteItem($index)" ng-if="fields.length>1" style="padding-left: 0;padding-right: 0px;">
+                                            <span class="glyphicon glyphicon-minus-sign icon-red"></span> </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear" />
+
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-5 " ng-show="!isReadOnly()" style="padding-left: 15px;">
+                    <a  ng-click="addFields()" class="btn"><span class="glyphicon glyphicon-plus-sign icon-green"></span></a>
+                    <a  ng-click="$parent.batchInput=''" ng-show="$parent.batchInput===undefined" class="btn">批量录入</a>
+                </div>
+                <div  ng-show="$parent.batchInput!==undefined" >
+                    <div class="col-sm-12 " style="padding-left: 15px;">
+                        <textarea  class="form-control"
+                                   ng-model="$parent.batchInput"
+                                   placeholder="说明：一行两列，第一列为字段名，第二列为类型，中间用空格分开。举例：name type"
+                                   style="height:100px; resize:vertical; " ></textarea>
+                    </div>
+                    <div class="col-sm-12 " style="padding-top: 8px;">
+                        <div class="col-sm-11 " style="color: red;"></div>
+                        <a ng-click="addBatch()" class="btn btn-primary"> 确定</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>
+

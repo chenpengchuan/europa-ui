@@ -1,0 +1,66 @@
+<div class="container-fluid no-padding">
+    <div class="col-fluid">
+
+                <div class="panel panel-default" style="margin-top: -1px;" ng-controller="ResourcesController">
+                    <div class="panel-heading">
+                        <div class="row top-buffer">
+
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                  <span class="input-group-addon">
+                                     <span>查看选项</span>
+                                   </span>
+                                    <select  class="form-control" id="view_type_select"  ng-model="sourceType" ng-change="onUserChange(sourceType)">
+                                        <option ng-repeat="o in selectSourceType" value="{{o.value}}">{{o.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+				      <span class="input-group-btn">
+				        <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+				      </span>
+                                    <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"
+                                           options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+                                           ng-keydown="keydown($event)"  readonly="readonly" />
+                                </div>
+                            </div>
+
+                        </div><!-- /1.row -->
+                        <div class="row top-buffer">
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                  <span class="input-group-addon">
+                                     <span>分组类型</span>
+                                   </span>
+                                    <select  class="form-control" id="date_type_select"  ng-model="statsFacetsFilter" ng-change="onstatsFacetsChange(statsFacetsFilter)">
+                                        <option ng-repeat="o in dataGroupArray" ng-value="'{{o.value}}'">{{o.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div><!-- 2.row -->
+                    </div>
+                </div>
+                 <!--为ECharts准备一个具备大小（宽高）的Dom-->
+                <table style="width:100%;">
+                <tr style="width:100%;">
+                    <td style="width:50%;">
+                <div id="resources_id" style="width:95%;height:510%;margin-top:5%"></div>
+                    </td>
+                    <td style="width:50%;">
+                <div id="resources_id1" style="width:95%;height:510%;margin-top:5%"></div>
+                </td>
+                </tr></table>
+
+    </div>
+    <!--<table border="0" width="100%" height="82%" align="center">-->
+        <!--<tr align="center">-->
+            <!--<td width="50%" valign="top">-->
+                <!--<div id="resources_id" style="width:95%;height:80%;margin-top:5%"></div>-->
+            <!--</td>-->
+            <!--<td width="50%" valign="top">-->
+                <!--<div id="resources_id1" style="width:95%;height:80%;margin-top:5%"></div>-->
+            <!--</td>-->
+        <!--</tr>-->
+    <!--</table>-->
+</div>

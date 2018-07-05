@@ -1,0 +1,52 @@
+<div class="panel-body" style="min-height: 500px; " ng-if="resType == SCHEMA_DIR_RESTYPE_NAME">
+    <div style="border: 1px lightgrey solid; padding: 5px 0 5px 0; position: relative;min-height: 729px;">
+        <div ui-layout="{flow : 'column'}">
+            <div ui-layout-container size="200px" min-size="150px" max-size="400px" style="padding-top: 10px;">
+                <div treecontrol class="tree-light"
+                     tree-model="dataForTheTree"
+                     options="treeOptions"
+                     on-selection="onSelected(node)"
+                     on-node-toggle="onNodeToggle(node,expanded)"
+                     selected-node="selectedNode">
+
+										<span ng-switch="" on="node.resType">
+											 <span ng-switch-when="dir" class="mdi mdi-folder" aria-hidden="true"></span>
+											 <span ng-switch-when="root" class="mdi mdi-folder" aria-hidden="true"></span>
+											 <span ng-switch-when="data_spool" class="mdi mdi-floppy" aria-hidden="true"></span>
+											 <span ng-switch-when="DB" class="mdi mdi-database" aria-hidden="true"></span>
+											 <span ng-switch-when="dataset_db" class="mdi mdi-table-large" aria-hidden="true"></span>
+											 <span ng-switch-when="dataset_spool" class="mdi mdi-table-large" style="color:dodgerblue;" aria-hidden="true"></span>
+										 </span>
+                    <span ng-if="node.sharedUsers&&node.owner==auxo.Auth.user.name" class="mdi mdi-redo"></span>
+
+                    {{node.name}}
+                </div>
+            </div>
+            <div ui-layout-container="central">
+                <table st-table="rowCollection" st-pipe="fetchPage2 " class="table">
+                    <thead>
+                    <tr>
+                        <th><st-select-all all="rowCollection"></st-select-all></th>
+                        <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" >{{rh.disName}}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="row in rowCollection">
+                        <td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+                        <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" >
+                            <span ng-if="rh.name != 'name' " >{{rh.converter(col,row)}}</span>
+                            <a ng-if="rh.name === 'name'" ng-click="editResource(row)" >{{rh.converter(col,row)}}</a>
+                        </td>
+                        <td>
+                            <a ng-if="['','dataset_spool','dataset_db'].indexOf(row.resType)>0" ng-click="previewData(row)" >预览</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,29 @@
+
+<div ng-controller="LoginController">
+    <section class="login-panel">
+        <div class="login-text" style="z-index: 10" ng-if='_show_login_text'>大数据平台</div>
+        <div class="login-form">
+            <form ng-submit="login()" name="loginForm" role="form" >
+                <ul>
+                    <li><label><i class="iconfont icon-user-3"></i>租  户：</label>
+                        <input type="text" data-ng-model="tenant" placeholder="tenant" id="Tenant"
+                               autofocus required class="form-control" ng-change="onChange('tenant')" focus-iter></li>
+                    <li><label><i class="iconfont icon-user-3"></i>用户名：</label>
+                        <input type="text" data-ng-model="name" placeholder="user name" id="UserName"
+                               autofocus required class="form-control" ng-change="onChange('username')" focus-iter></li>
+                    <li class="login-password"><label><i class="iconfont icon-locked-1"></i>密　码：</label>
+                        <input type="password" data-ng-model="password" placeholder="password" id="password"
+                               required class="form-control" ng-change="onChange('password')" focus-iter="null" ng-enter="login()"></li>
+                </ul>
+                <div class="login-error" ng-bind-html="error"></div>
+                <div class="login-btn-bar tc"><a data-ng-disabled="error" data-ng-click="login()">登录</a></div>
+            </form>
+        </div>
+    </section>
+    <footer><div><span>版本:{{auxo.version}}, </span>
+        <span style="color:{{license.error ? 'orange' : 'white'}}">许可证过期时间: {{license.exp}}</span>
+        <span>SID : {{license.sid}}</span></div></footer>
+    <footer class="tc" style="display:none;"> 2014-2018 版权所有</footer>
+</div>
+
+

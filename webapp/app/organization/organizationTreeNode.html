@@ -1,0 +1,16 @@
+<div>
+    <div class="col-sm-4 text-left"
+         ng-style="{'padding-left': level * 15 + 'px'}">
+        <ad-tree-browser-node-toggle>
+        </ad-tree-browser-node-toggle>
+        <a ui-sref="organization_detail({id:'{{item.id}}'})">{{item.name}}</a>
+        <div style="display:inline;">
+            <a class="pull-right text-danger" data-nodrag="" ng-if="!item.children" href ng-click="removeItem(item)" style="margin-right: 8px;"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="pull-right text-info" data-nodrag="" ui-sref="organization_detail({id:'new', parent:'{{item.id}}', parentName:'{{item.name}}'})" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>
+        </div>
+    </div>
+    <div class="col-sm-2 text-left">{{auxo.date2str(item.createTime)}}</div>
+    <div class="col-sm-2 text-left">{{item.creator}}</div>
+    <div class="col-sm-2 text-left">{{auxo.date2str(item.lastModifiedTime)}}</div>
+    <div class="col-sm-2 text-left">{{item.lastModifier}}</div>
+</div>

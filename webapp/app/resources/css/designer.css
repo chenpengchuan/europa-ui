@@ -1,0 +1,219 @@
+
+.designer_container{width:100%;float:left;margin-right:-225px;}
+.designer_main{height:85vh;min-height:810px;margin-right:225px !important;}
+.designer_main_read{height:70vh;min-height:600px;}
+.designer_side{width:225px;height:85vh;min-height:810px;float:right;overflow-y: auto; overflow-x: hidden;}
+.clear {clear: both}
+
+#designer {
+    margin-top: 20px;
+    margin-left:0;
+    margin-right: auto;
+    text-align: center;
+    position: relative;
+    max-width: 1200px;
+    max-height: 1000px;
+}
+
+
+#dataflow_container {
+
+}
+
+/* the container is 200px (size of menu-container) plus 3 times 250px + 2px per border*/
+#plumb-item-container {
+   * border: 1px solid gray;
+    background-color:white;
+    overflow:auto;
+    *height: 800px;
+    position: relative;
+    margin: 0;
+}
+
+/* the menu is 200px wid
+e */
+#menu-container {
+    border-left: 1px solid #ddd;
+    *border: 1px solid gray;
+    *height: 800px;
+    background-color: #F3F2F4;
+
+    *width: 205px;
+    position: relative;
+}
+
+.title {
+    font-weight: bold;
+    line-height: 20px;
+    margin-left:-20px;
+    margin-right:-20px;
+}
+
+.step-title {
+    //padding: 10px;
+    cursor: move;
+    font-weight: bold;
+    *font-size: 80%;
+    height: 20px;
+    margin-left:0px;
+    margin-right:0px;
+    margin-top:-5px;
+    overflow:hidden;
+    text-overflow: clip;
+    white-space:nowrap;
+}
+
+.menu-item-icon {
+    margin: 5px 5px 5px 5px;
+    cursor: move;
+    width: 30px;
+    height: 30px;
+}
+
+.plumb-item-icon {
+    margin: 0px 8px 8px 8px;
+    width: 50px;
+    height: 50px;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+
+._menu-group {
+    width: 100%;
+}
+
+.menu-group-label {
+    text-align: left;
+    height: 30px;
+    width: 201px;
+    background-color: #e1e1e8;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+}
+
+._menu-item {
+    cursor: move;
+    border: 1px solid black;
+    width: 60px;
+    height: 60px;
+    font-size: 80%;
+    background-color:#FFFFFF;
+    text-align: center;
+    -moz-box-shadow: 2px 2px 3px 1px #AAA;
+    -webkit-box-shadow: 2px 2px 3px 1px #AAA;
+    box-shadow: 2px 2px 3px 1px #AAA;
+    margin: 5px 0px 5px 5px;
+}
+
+
+.flowchart-pane .plumb-item {
+    cursor: move;
+    border: 1px solid #346789;
+    -moz-border-radius: 0.5em;
+    border-radius: 0.5em;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    z-index: 20;
+    position: absolute;
+    background-color: #eeeeef;
+    color: black;
+    font-family: helvetica;
+    padding: 0.5em;
+    font-size: 0.9em;
+    -webkit-transition: -webkit-box-shadow 0.15s ease-in;
+    -moz-transition: -moz-box-shadow 0.15s ease-in;
+    -o-transition: -o-box-shadow 0.15s ease-in;
+    transition: box-shadow 0.15s ease-in;
+}
+
+.flowchart-pane .plumb-item-normal:hover {
+    box-shadow: 2px 2px 19px #444;
+    -o-box-shadow: 2px 2px 19px #444;
+    -webkit-box-shadow: 2px 2px 19px #444;
+    -moz-box-shadow: 2px 2px 19px #444;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+
+.flowchart-pane .plumb-item-selected:hover {
+    box-shadow: 0px 0px 5px 10px blue;
+    -o-box-shadow: 0px 0px 5px 10px blue;
+    -webkit-box-shadow: 0px 0px 5px 10px blue;
+    -moz-box-shadow: 0px 0px 5px 10px blue;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+
+.plumb-item-normal {
+    box-shadow: 2px 2px 19px #aaa;
+    -o-box-shadow: 2px 2px 19px #aaa;
+    -webkit-box-shadow: 2px 2px 19px #aaa;
+    -moz-box-shadow: 2px 2px 19px #aaa;
+}
+
+.plumb-item-selected {
+    box-shadow: 0px 0px 5px 10px blue;
+    -o-box-shadow: 0px 0px 5px 10px blue;
+    -webkit-box-shadow: 0px 0px 5px 10px blue;
+    -moz-box-shadow: 0px 0px 5px 10px blue;
+}
+
+.flowchart-pane .active {
+    border: 1px dotted green;
+}
+
+.flowchart-pane .hover {
+    border: 1px dotted red;
+}
+
+.flowchart-pane ._jsPlumb_connector {
+    z-index: 4;
+}
+
+.flowchart-pane ._jsPlumb_endpoint, .endpointTargetLabel, .endpointSourceLabel {
+    z-index: 21;
+    cursor: pointer;
+}
+
+.flowchart-pane .aLabel {
+    background-color: white;
+    padding: 0.4em;
+    font: 12px sans-serif;
+    color: #444;
+    z-index: 21;
+    border: 1px dotted gray;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+    cursor: pointer;
+}
+
+.flowchart-pane .aLabel._jsPlumb_hover {
+    background-color: #5C96BC;
+    color: white;
+    border: 1px solid white;
+}
+
+.plumb-item._jsPlumb_connected {
+    border: 2px solid green;
+}
+
+.jsplumb-drag {
+    border: 4px solid pink !important;
+}
+
+path, ._jsPlumb_endpoint {
+    cursor: pointer;
+}
+
+

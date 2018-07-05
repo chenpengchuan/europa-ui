@@ -1,0 +1,91 @@
+<div id="DashBoard-overview" class="container-fluid" style="padding-top:10px">
+    <div class="col-fluid" >
+        <uib-tabset active="1">
+            <uib-tab index="0" select="auxo.go('/collector')">
+                <uib-tab-heading>
+                    <i class="icon icon-cloud-download"></i><span class="left-margin-5">采集器</span>
+                </uib-tab-heading>
+            </uib-tab>
+
+            <uib-tab index="1">
+                <uib-tab-heading>
+                    <i class="glyphicon glyphicon-import"></i><span class="left-margin-5">导入任务</span>
+                </uib-tab-heading>
+                <div ng-if="tab.status==selectedTabStatus" class="panel panel-default" style="margin-top: -1px;" ng-controller="CollectorDetailController">
+                    <div class="panel panel-default" style="margin-top: -1px;" >
+                        <div class="panel-heading">
+                            <div class="row top-buffer">
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+                                        <span class="input-group-btn"><button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                  <span class="input-group-btn">
+                                    <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+                                  </span>
+                                        <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange" options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} " ng-keydown="keydown($event)"  readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div  class = "col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <span>采集器ID</span>
+                                        </span>
+                                        <select  class="form-control" id="collector_id_select"  ng-model="viewId" ng-change="collectorIdSelected(viewId)">
+                                            <option ng-repeat="o in collectorIdSelects" ng-value="'{{o}}'">{{o}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+                                </div>
+                            </div>
+                            <!--<div class="row top-buffer">-->
+                                <!--<div class="col-md-6">-->
+                                    <!--<button class="btn btn-primary" type="button" data-ng-click="toSynchronizationPage(id,'collector')" ng-disabled="selectCollectorType"><i class="iconfont icon-built"></i>创建</button>-->
+                                    <!--<a class="btn btn-primary" type="button" ng-disabled="selectedRows.length == 0" ng-click="copyCollectorTask(selectedRows)"><i class="icon icon-copy">&nbsp;</i>复制</a>-->
+                                    <!--<button class="btn btn-primary"  ng-disabled="selectedRows.length == 0" ng-click="startTask(selectedRows)"><i class="icon icon-ok-circle">&nbsp;</i>启动</button>-->
+                                    <!--<button class="btn btn-danger" type="button" ng-click="killExecution(selectedRows)" ng-disabled="selectedRows.length == 0"><i class="icon icon-remove-circle">&nbsp;</i>停止</button>-->
+                                    <!--<button class="btn btn-danger" ng-click="remove(selectedRows)" ng-disabled="selectedRows.length == 0"><i class="icon icon-trash">&nbsp;</i>删除</button>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        </div>
+                        <div class="panel-body">
+                            <table st-table="rowCollection" st-pipe="fetchPage" class="table">
+                                <thead>
+                                <tr>
+                                    <th><st-select-all all="rowCollection"></st-select-all></th>
+                                    <th  st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="row in rowCollection">
+                                    <td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+                                    <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+                                        <span ng-if="['name','dataSource','object','status'].indexOf(rh.name)<0">{{rh.converter(col,row)}}</span>
+                                        <a ng-if="rh.name == 'name'" href="" ng-click="op(row)">{{rh.converter(col,row)}}</a>
+                                        <a ng-if="rh.name == 'dataSource'" href="" ng-click="viewDataSource(row)">{{rh.converter(col,row)}}</a>
+                                        <span ng-if="rh.name=='object' && !rh.converter(col,row).isTable">{{rh.converter(col,row).value}} </span>
+                                        <a ng-if="rh.name=='object'&& rh.converter(col,row).isTable" href="" ng-click="viewObject(row)">{{rh.converter(col,row).value}} </a>
+                                        <div ng-if="row['status'] == 0 && rh.name == 'status'" style="background-color:#337ab7;padding:4px;" ><font color="white" size="2px">{{rh.converter(col,row)}}</font></div>
+                                        <div ng-if="row['status'] == 1 && rh.name == 'status'" style="background-color:#5cb85c;padding:4px;" ><font color="white" size="2px">{{rh.converter(col,row)}}</font></div>
+                                        <div ng-if="row['status'] == 2 && rh.name == 'status'" style="background-color:#d9534f;padding:4px;" ><font color="white" size="2px">{{rh.converter(col,row)}}</font></div>
+                                        <div ng-if="row['status'] == -1 && rh.name == 'status'" style="background-color:#ffa54f;padding:4px;" ><font color="white" size="2px">{{rh.converter(col,row)}}</font></div>
+
+                                        <!--<a ng-if="rh.name == 'dataStore'" href="" ng-click="viewDataStore(row)">{{rh.converter(col)}}</a>-->
+                                    </td>
+                                    <td><a href="" ng-click="exec(row)">执行列表</a></td>
+                                    <td><a href="" ng-click="previewDataSet(row)">预览数据集</a></td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

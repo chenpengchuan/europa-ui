@@ -1,0 +1,12 @@
+md-sidenav {
+   position: static;
+}
+
+.content {
+   padding: 16px;
+}
+
+pre {
+   word-wrap: break-word;
+   white-space: pre-wrap;
+}

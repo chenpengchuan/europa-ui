@@ -1,0 +1,4 @@
+<tr tt-node is-branch="node.children && node.children.length>0?true:false"  ng-class="{'selected':node.code===selectedNode.code}">
+    <td ng-click="onNodeSelected(node)"><span ng-bind="node.code"></span></td>
+    <td ng-click="onNodeSelected(node)"><span ng-bind="node.name"></span></td>
+</tr>

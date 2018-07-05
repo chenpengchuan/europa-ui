@@ -1,0 +1,33 @@
+<div class="home-container clearfix">
+    <!--组件状态监控-->
+    <div class="panel-row" style="width:100% " ng-controller="ComponentController">
+        <div class="panel" style="height:auto;">
+
+            <h3 class="tc" ><i class="iconfont icon-settings-6"></i>组件状态</h3>
+
+            <table st-table="rowCollection"  class="table">
+                <thead>
+                <tr>
+                    <th align="center">&nbsp;&nbsp;&nbsp;&nbsp;SERVICE</th>
+                    <td align="center">STATUS</td>
+                    <td align="center">ADDR/HOST</td>
+                    <td align="center">ID</td>
+                    <td align="right">OPERATION&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr  ng-repeat=" c in components" height="50px">
+                    <th align="center"><i class="iconfont icon-computer"></i><a ng-click="go_schema_editOrCopy(c.id,'preview')" style="cursor:pointer;">{{c.category}}</a></th>
+                    <td align="center">{{c.state}}</td>
+                    <td align="center">{{c.addr}}</td>
+                    <td align="center">{{c.id}}</td>
+                    <td align="right"><button class="btn btn-primary" type="button" ng-click="restart(c.id)" >重启</button>
+                        <button class="btn btn-danger" type="button" ng-click="stop(c.id)" >停止
+                        </button></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

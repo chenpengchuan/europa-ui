@@ -1,0 +1,26 @@
+
+
+        <div class="clearfix">
+            <div class="col-sm-12 " ng-init="itemCopy=nodeNameDef" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+        </div>
+        <ul  class="nav nav-tabs" data-ng-if="configuration.tabs.length > 1" data-ng-init="">
+            <li data-ng-init="" ng-class="{active:tab.active}"  ng-repeat="tab in configuration.tabs">
+                <a data-ng-click="onTabChange(configuration.tabs, $index, afterTabChange)" data-toggle="tab" >
+                    <i class="glyphicon text-info" data-ng-class="{'glyphicon-arrow-down': tab.category.indexOf('Input')>-1,'glyphicon-arrow-up': tab.category.indexOf('Output')>-1,'glyphicon-cog': tab.category=='Other'}"></i>
+                    <span uib-tooltip="{{tab.content[0].data.$sourceNode.name}}">&nbsp;&nbsp;{{tab.title}}</span></a></li>
+        </ul>
+
+        <div class="tab-content top-margin-5">
+            <div class="tab-pane clearfix" data-ng-class="{active: tab.active}"  ng-repeat="tab in configuration.tabs" id="tab_{{$index}}">
+                <div ng-if="tab.category == 'Input'"  ng-include="'app/step/node_configuration_form_tab_input.html'" class=" "></div>
+                <div ng-if="tab.category == 'Output'"  ng-include="'app/step/node_configuration_form_tab_input.html'" class=" "></div>
+                <div ng-if="tab.category == 'WInput'"  ng-include="'app/step/node_configuration_form_tab_w_input.html'" class=" "></div>
+                <div ng-if="tab.category == 'WOutput'"  ng-include="'app/step/node_configuration_form_tab_w_output.html'" class=" "></div>
+                <div ng-if="tab.category == 'Other'"  ng-include="'app/step/node_configuration_form_tab_other.html'" class=" "></div>
+            </div>
+        </div>
+        <div data-ng-if="readonly">
+            <br>
+            <p style="color: red;">提示： 当前为预览状态，所有修改都无效，请不要编辑！</p>
+        </div>
+

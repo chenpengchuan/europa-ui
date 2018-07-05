@@ -1,0 +1,22 @@
+<div ng-style="auxo.exec(itemCopy.style, itemCopy)">
+    <label  for="{{itemCopy.id}}" data-ng-class="{'col-sm-3': !itemCopy.label_length_class}"
+            ng-style="itemCopy.label_align=='left' && {'text-align': 'left'}"
+            class="{{itemCopy.label_length_class}}  control-label">{{itemCopy.label?itemCopy.label: itemCopy.$name}}
+        <span class ="glyphicon glyphicon-info-sign"   uib-tooltip-html="'{{itemCopy.tooltip? itemCopy.tooltip:itemCopy.label}}'"></span>
+    </label>
+    <div class="{{itemCopy.input_length_class}}" data-ng-class="{'col-sm-9': !itemCopy.input_length_class}">
+        <select class="form-control select-placeholder"
+                id="{{itemCopy.id}}" name="{{itemCopy.id}}"
+                ng-change="itemCopy.onSelectChange?itemCopy.onSelectChange(itemCopy.data,itemCopy,tab):onChange(itemCopy, group, tab)"
+                ng-model="itemCopy.data[itemCopy.$name]"
+                ng-required="itemCopy.optional? false: true"
+                data-ng-disabled="itemCopy.readonly? true: false"
+        >
+            <option value="" disabled selected ng-if="!itemCopy.optional">{{itemCopy.$name}} (必填)</option>
+            <option ng-if="itemCopy.selectEnum" data-ng-repeat="v in itemCopy.selectEnum" ng-value="'{{v}}'">{{v}}</option>
+            <option ng-if="itemCopy.selectObjEnum" data-ng-repeat="v in itemCopy.selectObjEnum track by $index" value="{{v['value']}}">{{v['name']}}</option>
+        </select>
+    </div>
+
+    <div class="clear"></div>
+</div>

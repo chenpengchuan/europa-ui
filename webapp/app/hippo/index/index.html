@@ -1,0 +1,182 @@
+
+<div class="home-container clearfix">
+
+    <!--<div class="panel-row" ng-repeat="bar in rows">-->
+        <!--<div class="panel">-->
+            <!--<h3 class="tc"><i class="iconfont icon-settings-6"></i>{{bar.text}}</h3>-->
+            <!--<table cellpadding="0" cellspacing="0" border="0">-->
+                <!--<tr ng-repeat="item in bar.items" ng-if="bar.text!=='监控'">-->
+                    <!--<th align="left" width="48%"><i class="{{item.icon}}"></i>{{item.text}}</th>-->
+                    <!--<td align="center"><a href="#{{item.listPath}}">{{item.count}}</a></td>-->
+                    <!--<td align="center"><a ng-if="item.createPath" href="#{{item.createPath}}">创建</a></td>-->
+                <!--</tr>-->
+                <!--<tr ng-repeat="item in bar.items"  ng-if="bar.text==='监控'&&$index%2===0">-->
+                    <!--<th align="left" width="34%"><i class="{{item.icon}}"></i>{{item.text}}</th>-->
+                    <!--<td align="center"><a href="#{{item.listPath}}">{{item.count}}</a></td>-->
+                    <!--<th align="left" width="34%"><i class="{{bar.items[$index+1].icon}}"></i>{{bar.items[$index+1].text}}</th>-->
+                    <!--<td align="center"><a href="#{{bar.items[$index+1].listPath}}">{{bar.items[$index+1].count}}</a></td>-->
+                <!--</tr>-->
+            <!--</table>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <!--任务完成情况监控-->
+    <div class="panel-row" style="width:100%;">
+        <div class="panel" style="height:auto;" >
+            <table cellpadding="0" cellspacing="0" border="0" >
+                <tr>
+                    <h3 class="tc">
+                        <button style="height:100% margn-top:true" class=" glyphicon glyphicon-refresh" ng-click="fetchComponentsStatus()"></button>
+                        <i ng-click="fetchComponentsStatus()"></i>任务完成情况监控</h3>
+                </tr>
+                <tr cellpadding="0" cellspacing="0" border="0" align="center">
+                    <td width="17%" style="text-align:right;"></td>
+                    <td><button class="btn btn-primary " ng-click="auxo.go('/hippo/monitor/RUNNING')" >运行中({{RUNNING}})</button>
+                        <button id="wait" class="btn btn-primary " ng-click="auxo.go('/hippo/monitor/READY')">等待({{READY}})</button>
+                        <button id="success" class="btn btn-success " ng-click="auxo.go('/hippo/monitor/SUCCEEDED')">已成功({{SUCCEEDED}})</button>
+                        <button class="btn btn-danger " ng-click="auxo.go('/hippo/monitor/FAILED')">已失败({{FAILED}})</button>
+                        <button class="btn btn-primary " ng-click="auxo.go('/hippo/monitor/KILLED')">已杀死({{KILLED}})</button>
+                        <button id="unkonw" class="btn btn-primary " ng-click="auxo.go('/hippo/monitor/UNKNOWN')">未知({{UNKNOWN}})</button></td>
+                    <td style="text-align:right;"><h5>
+                        <button style="height:100% margn-top:true" class=" glyphicon glyphicon-refresh" ng-click="auxo.go('/hippo/tasks/jobanalysis')"></button><a  ng-click="auxo.go('/hippo/tasks/jobanalysis')" style="cursor:pointer"><font size="3px">&nbsp;查看详情分析</font></a></h5>
+                        <!--<br>-->
+                        <!--<button style="height:100% margn-top:true" class=" glyphicon glyphicon-refresh" ng-click=SystemType()></button><a  ng-click=SystemType() style="cursor:pointer">&nbsp;系统分类查看</a></h5>-->
+                    </td>
+
+                </tr>
+            </table>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="run_total" style="width:93%;height:250px;margin-top:1%;margin-left:2%"></div>
+            <script type="text/javascript"></script>
+        </div>
+    </div>
+
+    <!--执行计划监控-->
+    <div class="panel-row" style="width:50%">
+        <div class="panel" style="height:auto;">
+            <table cellpadding="0" cellspacing="0" border="0" >
+                <tr>
+                    <td style="text-align:right;"><h5><button style="height:100% margn-top:true" class=" glyphicon glyphicon-refresh" ng-click="auxo.go('/monitorMain/schedule')"></button><a  ng-click="auxo.go('/hippo/schedule')" style="cursor:pointer"><font size="3px">&nbsp;详情列表</font></a>
+                        &nbsp;&nbsp;  <button style="height:100% margn-top:true" class=" glyphicon glyphicon-refresh" ng-click="auxo.go('/hippo/tasks/scheduleanalysis')"></button><a  ng-click="auxo.go('/hippo/tasks/scheduleanalysis')" style="cursor:pointer"><font size="3px">&nbsp;详细分析</font></a> </h5></td>
+
+                    <h3 class="tc"><i ng-click="fetchComponentsStatus()"></i>任务调度</h3>
+                </tr>
+            </table>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="index_schedule_id" style="width:90%;height:250px;margin-top:1%;margin-left:3%"></div>
+        </div>
+    </div>
+
+    <!--任务告警监控-->
+    <div class="panel-row" style="width:50%">
+        <div class="panel" style="height:auto;">
+            <table cellpadding="0" cellspacing="0" border="0" >
+                <tr>
+                    <td style="text-align:right;"><h5><button style="height:100% margn-top:true" class=" glyphicon glyphicon-refresh" ng-click="auxo.go('/hippo/alarm')"></button><a  ng-click="auxo.go('/hippo/alarm')" style="cursor:pointer"><font size="3px">&nbsp;详情列表</font></a></h5></td>
+                    <h3 class="tc"><i ng-click="fetchComponentsStatus()"></i>任务告警</h3>
+                </tr>
+            </table>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="alarm_id" style="width:90%;height:250px;margin-top:1%;margin-left:3%"></div>
+        </div>
+    </div>
+
+    <!--系统资源监控-->
+    <div class="panel-row" style="width:50%">
+        <div class="panel" style="height:330px;">
+            <table cellpadding="0" cellspacing="0" border="0" >
+                <tr>
+                    <td style="text-align:right;"><h5><button style="height:100% margn-top:true" class=" glyphicon glyphicon-refresh" ng-click="auxo.go('/hippo/resources/memory')"></button><a  ng-click="auxo.go('/hippo/resources/memory')" style="cursor:pointer"><font size="3px">&nbsp;趋势分析</font></a></h5></td>
+                    <h3 class="tc">
+                        <i ng-click="fetchComponentsStatus()"></i>用户系统资源监控</h3>
+                </tr>
+            </table>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="run_total3" style="width:90%;height:75%;margin-top:1%;margin-left:1%"></div>
+            <script type="text/javascript">
+
+    </script>
+        </div>
+    </div>
+
+    <!--数据资源状态监控-->
+    <div class="panel-row" style="width:50%" ng-if="datastatuslist.length>0">
+        <div class="panel" style="height:330px;">
+            <table cellpadding="0" cellspacing="0" border="0" >
+                <tr>
+                    <td style="text-align:right;"><h5><button style="height:100% margn-top:true" class=" glyphicon glyphicon-refresh" ng-click="auxo.go('/hippo/data/status')"></button><a  ng-click="auxo.go('/hippo/data/status')" style="cursor:pointer"><font size="3px">&nbsp;查看全部</font></a></h5></td>
+                    <h3 class="tc"><i ng-click="fetchComponentsStatus()"></i>数据源状态监控</h3>
+                </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" border="0" >
+
+                <!--<tr ng-repeat="c in components">-->
+                <tr style="height:38px;">
+                    <td align="center">数据源</td>
+                    <td align="center">OWNER</td>
+                    <td align="center">连接状态</td>
+                </tr>
+                <tr style="border:1px; "  ng-repeat="c in datastatuslist">
+                    <td align="center" >{{c['name']}}</td>
+                    <td align="center">{{c.owner}}</td>
+                    <!--<td align="center">{{c.status}}</td>-->
+                    <td align="center">
+                        <span  ng-if="c.status == 'FAILED' " style="background-color:#d9534f;padding:4px;"><font color="white" size="2px">&nbsp;&nbsp;&nbsp;&nbsp;{{c.status}}&nbsp;&nbsp;&nbsp;&nbsp;</font></span>
+                        <span  ng-if="c.status == 'SUCCEEDED' " style="background-color:#5cb85c;padding:4px;"><font color="white" size="2px">{{c.status}}</font></span>
+                    </td>
+                </tr>
+                <!--<tr><td><button class="btn btn-success glyphicon glyphicon-refresh" ng-click="fetchComponentsStatus()">刷新</button></td></tr>-->
+
+            </table>
+        </div>
+    </div>
+
+    <!--节点状态监控-->
+    <div class="panel-row" style="width:50%" >
+        <div class="panel" style="height:auto;">
+            <table cellpadding="0" cellspacing="0" border="0" >
+                <tr>
+                    <td style="text-align:right;"><h5><button style="height:100% margn-top:true" class=" glyphicon glyphicon-refresh" ng-click="auxo.go('/collector')"></button><a  ng-click="auxo.go('/collector')" style="cursor:pointer"><font size="3px">&nbsp;详情列表</font></a></h5></td>
+                    <h3 class="tc"><i ng-click="fetchComponentsStatus()"></i>节点状态监控</h3>
+                </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" border="0" >
+                <tr style="height:43px">
+                    <td align="center">ID</td>
+                    <td align="center">节点名称</td>
+                    <td align="center">IP地址</td>
+                    <td align="center">状态</td>
+                </tr>
+                <tr style="border:1px "  ng-repeat="c in nodes">
+                    <td align="center">{{c.id}}</td>
+                    <td align="center">{{c.name}}</td>
+                    <td align="center">{{c.ip}}</td>
+                    <td align="center">
+                        <span  ng-if="c.status == '1' " style="background-color:#5cb85c;padding:4px;"><font color="white" size="2px">ONLINE&nbsp;</font></span>
+                        <span  ng-if="c.status == '0' " style="background-color:#d9534f;padding:4px;"><font color="white" size="2px">OFFLINE</font></span>
+                        <span  ng-if="c.status == '-1' " style="background-color:#337ab7;padding:4px;"><font color="white" size="2px">NOAUTH</font></span>
+                    </td>
+                </tr>
+                <tr><td><button class="btn btn-success glyphicon glyphicon-refresh" ng-click="refresh()">刷新</button></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!--组件状态监控-->
+    <!--<div class="panel-row" style="width:50% " ng-controller="HomeController">-->
+    <!--<div class="panel" style="height:auto;">-->
+    <!--<h3 class="tc"><i class="iconfont icon-settings-6"></i>组件状态</h3>-->
+    <!--<table cellpadding="0" cellspacing="0" border="0">-->
+    <!--<tr ng-repeat="c in components">-->
+    <!--<th align="left"><i class="iconfont icon-computer"></i>{{c.category}}</th>-->
+    <!--<td align="center">{{c.state}}</td>-->
+    <!--<td align="center">{{c.addr}}</td>-->
+    <!--<td align="center">{{c.id}}</td>-->
+    <!--</tr>-->
+    <!--<tr><td><button class="btn btn-success glyphicon glyphicon-refresh" ng-click="fetchComponentsStatus()">刷新</button></td></tr>-->
+
+    <!--</table>-->
+    <!--</div>-->
+    <!--</div>-->
+
+</div>

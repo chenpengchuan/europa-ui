@@ -1,0 +1,40 @@
+<div class="" style="width: 800px; margin-top: 20px;">
+    <form>
+    <fieldset class="" style="">
+        <legend>Cron 表达式:</legend>
+        <table style="table-layout: fixed;" width="800px">
+            <tr>
+                <td width="20%"></td>
+                <td width="10%"><span align="center">秒</span></td>
+                <td width="10%"><span align="center">分钟</span></td>
+                <td width="10%"><span align="center">小时</span></td>
+                <td width="10%"><span align="center">日</span></td>
+                <td width="10%"><span align="center">月 </span></td>
+                <td width="10%"><span align="center">星期</span></td>
+                <td width="10%"><span align="center">年</span></td>
+            </tr>
+            <tr>
+                <td ><span>表达式字段:</span></td>
+                <td ><span >   {{expText.v_second}} </span></td>
+                <td ><span >   {{expText.v_minute}}    </span></td>
+                <td ><span >   {{expText.v_hour}}   </span></td>
+                <td ><span >   {{expText.v_day}}    </span></td>
+                <td ><span >   {{expText.v_month}}  </span></td>
+                <td ><span >   {{expText.v_week}}   </span></td>
+                <td ><span >   {{expText.v_year}}   </span></td>
+            </tr>
+            <tr>
+                <td><span>Cron 表达式:</span></td>
+                <td colspan="7" width="400px"><span><input type="text" ng-model="cron.value" style="width: 100%;" id="cron" ng-change="onCronChange()"></span> </td>
+                <td><span><input type="button" value="解析到UI" id="btnFan" ng-click="btnFan()"></span></td>
+            </tr>
+            <!--
+            <tr><td colspan="8"><span >最近5次运行时间:</span></td></tr>
+            <tr data-ng-repeat="run in fiveRunTimes">
+                <td colspan="8" style="word-wrap:break-word;">{{run}}</td>
+            </tr>
+            -->
+        </table>
+    </fieldset>
+    </form>
+</div>

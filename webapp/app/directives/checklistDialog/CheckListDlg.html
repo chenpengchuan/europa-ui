@@ -1,0 +1,20 @@
+<form class="form-horizontal clearfix" name="form" >
+    <h3>{{label}}</h3>
+    <div class="" style="max-height: 500px; overflow: auto;" >
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="item in allItems">
+                <label >
+                    <input type="checkbox" checklist-model="selections" checklist-value="item"> {{item}}
+                </label>
+            </li>
+        </ul>
+    </div>
+    <p>
+        <button type="button" class="btn btn-default" ng-click="checkAll()" >全选</button>
+        <button type="button" class="btn btn-default" ng-click="uncheckAll()" >全不选</button>
+    </p>
+</form>
+<div ng-if="note" class="alert-danger">
+    Note: {{note}}
+</div>
+

@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="row ">
+        <div class="col-sm-1 " style="padding-left: 0px">
+            <p><b>分析类型</b></p>
+        </div>
+        <div class="col-sm-1 ">
+            <!--<input type="checkbox" value="false"><b> 全部</b></input>-->
+            <input type="checkbox" value="false" ng-change="doRuleFilter(null, ruleFilterCheckAll)" ng-model="ruleFilterCheckAll"><b> 全部</b></input>
+        </div>
+    </div>
+</div>
+<div ng-show="!ruleFilterCheckAll" style="padding-left: 0px">
+    <treecontrol class="tree-classic"
+                 tree-model="treeData"
+                 expanded-nodes="expandedNodes"
+                 options="treeOptions"
+                 on-selection="showSelected(node)"
+                 selected-node="node1">
+        {{node.name}}
+    </treecontrol>
+</div>

@@ -1,0 +1,21 @@
+<p class="input-group">
+    <input type="text" name="queryWord"
+           placeholder={{initTitle}} ng-readonly="disableEdit"
+           ng-disabled="true"
+           class="form-control warning_placeholder" ng-model="queryWord"
+           on-select-changed="doQuery(queryWord)"
+           readonly required>
+    <span class="input-group-btn">
+      <button type="button"
+              class="btn btn-default ng-pristine ng-valid ng-isolate-scope ng-not-empty ng-touched"
+              root-dir={{rootDir}}
+              ng-disabled="disableEdit"
+              keyword={{keyWord}}
+              ng-model="data.dataStore.name"
+              select-mode="single"
+              on-select-changed="onSelectChanged(data)"
+              hippo-selector>
+           <i class="glyphicon glyphicon-search"></i>
+      </button>
+    </span>
+</p>

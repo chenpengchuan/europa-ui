@@ -1,0 +1,205 @@
+<div class="" ng-controller="DatasetDBController" >
+    <div ng-show="page===1" class="clearfix" ng-style="{'max-height': '{{windowHeight-300}}px', 'overflow-y': 'auto'}">
+        <!--
+        <div treecontrol class="tree-light"
+             tree-model="dataForTheTree"
+             options="treeOptions"
+             on-selection="onSelected(node)"
+             selected-node="selectedNode">
+
+                <span ng-switch="" on="node.resType">
+                     <span ng-switch-when="DB" class="glyphicon mdi mdi-database" aria-hidden="true"></span>
+                 </span>
+
+            {{node.name}}
+        </div>
+        -->
+        <!--<div>-->
+            <!--<table tt-table tt-params="dynamic_params" class="table" >-->
+                <!--<thead>-->
+                <!--<tr>-->
+                    <!--<th>Name</th>-->
+                    <!--<th>Driver</th>-->
+                    <!--<th>Url</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody ng-mousedown="onNodeSelected(node)"></tbody>-->
+            <!--</table>-->
+        <!--</div>-->
+        <div class="panel panel-default" style="margin-top: -1px;" >
+            <div class="panel-heading ">
+                <div class="row ">
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doSearch(queryWord)">
+                            <span class="input-group-btn">
+										<button class="btn btn-primary" type="button" ng-click="doSearch(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+									  </span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+									  <span class="input-group-btn">
+										<button class="btn btn-success" type="button" ng-click="doSearch(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+									  </span>
+                            <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"
+                                   options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+                                   ng-keydown="keydown($event)"  readonly="readonly" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body" ng-if="!auxo.isIE()" ng-style="{'min-height': '300px', 'max-height': '{{windowHeight-300}}px', 'overflow': 'auto'}">
+                <div   ng-style="{'border': '1px lightgrey solid', 'padding': '5px 0 5px 0', 'position': 'relative','min-height': '300px','max-height': '{{windowHeight-245}}px' ,'overflow': 'auto'}">
+                    <div ui-layout="{flow : 'column'}">
+                        <div ui-layout-container size="200px" min-size="150px" max-size="400px" style="padding-top: 10px;">
+                            <div treecontrol class="tree-light"
+                                 tree-model="dataForTheTree"
+                                 options="treeOptions"
+                                 on-selection="onSelected(node)"
+                                 on-node-toggle="onNodeToggle(node,expanded)"
+                            >
+										<span ng-switch="" on="node.resType">
+											 <span ng-switch-when="dir" class="mdi mdi-folder" aria-hidden="true"></span>
+											 <span ng-switch-when="root" class="mdi mdi-folder" aria-hidden="true"></span>
+											 <span ng-switch-when="data_spool" class="mdi mdi-floppy" aria-hidden="true"></span>
+											 <span ng-switch-when="DB" class="mdi mdi-database" aria-hidden="true"></span>
+											 <span ng-switch-when="dataset_db" class="mdi mdi-table-large" aria-hidden="true"></span>
+											 <span ng-switch-when="dataset_spool" class="mdi mdi-table-large" style="color:dodgerblue;" aria-hidden="true"></span>
+										 </span>
+
+                                {{node.name}}
+                            </div>
+                        </div>
+                        <div ui-layout-container="central">
+                            <table st-table="rowCollection" st-pipe="fetchPage2 " class="table">
+                                <thead>
+                                <tr>
+                                    <th><st-select-all all="rowCollection"></st-select-all></th>
+                                    <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" >{{rh.disName}}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="row in rowCollection">
+                                    <td cs-select="row" rows="rowCollection" select-mode="selectMode"  selected-rows="selectedRows" ></td>
+                                    <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" >
+                                        <span >{{rh.converter(col,row)}}</span>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--<div class="form-group" style="padding-top: 8px;">-->
+        <!--<label >数据源</label>-->
+        <!--<p class="input-group">-->
+        <!--<div class="form-group" ng-include="'app/hippo/common/dataSourcesSelector.html'"></div>-->
+        <!--</p>-->
+        <!--</div>-->
+    </div>
+    <div ng-show="page===2" class="clearfix">
+        <div class="row clearfix">
+            <div class="col-xs-4">
+                <label class="control-label">表或者视图</label>
+                <ui-select ng-model="selectedTable" theme="bootstrap" on-select="onTableChange($select)">
+                    <ui-select-match placeholder="输入表/视图名显示查询结果...">
+                        {{$select.selected}}
+                    </ui-select-match>
+                    <ui-select-choices
+                            refresh="fetchTable($select)"
+                            refresh-delay="300"
+                            repeat="table in tables | filter: $select.search"
+                    >
+                        {{ table }}
+                        <div ng-if="$index == $select.items.length-1 && !isLastPage">
+                            <button
+                                    class="btn btn-xs btn-success"
+                                    style="width: 100%; margin-top: 5px;"
+                                    ng-click="fetchTable($select, $event);"
+                                    ng-disabled="disableSelectTable">加载更多...</button>
+
+                        </div>
+                    </ui-select-choices>
+                </ui-select>
+                <!--<select data-ng-model="selectedTable" ng-disabled="disableSelectTable" class="form-control" ng-change="onTableChange()"  size="10">-->
+                    <!--<option ng-repeat="table in tables track by $index" value="{{table}}">{{table}}</option>-->
+                <!--</select>-->
+            </div>
+            <div class="col-xs-4">
+                <label class="control-label">字段列表</label>
+                <select data-ng-model="selectedColumns" class="form-control" ng-change="onSelectedColumnChange()"  multiple="multiple" size="10">
+                    <option ng-repeat="col in columns track by $index" value="{{col.name}}">{{col.name + "(" + col.dataType + ")"}}</option>
+                </select>
+            </div>
+            <div class="col-xs-4">
+                <label class="control-label">Where 子句</label>
+                <textarea  class="form-control"
+                           ng-model="whereString"
+                           ng-change="onWhereChange()"
+                           style="height:200px; resize:vertical;" ></textarea>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xs-12">
+                <label class="control-label">Sql 语句</label>
+                <textarea  class="form-control"
+                       ng-model="sqlString"
+                       style="height:200px; resize:vertical;" ></textarea>
+                </div>
+        </div>
+    </div>
+
+    <div ng-show="page===3" class="clearfix">
+        <div name="entityForm">
+            <div style="width: 100%; "  class="clearfix">
+                <div ng-repeat="item in meta.fields"  class="bottom-margin-2">
+                    <div class="clearfix" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+
+                    <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <br>
+            <div ng-show="error">
+                <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+            </div>
+        </div>
+        <div ng-hide="datasetEntity.attributes.schema.reference==='true'">
+            <div ng-include="'app/resourceMan/SchemaForm.html'" ng-controller="SchemaFieldsController2"></div>
+        </div>
+    </div>
+
+    <div  ng-show="page==='preview'" style="max-height: 600px;max-width: 800px; overflow: auto;">
+        <table st-table="rowCollection" st-pipe="fetchPage" class="table" >
+            <thead>
+                <tr>
+                    <th st-sort="{{rh}}" st-skip-natural="true" ng-repeat="rh in rowHeaders track by $index">{{rh}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in rowCollection">
+                    <td ng-repeat="rh in rowHeaders track by $index" >
+                        <span >{{row[$index]}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

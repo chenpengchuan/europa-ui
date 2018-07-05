@@ -1,0 +1,97 @@
+<div class="panel panel-default" ng-controller="EditProcessConfigController">
+  <div class="panel-heading">{{isNew ? "创建" : "更新"}}流程配置</div>
+  <div class="panel-body" style="width: 750px;">
+	  <form name="entityForm" novalidate>
+		<div  style="display: none;" >{{isNew ? entity.processConfigType = processConfigType  : entity.processConfigType = entity.processConfigType}}</div>
+	     <div class="form-group" ng-class="{ 'has-error': entityForm.processConfigType.$touched && entityForm.processConfigType.$invalid }" > 
+	      <label>流程配置类型</label>
+	        <input type="text" name="processConfigType" class="form-control" 
+	        ng-model="entity.processConfigType" 
+	        ng-minlength="2"
+	        ng-maxlength="32"
+	        readonly  
+	        required> 
+	        
+	      <div class="help-block" ng-messages="entityForm.processConfigType.$error" ng-if="entityForm.processConfigType.$touched">
+	        <p ng-message="required">类型</p>
+	      </div>
+	    </div>
+	    
+	    <div class="form-group" ng-class="{ 'has-error': entityForm.name.$touched && entityForm.name.$invalid }">
+	      <label>name</label>
+	      <input type="text" name="name" class="form-control" 
+	        ng-model="entity.name"
+	        ng-minlength="2"
+	        ng-maxlength="32"
+	        required>
+	        
+	      <div class="help-block" ng-messages="entityForm.name.$error" ng-if="entityForm.name.$touched">
+	        <p ng-message="minlength">名称太短.</p>
+	        <p ng-message="maxlength">名称太长.</p>
+	        <p ng-message="required">名称必填</p>
+	      </div>
+	    </div>
+
+	    <div class="form-group" ng-class="{ 'has-error': entityForm.className.$touched && entityForm.className.$invalid }">
+	      <label>完整类名</label>
+	      <input type="text" name="className" class="form-control"  
+	       	 	 ng-model="entity.className"
+	       	 	 ng-minlength="1"
+	        	 required>
+	        
+	      <div class="help-block" ng-messages="entityForm.className.$error" ng-if="entityForm.className.$touched">
+	        <p ng-message="required">完整类名必填</p>
+	      </div>
+	    </div>
+	    <!-- <div class="form-group" ng-class="{ 'has-error': entityForm.jarpath.$touched && entityForm.jarpath.$invalid }" >
+	      <label>包路径</label>
+	      <input type="text" name="jarpath" class="form-control"  
+	       	 	 ng-model="entity.jarpath"
+	       	 	 ng-minlength="1"
+	        	 required>
+	        
+	      <div class="help-block" ng-messages="entityForm.jarpath.$error" ng-if="entityForm.jarpath.$touched">
+	        <p ng-message="required">包路径必备</p>
+	      </div>
+	    </div> -->
+	    <div  ng-if="entity.processConfigType =='workflow selector' || 
+	    			 processConfigType =='workflow selector' || 
+	    			 entity.processConfigType =='dataflow selector' ||
+	     			 processConfigType =='dataflow selector' ||
+	     			 entity.processConfigType =='dataflow udf' ||
+	     			 processConfigType =='dataflow udf' 
+	     			 " > 
+	     			  
+	    <div class="form-group" ng-class="{ 'has-error': entityForm.parameterlist.$touched && entityForm.parameterlist.$invalid }">
+	      <label>参数个数</label>
+	      <select class="form-control" name="parameterlist" ng-model="entity.parameterlist" required>
+			<option ng-repeat="p in parameterlists" ng-value="'{{p.value}}'">{{p.label}}</option>
+		  </select>   
+		  
+	      <div class="help-block" ng-messages="entityForm.parameterlist.$error" ng-if="entityForm.parameterlist.$touched">
+	        <p ng-message="required">参数个数必填</p>
+	      </div>
+	    </div>
+	    
+	    <div class="form-group" ng-class="{ 'has-error': entityForm.returnType.$touched && entityForm.returnType.$invalid }" >
+	      <label>返回类型</label>
+	      <select class="form-control" name="returnType" ng-model="entity.returnType" required>
+			<option ng-repeat="r in returnTypes" ng-value="'{{r.value}}'">{{r.label}}</option>
+		  </select> 
+	      <div class="help-block" ng-messages="entityForm.returnType.$error" ng-if="entityForm.returnType.$touched">
+	        <p ng-message="required">返回类型必填</p>
+	      </div>
+	    </div>
+	    </div>
+	    <div class="form-group">
+	      <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="!entityForm.$valid">保存</button>
+	      <button type="button" class="btn btn-warning" ng-click="cancel()">取消</button>
+	    </div>
+
+		<div ng-show="error">
+			<uib-alert type="danger">保存失败:{{error.err}}</uib-alert>
+		</div>
+
+	  </form>
+  </div>
+</div>

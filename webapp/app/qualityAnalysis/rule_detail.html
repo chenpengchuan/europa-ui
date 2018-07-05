@@ -1,0 +1,135 @@
+<div class="panel panel-default" ng-controller="EditDqRuleController">
+	<div class="panel-heading">
+		{{isNew ? "创建" : "查看"}}分析规则
+		<button ng-if="!isNew" class="btn {{disableEdit ? 'btn-warning' : 'btn-info'}} mdi {{ disableEdit ? 'mdi-lock' : 'mdi-lock-open'}}" type="button" ng-click="switchLock()">{{disableEdit ? '解锁' : '锁定'}}</button>
+	</div>
+	<div class="panel-body">
+		<div class="row top-buffer">
+			<div class="col-md-4">
+				<form name="entityForm" novalidate>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.id.$touched && entityForm.id.$invalid }">
+						<label>ID</label> <input type="text" name="id" class="form-control" ng-readonly="!isNew" ng-model="entity.id" required>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.name.$touched && entityForm.name.$invalid }">
+						<label>名称</label> 
+						<input type="text" name="name" class="form-control warning_placeholder" ng-readonly="disableEdit" placeholder="名称 (必填)"
+							   ng-model="entity.name" ng-minlength="1" ng-maxlength="255" required>
+
+						<div class="help-block" ng-messages="entityForm.name.$error" ng-if="entityForm.name.$touched">
+							<p ng-message="minlength">名称太短.</p>
+							<p ng-message="maxlength">名称太长.</p>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.buildTypeSelect.$touched && entityForm.buildTypeSelect.$invalid }">
+					<label>类型</label> <input type="text" class="form-control" name="buildTypeSelect" id="buildTypeSelect"
+											 ng-model="entity.buildType" ng-disabled="disableEdit" readonly="true">
+					</div>
+
+					<div class="form-group" ng-show="entity.buildType!=='Builtin'" ng-class="{ 'has-error': entityForm.customTypeSelect.$touched && entityForm.customTypeSelect.$invalid }">
+						<label>自定义类型</label> <select class="form-control" name="customTypeSelect" id="customTypeSelect" ng-model="entity.customType" ng-disabled="disableEdit">
+						<option ng-repeat="s in supportedCustomTypes" ng-selected="s===entity.customType" ng-value="'{{s}}'">{{s}}</option>
+					</select>
+					</div>
+
+					<div class="form-group" ng-show="entity.buildType=='Custom' || entity.customType=='EL' || entity.customType=='SQL'" ng-class="{ 'has-error': entityForm.customValue.$touched && entityForm.customValue.$invalid }">
+						<label>自定义数据/表达式</label>
+						<input type="text" name="customValue" class="form-control warning_placeholder" ng-readonly="disableEdit" placeholder="自定义数据／表达式"
+							   ng-model="entity.customValue" ng-minlength="1" ng-maxlength="255">
+					</div>
+
+					<div ng-show="entity.customType=='Extend'" class="form-group" ng-class="{ 'has-error': entityForm.ruleClass.$touched && entityForm.ruleClass.$invalid }">
+						<label>基类</label>
+
+						<p class="input-group">
+							<input type="text" name="ruleClass"
+								   placeholder="基类(必填)" ng-readonly="disableEdit" class="form-control warning_placeholder" ng-model="entity.ruleClass"
+                                   required2="entity.customType=='Extend'">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-disabled="disableEdit"
+										on-select-changed="onSelectChanged(selectedRow)"
+										pop-input="europa/rule" pop-keyword="id"
+										pop-filter="enabled=1"
+										selection-id="entity.ruleClass"
+										ng-model="entity.ruleClass"  step-popup>
+									<i class="glyphicon glyphicon-search"></i>
+								</button>
+							</span>
+						</p>
+					</div>
+
+					<div class="form-group" ng-if="entity.buildType=='Builtin'" ng-class="{ 'has-error': entityForm.aggTypeSelect.$touched && entityForm.aggTypeSelect.$invalid }">
+						<label>聚合类型</label>
+						<select class="form-control" name="aggTypeSelect" id="aggTypeSelect" ng-model="entity.aggType" ng-readonly="entity.buildType==='Builtin'" ng-disabled="disableEdit||entity.buildType==='Builtin'">
+							<option ng-repeat="s in supportedAggTypes" ng-selected="entity.aggType===s" ng-value="'{{s}}'">{{s}}</option>
+						</select>
+					</div>
+
+					<!--<div class="form-group" ng-class="{ 'has-error': entityForm.dataCagtegory.$touched && entityForm.dataCagtegory.$invalid }">-->
+						<!--<label>业务类型</label>-->
+						<!--<input type="text" name="dataCagtegory" id="dataCagtegory" class="form-control" ng-readonly="true" ng-model="entity.ruleOption.dataCategory">-->
+					<!--</div>-->
+
+					<div class="form-group" ng-if="entity.buildType=='Builtin'" ng-class="{ 'has-error': entityForm.dataScope.$touched && entityForm.dataScope.$invalid }">
+						<label>输入范围</label>
+						<select class="form-control" name="dataScope" id="dataScope" ng-model="entity.dataScope" readonly="entity.buildType==='Builtin'" ng-disabled="disableEdit||entity.buildType==='Builtin'">
+							<option ng-repeat="s in supportedInputDataScope" ng-selected="entity.dataScope===s" ng-value="'{{s}}'">{{s}}</option>
+						</select>
+					</div>
+
+					<div class="form-group" ng-if=" entity.dataScope=='Field' || entity.dataScope=='FieldsCombination'" ng-class="{ 'has-error': entityForm.fieldValueType.$touched && entityForm.fieldValueType.$invalid }">
+						<label>输入字段类型</label>
+						<select class="form-control" name="fieldValueType" id="fieldValueType" ng-model="entity.fieldValueType" ng-readonly="entity.buildType==='Builtin'" ng-disabled="disableEdit||entity.buildType==='Builtin'">
+						<option ng-repeat="s in supportedInputValueType" ng-selected="entity.fieldValueType===s" ng-value="'{{s}}'">{{s}}</option>
+						</select>
+					</div>
+
+					<div ng-repeat="f in inputParamDesc" class="form-group" ng-class="{ 'has-error': entityForm['format_'+f.id].$touched && entityForm['format_'+f.id].$invalid }">
+						<label>{{f.displayStr || f.name}}</label>
+						<select ng-show="f.options" class="form-control" name="{{'format_'+f.id}}" ng-model="inputParams[f.id]" ng-disabled="disableEdit">
+							<option ng-repeat="op in f.options" ng-selected="op===inputParams[f.id]" ng-value="'{{op}}'">{{op}}</option>
+						</select>
+						<input ng-if="!f.options"  type="f.angularType" name="{{'format_'+f.id}}" class="form-control"
+							   ng-class="{'warning_placeholder':f.required}"
+							   placeholder="{{f.name}}{{f.required? ' (必填)':''}}"
+							   readonly="false" ng-model="inputParams[f.id]" ng-required="f.required===true? true:false"
+							   ng-trim="false">
+					</div>
+
+					<!--<div class="form-group" ng-class="{ 'has-error': entityForm.dataid.$touched && entityForm.dataid.$invalid }">-->
+						<!--<label>Data ID</label>-->
+
+						<!--<p class="input-group">-->
+							<!--<input type="text" name="dataid"-->
+								   <!--placeholder="数据选择 (必填)" readonly="disableEdit" class="form-control warning_placeholder" ng-model="entity.processDataId"-->
+								   <!--readonly required>-->
+							<!--<span class="input-group-btn">-->
+								<!--<button type="button" class="btn btn-default" ng-disabled="disableEdit"-->
+										<!--on-select-changed="onSelectChanged(selectedRow)"-->
+										<!--ng-model="entity.schemaName"  step-popup>-->
+									<!--<i class="glyphicon glyphicon-search"></i>-->
+								<!--</button>-->
+							<!--</span>-->
+						<!--</p>-->
+					<!--</div>-->
+
+					<div class="form-group" ng-class="{ 'has-error': false }">
+						<label>描述</label>
+						<input type="text" name="description" class="form-control warning_placeholder" ng-readonly="entity.buildType!=='Custom'"
+							   ng-model="entity.description" ng-disabled="disableEdit">
+					</div>
+
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="!entityForm.$valid ||!entityForm.$dirty || saving || disableEdit">{{saving ? "保存中..." : "保存"}}</button>
+						<button ng-show="!saving" type="button" class="btn btn-warning" ng-click="cancel()">取消</button>
+					</div>
+					<div ng-show="error">
+						<uib-alert type="danger">保存失败:{{error.err}}</uib-alert>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

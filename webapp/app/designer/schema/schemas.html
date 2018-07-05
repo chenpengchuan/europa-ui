@@ -1,0 +1,96 @@
+<div id="DashBoard-overview" class="container-fluid" >
+	<div class="col-fluid">
+	  <uib-tabset active="1">
+		  <uib-tab index="0" select="auxo.go('/monitorMain/data')" >
+			  <uib-tab-heading>
+				  <i class="glyphicon glyphicon-list text-info"></i><span class="left-margin-5">Dataset</span>
+			  </uib-tab-heading>
+		  </uib-tab>
+		  <uib-tab index="1">
+	      <uib-tab-heading>
+	        <i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">Schema</span>
+	      </uib-tab-heading>
+  		<div class="panel panel-default" style="margin-top: -1px;" ng-controller="SchemaController">
+		    <div class="panel-heading">
+				<div class="row top-buffer">
+				  <div class="col-md-3">
+				    <div class="input-group">
+				      <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+				      <span class="input-group-btn">
+				        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				      </span>
+				    </div>
+				  </div>
+				  <div class="col-md-3">
+				    <div class="input-group">
+				      <span class="input-group-btn">
+				        <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+				      </span>
+				      <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"  
+				      		 options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+				      		 ng-keydown="keydown($event)"  readonly="readonly" /> 
+				    </div>
+				  </div>
+
+				  <div class="col-md-3">
+					  <!--
+				    <a class="btn btn-primary" type="button" ui-sref="schema_new({id:row.id,action:'edit',currPage:currentPageNumber})" >创建</a>
+				    <a class="btn btn-primary" type="button" ui-sref="schema_editOrCopy({id:selectedRows[0].id,action:'copy'})" ng-disabled="selectedRows.length == 0">复制</a>
+				    <button class="btn btn-danger" type="button" ng-click="remove()" ng-disabled="selectedRows.length == 0">删除</button>
+				    -->
+				  </div>
+					<div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+					</div>
+				</div><!-- /1.row -->
+				<div class="row top-buffer">
+				  <div class="col-md-3">
+				    <div class="input-group">
+					  <select class="form-control" ng-model="tagSelected" ng-change="onTagSelected()" style="color:{{tags[tagSelected].color}};">
+					     <option ng-repeat="tag in tags" ng-value="'{{tag.id}}'" style="color:{{tag.color}};">{{tag.name}}</option>
+					  </select>
+				      <span class="input-group-btn">
+				        <button class="btn btn-primary" type="button" ng-click="addTags()" ng-disabled="selectedRows.length == 0">
+				        	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				        </button>
+				        <button class="btn btn-danger" type="button" ng-click="removeTags()" ng-disabled="selectedRows.length == 0">
+				        	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+				        </button>
+				      </span>				      
+				    </div>
+				  </div>
+				  <div class="col-md-9">
+				  	<div class="checkbox">
+					   <label ng-repeat="tf in tagfacets" style="margin-right: 25px;"><input type="checkbox" ng-value="'{{tf.name}}'" ng-change="doTagFilter()" ng-model="tagfilters[tf.name]">
+					      <span class="label" style="color:#fff;background-color:{{tf.color}};">{{tf.name}}({{tf.count}})</span></label>
+					</div>
+				  </div>
+				</div><!-- 2.row -->
+		    </div>
+			<div class="panel-body">
+		      <table st-table="rowCollection" st-pipe="fetchPage" class="table">
+					<thead>
+					<tr>
+						<th><st-select-all all="rowCollection"></st-select-all></th>
+						<th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="row in rowCollection">
+						<td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+						<td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+							<span ng-if="rh.name != 'name'">{{rh.converter(col)}}</span>
+							<a ng-if="rh.name == 'name'" ng-click="go_schema_editOrCopy(row.id,'edit')" style="cursor:pointer;">{{rh.converter(col)}}</a>
+							<!--<a ng-if="rh.name == 'name'" ui-sref="schema_editOrCopy({id:row.id,action:'edit',currPage:currentPageNumber})">{{rh.converter(col)}}</a>-->
+							<!-- <tags ng-show="rh == rowHeaders[0]" options="{addable: false}" model="row.tags" src="s as s.name for s in tags"></tags> -->
+							<span ng-if="rh == rowHeaders[0]" ng-repeat="t in row.tags" class="label" style="color:#fff;background-color: {{tagsColorMap[t]}};">{{t}}</span>
+						</td>
+					</tr>
+					</tbody>
+				</table>				
+			</div>
+		</div>
+	    </uib-tab>
+
+	  </uib-tabset>
+	</div>
+</div>

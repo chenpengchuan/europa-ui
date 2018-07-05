@@ -1,0 +1,138 @@
+<div class="panel panel-default" >
+	<div class="panel-heading">查看执行信息</div>
+	<div class="panel-body" class="row">
+		<div ng-show="activeTab=='detail'" style="min-height: 470px;" >
+			<table>
+				<tr ng-repeat="h in headers">
+					<th style="min-width: 150px; padding-top: 10px;">{{h.disName}}</th>
+					<td ng-if="h.name!='status'" style="min-width: 400px;"><span>{{h.converter(entity[h.name])}}</span></td>
+					<td ng-if="h.name=='status'" style="width: 250px;"><uib-progressbar
+							class="progress-striped {{entity.status['type'] == 'RUNNING' ? 'active':''}}"
+							max="entity.status.estimateTotal" value="entity.status.processed"
+							type="{{entity.status | status2color}}"
+							style="margin-bottom: 0px;">
+						<i>{{h.converter(entity.status)}}</i></uib-progressbar></td>
+				</tr>
+			</table>
+		</div>
+		<div ng-show="activeTab=='outputs'" style="min-height: 470px;">
+			<div class="panel panel-default" style="margin-top: -1px;" ng-controller="processExecutionOutputController">
+				<div class="panel-heading">
+					<div class="row top-buffer">
+						<div class="col-md-3">
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+								<span class="input-group-btn">
+				        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)" uib-tooltip="支持 and ,or 关系,例如field1=cdo | field2=0721 或者  field1=cdoname & field2=0721" tooltip-placement="top-right"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				      </span>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="input-group">
+				      <span class="input-group-btn">
+				        <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+				      </span>
+								<input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"
+									   options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+									   ng-keydown="keydown($event)"  readonly="readonly" />
+							</div>
+						</div>
+						<div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+						</div>
+
+					</div>
+					<!-- /1.row -->
+					<div class="row top-buffer">
+						<div class="col-md-3">
+							<div class="input-group">
+								<span class="input-group-addon">
+									<span>StepPath</span>
+								</span>
+
+								<select  class="form-control" id="step_path_select"  ng-model="stepPathFilter" ng-change="onStepPathChange()">
+									<option ng-repeat="o in stepPathArray" ng-value="'{{o.value}}'">{{o.name}}</option>
+								</select>
+							</div>
+						</div>
+					</div><!-- /2.row -->
+				</div>
+				<div class="panel-body">
+					<table st-table="rowCollection" st-pipe="fetchPage" class="table">
+						<thead>
+						<tr>
+							<th><st-select-all all="rowCollection"></st-select-all></th>
+							<th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="row in rowCollection">
+							<td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+							<td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+								<span ng-if="rh.name != 'name' && rh.name != 'flowId' && !(rh.name=='schema'&&row.dataset&&row.dataset.schemaName==row.schema)">{{rh.converter(col)}}</span>
+								<a ng-if="rh.name == 'name'" href="#data/{{row.dataset.id}}">{{rh.converter(col)}}</a>
+								<a ng-if="rh.name == 'flowId'" href="#/design/process/{{row.flowId}}/design/edit/dataflow" target="_blank">{{rh.converter(col)}}</a>
+								<a ng-if="rh.name=='schema'&&row.dataset&&row.dataset.schemaName==row.schema" href="#/designer/schema/{{row.dataset.schema}}/edit">{{rh.converter(col)}}</a>
+
+								<!-- <tags ng-show="rh == rowHeaders[0]" options="{addable: false}" model="row.tags" src="s as s.name for s in tags"></tags> -->
+								<span ng-if="rh == rowHeaders[0]" ng-repeat="t in row.tags" class="label" style="color:#fff;background-color: {{tagsColorMap[t]}};">{{t}}</span>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</div>
+		<div ng-show="activeTab=='log'" style="min-height: 470px;">
+			<!-- 		   <pre>{{entity.status.others | fromJson | json}}</pre> -->
+			<div class="row">
+				<div class="col-md-3">
+					<div class="panel panel-default">
+						<div class="panel-body" style="min-height: 437px; overflow: auto">
+							<div class="col-md-12">
+								<div class="input-group">
+									<input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && logInfo.doQuery(queryWord)">
+									<span class="input-group-btn">
+										<button class="btn btn-primary" type="button" ng-click="logInfo.doQuery(queryWord)">
+											<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+										</button>
+									</span>
+									<button class="btn btn-primary" style="float: right; width: 55px; margin-left: 3px;" ng-click="logInfo.download()">下载</button>
+								</div>
+								<div style="margin-top: 10px;">
+									<dl>
+										<dt class="logTitle" ng-repeat="log in logs  track by $index" ng-click="logInfo.changeLogContent(log.showName, $event)" style="cursor: pointer">{{log.showName}}</dt>
+									</dl>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-9">
+					<div class="panel panel-default">
+						<div class="panel-heading">{{logTitle}}--<a href={{logInfo.loghosturl}} target="_blank">查看完整日志</a></div>
+						<div class="panel-body" style="min-height: 395px; max-height:500px; overflow: auto;" id="ececutionDetailLogShow">
+							<dl>
+								<dt ng-repeat="content in logInfo.logContent track by $index" style="font-weight: normal;">{{content}}</dt>
+							</dl>
+							<dl ng-show="logInfo.logShowStatus=='waitting'">
+								<dt style="background: url(app/resources/img/waitting.gif); width: 32px; height: 32px;"></dt>
+							</dl>
+							<div>
+								<h3>{{logInfo.errorMessage}}</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<uib-tabset class="tabs-below" class="col-md-2" active="activeTabIndex">
+		<uib-tab heading="详细信息"  select=""  ng-click="showTab('detail')" index="0"></uib-tab>
+		<uib-tab heading="Outputs"  select="" ng-click="showTab('outputs')" index="1"></uib-tab>
+		<uib-tab heading="日志信息" select=""      ng-click="showTab('log')" index="2"></uib-tab>
+	</uib-tabset>
+</div>
+</div>
+<div class="form-group">
+	<button type="button" class="btn btn-warning" ng-click="cancel()">返回</button>
+</div>

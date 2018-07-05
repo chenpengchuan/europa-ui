@@ -1,0 +1,92 @@
+
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row top-buffer">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+                    <span class="input-group-btn">
+				        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				      </span>
+                </div>
+            </div>
+            <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+            </div>
+        </div><!-- /1.row -->
+        <!--<div class="row top-buffer">-->
+            <!--<div class="col-md-12">-->
+                <!--<div class="checkbox">-->
+                    <!--<label ng-repeat="tf in tagfacets" style="margin-right: 25px;"><input type="checkbox" ng-value="'{{tf.name}}'" ng-change="doTagFilter()" ng-model="tagfilters[tf.name]">-->
+                        <!--<span style="color:#fff;background-color:{{tf.color}};">{{tf.name}}({{tf.count}})</span></label>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>&lt;!&ndash; 2.row &ndash;&gt;-->
+    </div>
+    <div class="panel-body" ng-if="auxo.isIE()" ng-style="{'height':'{{windowHeight-350}}px', 'overflow-y': 'auto'} ">
+        <table st-table="rowCollection" st-pipe="fetchPage" class="table" >
+            <thead>
+            <tr>
+                <th></th>
+                <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders|filter:{visible:true}" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in rowCollection">
+                <td cs-select="row" rows="rowCollection" mode="'single'" selected-rows="selectedRows"></td>
+                <td ng-repeat="rh in rowHeaders | filter: {visible:true}" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+                    <span ng-if="rh.name != 'status'&& rh.name != 'name'">{{rh.converter(col)}}</span>
+                    <a ng-if="rh.name == 'name' && isFlow()" href="#/designer/dataflow/{{row.id}}/edit/dataflow" target="_blank">{{rh.converter(col)}}</a>
+                    <a ng-if="rh.name == 'name' && isDataset()" href="#/data/{{row.id}}" target="_blank">{{rh.converter(col)}}</a>
+                    <a ng-if="rh.name == 'name' && isSchema()" href="#/designer/schema/{{row.id}}/edit" target="_blank">{{rh.converter(col)}}</a>
+                    <a ng-if="rh.name == 'name' && isProcessConfig()" href="#/processconfig/{{row.id}}" target="_blank">{{rh.converter(col)}}</a>
+                    <span ng-if="rh.name == 'name' && isModel()"  target="_blank"><font color="#2e4e7e" size="2px">{{rh.converter(col)}}</font></span>
+
+                    <!-- <tags ng-show="rh == rowHeaders[0]" options="{addable: false}" model="row.tags" src="s as s.name for s in tags"></tags> -->
+                    <uib-progressbar ng-if="rh.name == 'status'" class="progress-striped {{col.stype == 'RUNNING' ? 'active':''}}" max="col.estimateTotal" value="col.processed" type="{{statusColor(col)}}" style="margin-bottom: 0px;"><i>{{rh.converter(col)}}</i></uib-progressbar>
+                    <span ng-if="rh == rowHeaders[0]" ng-repeat="t in row.tags" style="color:#fff;background-color: {{tagsColorMap[t]}};">{{t}}</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-body" ng-if="!auxo.isIE()" ng-style="{'max-height':'{{windowHeight-350}}px', 'overflow-y': 'auto'} ">
+        <table st-table="rowCollection" st-pipe="fetchPage" class="table" >
+            <thead>
+            <tr>
+                <th></th>
+                <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders|filter:{visible:true}" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in rowCollection">
+                <td cs-select="row" rows="rowCollection" mode="'single'" selected-rows="selectedRows"></td>
+                <td ng-repeat="rh in rowHeaders | filter: {visible:true}" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+                    <span ng-if="rh.name != 'status'&& rh.name != 'name'">{{rh.converter(col)}}</span>
+                    <a ng-if="rh.name == 'name' && isFlow()" href="#/designer/dataflow/{{row.id}}/edit/dataflow" target="_blank">{{rh.converter(col)}}</a>
+                    <a ng-if="rh.name == 'name' && isDataset()" href="#/data/{{row.id}}" target="_blank">{{rh.converter(col)}}</a>
+                    <a ng-if="rh.name == 'name' && isSchema()" href="#/designer/schema/{{row.id}}/edit" target="_blank">{{rh.converter(col)}}</a>
+                    <a ng-if="rh.name == 'name' && isProcessConfig()" href="#/processconfig/{{row.id}}" target="_blank">{{rh.converter(col)}}</a>
+                    <span ng-if="rh.name == 'name' && isModel()"  target="_blank"><font color="#2e4e7e" size="2px">{{rh.converter(col)}}</font></span>
+
+                    <!-- <tags ng-show="rh == rowHeaders[0]" options="{addable: false}" model="row.tags" src="s as s.name for s in tags"></tags> -->
+                    <uib-progressbar ng-if="rh.name == 'status'" class="progress-striped {{col.stype == 'RUNNING' ? 'active':''}}" max="col.estimateTotal" value="col.processed" type="{{statusColor(col)}}" style="margin-bottom: 0px;"><i>{{rh.converter(col)}}</i></uib-progressbar>
+                    <span ng-if="rh == rowHeaders[0]" ng-repeat="t in row.tags" style="color:#fff;background-color: {{tagsColorMap[t]}};">{{t}}</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer " ng-if="multiple" style="background-color: white;" disable-input>
+        <tags-input min-length="1" ng-model="selections" display-property="text" placeholder="+"  replace-spaces-with-dashes="false" >
+            <auto-complete source="loadTags()"
+                           min-length="0"
+                           load-on-focus="false"
+                           load-on-empty="true"
+                           max-results-to-show="100"
+                           abc_template="my-custom-template"></auto-complete>
+        </tags-input>
+    </div>
+</div>
+

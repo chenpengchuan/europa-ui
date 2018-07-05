@@ -1,0 +1,56 @@
+<div id="DashBoard-overview" class="container-fluid" >
+    <div class="col-fluid">
+        <uib-tabset active="0">
+            <uib-tab index="0">
+                <uib-tab-heading>
+                    <i class="glyphicon glyphicon-list text-info"></i><span class="left-margin-5">模板－规则列表</span>
+                </uib-tab-heading>
+                <div class="panel panel-default" style="margin-top: -1px; overflow: auto;" ng-controller="DqModelRulesController">
+                    <div class="panel-heading" style="overflow: auto;">
+                        <div class="row top-buffer" style="overflow: auto;">
+
+                            <div class="col-md-6">
+                                <a class="btn btn-primary" type="button" ui-sref="zmodrules_id({zmodId:zmodId, id:'new'})" _href="{{auxo.meta.zmodrules.currUrl}}/new">增加</a>
+                                <button class="btn btn-primary" type="button" ng-click="enabledList()"  ng-disabled="selectedRows.length == 0">启用</button>
+                                <button class="btn btn-primary" type="button" ng-click="disabledList()" ng-disabled="selectedRows.length == 0">停止</button>
+                                <button class="btn btn-danger" type="button" ng-click="remove()" ng-disabled="selectedRows.length == 0">删除</button>
+                                <button class="btn btn-danger" type="button" ng-click="runThisModel('once')" ng-disabled="rowCollection.length == 0">运行</button>
+                                <button class="btn btn-danger" type="button" ng-click="runThisModel('cron')" ng-disabled="rowCollection.length == 0">计划运行</button>
+                                <a class="btn btn-primary" type="button" ui-sref="zmod_id({id:zmodId})">查看模板</a>
+                                <button class="btn btn-primary" type="button" ng-click="auxo.go('/qualityAnalysis/zmod')">返回分析模版</button>
+                            </div>
+                            <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-body" style="overflow: auto;">
+                        <table st-table="rowCollection" st-pipe="fetchPage" class="table" style="overflow: auto;">
+                            <thead>
+                            <tr>
+                                <th><st-select-all all="rowCollection"></st-select-all></th>
+                                <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" style="min-width:25px; max-width:500px; overflow-x:hidden"
+                                    ng-if="auxo.isColumnVisible(rh.name, rh)">{{rh.disName}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="row in rowCollection" style="max-height:300px; min-height:40px; overflow:auto; overflow-y:hidden">
+                                <td cs-select="row" rows="rowCollection" selected-rows="selectedRows" style="max-height:300px; min-height:40px; overflow:hidden"></td>
+                                <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name, rh)" style="min-width:50px; max-width:500px;max-height:300px;min-height:40px; overflow:auto">
+                                    <span ng-if="rh == rowHeaders[0] && row.enabled==0" class="glyphicon glyphicon glyphicon-ban-circle" uib-tooltip-html="'已禁用'"></span>
+                                    <span ng-if="['name'].indexOf(rh.name)<0  && row.enabled!==0" style="color:#000; min-width:30px; max-width:500px;max-height:300px;min-height:40px; overflow:hidden; text-overflow: ellipsis; word-wrap: break-word ">{{rh.converter(col)}}</span>
+                                    <span ng-if="['name'].indexOf(rh.name)<0  && row.enabled==0"  style="color:#888; min-width:30px; max-width:500px;max-height:300px;min-height:40px; overflow:hidden; text-overflow: ellipsis; word-wrap: break-word">{{rh.converter(col)}}</span>
+                                    <a ng-if="rh.name == 'name'" href="#/qualityAnalysis/zmodrules/{{zmodId}}/{{row.id}}">{{rh.converter(col)}}</a>
+                                    <!-- <tags ng-show="rh == rowHeaders[0]" options="{addable: false}" model="row.tags" src="s as s.name for s in tags"></tags> -->
+                                    <span ng-if="rh == rowHeaders[0]" ng-repeat="t in row.tags" class="label" style="color:#fff;background-color: {{tagsColorMap[t]}};">{{t}}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+<div class='modal-dialog' window-size-getter>
+	<div class='modal-content' >
+		<div class='modal-header noselect'>
+			<button data-ng-init="closeModal=cancel?cancel:closeModall" type='button' class='close' ng-click='#closeModal#' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+			<h4 class='modal-title' >#modalTitle#</h4>
+		</div>
+		<div class='modal-body modal-body-extra'>
+			<div ng-style="{'max-height': '{{windowHeight-190}}px', 'min-height': '50px', 'width':'100%', 'overflow':'hidden'}  ">
+				#modalBody#
+			</div>
+		</div>
+		<div class="clear"></div>
+		<div class="" >
+			<div class="alert-danger" style="max-height:40px;overflow: auto;padding: 0 15px;">
+				<span style=" color: red;"  ng-if="dialogMessage&&dialogMessage.error"><strong>错误: {{dialogMessage.error}}</strong></span>
+				<span style="padding-left: 15px; color: orangered;"  ng-if="dialogMessage&&dialogMessage.warning"><strong>警告: {{dialogMessage.warning}}</strong></span>
+			</div>
+		</div>
+		<div class='modal-footer' style="position: relative" ng-hide="!dlgStatus &&(!modalButtons||modalButtons.length===0)">
+			<span class="glyphicon " ng-class="dlgStatus.getIcon()" ng-show="dlgStatus" style="position: absolute;left: 15px; top:28px; "><strong style="padding-left: 5px;">{{dlgStatus.text}}</strong></span>
+			<button ng-repeat='button in modalButtons' type='button'
+					class='btn {{button.class}}'
+					ng-click='button.action()' ng-disabled="button.disabled()" data-ng-hide="button.hide()">{{button.text}}</button>
+		</div>
+	</div>
+</div>

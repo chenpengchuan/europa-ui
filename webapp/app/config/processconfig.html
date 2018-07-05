@@ -1,0 +1,78 @@
+<div id="DashBoard-overview" class="container-fluid" >
+	<div class="col-fluid" >
+	  <uib-tabset active="1"> <!-- 这个显示那个tap就需要对应下面那个 index 的值-->
+	    <!--<uib-tab index="0" select="auxo.go('/tag')">-->
+	      <!--<uib-tab-heading>-->
+	        <!--<i class="glyphicon glyphicon-tags text-info"></i><span class="left-margin-5">标签</span>-->
+	      <!--</uib-tab-heading>-->
+	    <!--</uib-tab>-->
+	    <!---->
+	     <uib-tab index="1">
+	      <uib-tab-heading>
+	        <i class="glyphicon glyphicon-cog text-info"></i><span class="left-margin-5">自定义函数</span>
+	      </uib-tab-heading>
+	      <div class="panel panel-default" style="margin-top: -1px;" ng-controller="ProcessConfigController">
+		    <div class="panel-heading">
+				<div class="row top-buffer">
+				  <div class="col-md-3">
+				    <div class="input-group">
+				      <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+				      <span class="input-group-btn">
+				        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				      </span>
+				    </div>
+				  </div>
+				  
+				  <div class="col-md-3">
+				    <div class="input-group">
+				      <span class="input-group-btn">
+				        <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+				      </span>
+				      <input id="dateRange" placeholder="请选择时间范围" date-range-picker  class="form-control" type="text" ng-model="dateRange"  apple-text="查询"  
+				         	 options="{eventHandlers: { 'apply.daterangepicker': onDateRangeApply  }} "   
+				            ng-keydown="keydown($event)" readonly="readonly"/>  
+				    </div>
+				  </div>
+				  		
+				  <div class="col-md-3">
+				    <a class="btn btn-primary" type="button"  data-toggle="dropdown" >创建 <span class="caret"></span></a>
+				    <ul class="dropdown-menu">
+							  <li><a  ui-sref="processconfig_type({id:'new',processConfigType:'dataflow interceptor'})" >dataflow interceptor</a></li>
+							  <li><a  ui-sref="processconfig_type({id:'new',processConfigType:'workflow interceptor'})" >workflow interceptor</a></li>
+							  <li><a  ui-sref="processconfig_type({id:'new',processConfigType:'workflow selector'})" >workflow selector</a></li>
+							  <li><a  ui-sref="processconfig_type({id:'new',processConfigType:'dataflow selector'})" >dataflow selector</a></li>
+							  <li><a  ui-sref="processconfig_type({id:'new',processConfigType:'dataflow udf'})" >dataflow udf</a></li>
+							  <li><a  ui-sref="processconfig_type({id:'new',processConfigType:'filter class'})" >filter class</a></li>
+							  <!-- <li><a  ui-sref="processconfig_type({id:'new',processConfigType:'workflow udf'})" >workflow udf</a></li> -->
+				    </ul>
+				    <button class="btn btn-danger" type="button" ng-click="remove()" ng-disabled="selectedRows.length == 0">删除</button>
+				  </div>
+					<div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+					</div>
+				</div><!-- /1.row -->
+		    </div>
+			<div class="panel-body">
+		      <table st-table="rowCollection" st-pipe="fetchPage" class="table">
+					<thead>
+					<tr>
+						<th><st-select-all all="rowCollection"></st-select-all></th>
+						<th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="row in rowCollection">
+						<td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+						<td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+							<span ng-if="rh.name != 'name' ">{{rh.converter(col)}}	</span> <!-- && rh.name != 'color' -->
+							<a ng-if="rh.name == 'name'" href="#/processconfig/{{row.id}}">{{rh.converter(col)}}</a>
+							<!-- <span ng-if="rh.name == 'color'"  class="label" style="color:#fff;background-color: {{col}};">{{col}}</span> -->
+						</td>
+					</tr>
+					</tbody>
+				</table>				
+			</div>
+		</div>
+	    </uib-tab>   
+	  </uib-tabset>
+	</div>
+</div>

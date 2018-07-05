@@ -1,0 +1,114 @@
+<div id="DashBoard-overview" class="container-fluid" >
+    <div class="col-fluid">
+        <uib-tabset active="3">
+            <uib-tab index="0" select="auxo.go('/qualityAnalysis/zmod')" >
+                <uib-tab-heading>
+                    <i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">分析模板</span>
+                </uib-tab-heading>
+            </uib-tab>
+            <uib-tab index="1" select="auxo.go('/qualityAnalysis/zrule')" >
+                <uib-tab-heading>
+                    <i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">分析规则</span>
+                </uib-tab-heading>
+            </uib-tab>
+            <uib-tab index="2" select="auxo.go('/qualityAnalysis/zdaf/all')" >
+                <uib-tab-heading>
+                    <i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">任务执行信息</span>
+                </uib-tab-heading>
+            </uib-tab>
+            <uib-tab index="3">
+                <uib-tab-heading>
+                    <i class="glyphicon glyphicon-list text-info"></i><span class="left-margin-5">评估结果统计</span>
+                </uib-tab-heading>
+                <div class="panel panel-default" style="margin-top: -1px;" ng-controller="DqFlowStatsController">
+                    <div class="panel-heading">
+
+                        <!-- /1. stats Type -->
+                        <div class="row top-buffer">
+                            <div class="col-md-3">
+                                <div ng-include="'app/common/statisticalTypeFilter.html'"></div>
+                            </div>
+                            <div class="col-md-1" ng-style="{'align': 'center', 'text-align':'center'}">
+                                <label class="" ng-style="{'margin-top':'8px', 'font-size': '14px'}">统计项</label>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="checkbox" style="margin-left:0px;">
+                                        <label ng-repeat="tf in fieldsOption" style="margin-right: 25px;">
+                                            <div class="">
+                                                <input type="checkbox" ng-model="fieldsSelected[tf.id]" ng-click="onStatsFieldsSelected()">
+                                                <span class="label" style="color:#000">{{tf.name}}</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- 1. stats Type -->
+
+                        <!-- 2. condition Time Range -->
+                        <div class="row top-buffer">
+                            <div class="col-md-4">
+                                <div class="input-group">
+								  <span class="input-group-btn">
+									<button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+								  </span>
+                                    <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"
+                                           options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+                                           ng-keydown="keydown($event)"  readonly="readonly" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-warning" ng-click="reloadPage()">刷新</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <uib-tabset active="0">
+                            <uib-tab index="0" >
+                                <uib-tab-heading>
+                                    <i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">数据列表</span>
+                                </uib-tab-heading>
+                                <table st-table="rowCollection" st-pipe="fetchPage" class="table">
+                                    <thead>
+                                    <tr>
+                                        <th st-sort="ID" st-skip-natural="true">ID</th>
+                                        <th st-sort="{{rh.sortName}}" st-skip-natural="true" ng-repeat="rh in statCalcFields" ng-style="{'text-align': 'center'}">
+                                            <span>{{rh.name}}</span>
+                                        </th>
+                                        <!--<th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="row in rowCollection">
+                                        <td>
+                                            <span>{{row._$ROWID}}</span>
+                                        </td>
+                                        <td ng-repeat="rh in statCalcFields" ng-style="rh.func? rowStyles[rh.id] : ''">
+                                            <span ng-if="fieldsSelected[rh.id] && rh.func">{{row[statsType][rh.id][rh.func]}}</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </uib-tab>
+                            <uib-tab ng-if="statsType !== 'Total'" index="1" select="drawChart(valueTypeFilter)">
+                                <uib-tab-heading>
+                                    <i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">图形</span>
+                                </uib-tab-heading>
+                                <div class="row top-buffer" ng-class="">
+                                    <div class="col-md-3">
+                                        <div ng-include="'app/common/aggregationTypefilter.html'"></div>
+                                    </div>
+                                </div>
+                                <p/>
+                                <div class="col-md-12" style="border: solid 1px #d3d3d3;background-color: #f5f5f5;">
+                                    <!--&lt;!&ndash; 为ECharts准备一个具备大小（宽高）的Dom &ndash;&gt;-->
+                                    <div id="dataquality_id" ng-style="{width:'1100%', height:'380px'}"></div>
+                                </div>
+                            </uib-tab>
+                        </uib-tabset>
+                    </div>
+                </div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>选择用户</span>
+    </span>
+    <select  class="form-control" id="user_select"  ng-model="userFilter" ng-change="onUserChange(userFilter)">
+        <option ng-repeat="o in userArray" ng-value="'{{o.name}}'">{{o.name}}</option>
+    </select>
+</div>

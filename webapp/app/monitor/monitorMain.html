@@ -1,0 +1,41 @@
+<div id="DashBoard-overview" class="container-fluid" window-size-getter ng-style="{'width': '{{ windowWidth - 80 }}px'}">
+    <div class="col-fluid">
+
+        <div class="panel panel-default" style="margin-top: -1px;" ng-controller="MonitorSummaryController">
+            <div class="panel-heading">
+                <div class="row ">
+                    <div class="col-md-12">
+                        <i class="glyphicon glyphicon-list text-info"></i><span class="left-margin-5">监控管理</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body" style="min-height: 500px; ">
+                <div  ng-style="{'border': '1px lightgrey solid', 'padding': '5px 0 5px 0', 'position': 'relative','min-height': '{{windowHeight-160}}px'}">
+                    <div ui-layout="{flow : 'column'}">
+                        <div ui-layout-container size="200px" min-size="150px" max-size="400px" style="padding-top: 10px; border-right: 1px solid lightgray;">
+                            <div treecontrol class="tree-light"
+                                 tree-model="dataForTheTree"
+                                 options="treeOptions"
+                                 on-selection="onSelected(node)"
+                                 on-node-toggle="onNodeToggle(node,expanded)"
+                                 selected-node="selectedNode">
+
+                                <span ng-switch="" on="node.type">
+                                     <span ng-switch-when="dir" class="mdi mdi-folder" aria-hidden="true"></span>
+                                 </span>
+
+                                {{node.name}}
+                            </div>
+                        </div>
+                        <div ui-layout-container="central">
+                            <div ui-view></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

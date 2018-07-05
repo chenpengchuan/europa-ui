@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>连接状态</span>
+    </span>
+    <select  class="form-control" id="value_type_select"  ng-model="valueTypeFilter" ng-change="onValueTypeChange(valueTypeFilter)">
+        <option ng-repeat="o in valueArray" value="{{o.value}}">{{o.name}}</option>
+    </select>
+</div>

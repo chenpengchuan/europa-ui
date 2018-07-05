@@ -1,0 +1,565 @@
+<div class="panel panel-default" ng-controller="SharedInterfaceDetailController"  >
+    <div class="panel-body" ng-if="auxo.isIE()" ng-style="{'max-height': '{{windowHeight-200}}px', 'min-height': '360px','overflow': 'auto'}">
+        <wizard  template="app/sharedInterface/wizard.html"  indicators-position = "top" on-finish="finishedWizard()" on-cancel="cancelledWizard()" >
+
+            <wz-step wz-title="第一步" canexit="exitValidation">
+                <div class="row top-buffer">
+
+                    <div class="col-md-1"></div>
+                    <div class="form-group col-md-10"  style="padding-top: 8px;">
+                        <label >接口名称</label>
+                        <input  type="text"
+                                name="{{name}}"
+                                ng-model="data.name"
+                                placeholder="接口名称 (必填)"
+                                class="form-control warning_placeholder"
+                                ng-required="true"
+                        >
+                    </div>
+                </div>
+                <div class="row top-buffer" style="padding-top: -8px;">
+                    <div class="col-md-1"></div>
+                    <div class="form-group col-md-10"  >
+                        <label >接口描述</label>
+                        <textarea  class="form-control"
+                                   style="height: 200px; resize: vertical; margin-top: 0px; margin-bottom: 0px;"
+                                   id={{data.description}}
+                                   name="data.description"
+                                   ng-model="data.description"
+                                   placeholder="填写接口描述"
+                                   rows = "10" ></textarea>
+                    </div>
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-next value="下一步" />
+                </div>
+            </wz-step>
+
+            <wz-step wz-title="第二步"  canexit="exitValidation" >
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div class="form-group col-md-10"  style="padding-top: 8px;">
+                        <label>选择数据来源</label>
+                        <p class="input-group">
+                            <input  type="text"  name="{{sourceDatasetName}}"
+                                    ng-model="sourceDatasetName"
+                                    placeholder="数据来源选择 (必填)"
+                                    class="form-control warning_placeholder"
+                                    ng-required
+                            >
+                            <span class="input-group-btn">
+                               <button type="button"
+                                       class="btn btn-default ng-pristine ng-valid ng-isolate-scope ng-not-empty ng-touched"
+                                       root-dir="数据集"
+                                       ng-disabled="disableEdit"
+                                       keyword="dataset"
+                                       ng-model="sourceDatasetName"
+                                       select-mode="single"
+                                       on-select-changed="onSelectChangedIn(data)"
+                                       share-interface-resource-selector>
+                                   <i class="glyphicon glyphicon-search"></i>
+                               </button>
+
+                           </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div  style="margin-top: -8px; " class="col-md-10">
+                        <table class="table ng-isolate-scope treetable">
+                            <thead>
+                            <tr>
+                                <th >属性名</th>
+                                <th >属性值</th>
+                            </tr>
+                            </thead>
+                            <tbody >
+                            <tr ng-repeat="item in dataSourceView">
+                                <td ><b>{{item.name}}</b></td>
+                                <td ng-if="item.name != 'password'">{{item.value}}</td>
+                                <td ng-if="item.name != 'password'">......</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-previous value="上一步" />
+                    <input class="btn btn-success " type="submit" wz-next value="下一步" />
+                </div>
+            </wz-step>
+
+            <wz-step  currentStep wz-title="第三步"  canexit="exitValidation"  >
+                <div>
+                    <table class="table" >
+                        <thead >
+                        <tr >
+                            <th ng-repeat="header in headers">{{header}}</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr  ng-repeat="filed in mappings ">
+                            <td >{{filed.filed.name}}</td>
+                            <td >
+                                <input type="checkbox" name = {{header}} ng-checked ="filed.queryFields"  value = {{filed}} ng-click="updateSelection($event, 'queryFields', filed)" />
+                            </td>
+                            <td >
+                                <input type="checkbox" name = {{header}}  ng-checked ="filed.selectedFields"  value = {{filed}} ng-click="updateSelection($event, 'selectedFields',filed)"  />
+                            </td>
+
+                            <td >
+                                <input type="checkbox" name = {{header}}  ng-checked ="filed.encryptFields" value = {{filed}} ng-click="updateSelection($event, 'encryptFields', filed)" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-previous value="上一步" />
+                    <input class="btn btn-success " type="submit" wz-next value="下一步" />
+                </div>
+            </wz-step>
+
+            <wz-step wz-title="第四步" canexit="exitValidation"  >
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div class="form-group col-md-10"  style="padding-top: 8px;">
+                        <label>选择目标数据（只支持es类型的数据）</label>
+                        <p class="input-group">
+                            <input  type="text"  name="{{targetDatasetName}}"
+                                    ng-model="targetDatasetName"
+                                    placeholder="目标数据选择 (必填)"
+                                    class="form-control warning_placeholder"
+                                    ng-required
+                            >
+                            <span class="input-group-btn">
+                               <button type="button"
+                                       class="btn btn-default ng-pristine ng-valid ng-isolate-scope ng-not-empty ng-touched"
+                                       root-dir="数据集"
+                                       ng-disabled="disableEdit"
+                                       keyword="dataset"
+                                       ng-model="targetDatasetName"
+                                       select-mode="single"
+                                       on-select-changed="onSelectChangedOut(data)"
+                                       share-interface-resource-selector>
+                                   <i class="glyphicon glyphicon-search"></i>
+                               </button>
+
+                           </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div  style="margin-top: 8px; " class="col-md-5">
+                        <label>来源数据字段列表</label>
+                    </div>
+                    <div  style="margin-top: 8px; " class="col-md-6">
+                        <label>目标数据字段列表</label>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div  style="margin-top: 8px; " class="col-md-5">
+                        <table class="table ng-isolate-scope treetable">
+                            <thead>
+                            <tr>
+                                <th >字段名</th>
+                                <th >类型</th>
+                            </tr>
+                            </thead>
+                            <tbody >
+                            <tr ng-repeat="item in mappingIn">
+                                <td ><b>{{item.name}}</b></td>
+                                <td>{{item.type}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div  style="margin-top: 8px; " class="col-md-5">
+                        <table class="table ng-isolate-scope treetable">
+                            <thead>
+                            <tr>
+                                <th >字段名</th>
+                                <th >类型</th>
+                            </tr>
+                            </thead>
+                            <tbody >
+                            <tr ng-repeat="item in mappingOut">
+                                <td ><b>{{item.name}}</b></td>
+                                <td>{{item.type}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div  style="margin-top: 8px; " class="col-md-10">
+                        <table class="table ng-isolate-scope treetable">
+                            <thead>
+                            <tr>
+                                <th >属性名</th>
+                                <th >属性值</th>
+                            </tr>
+                            </thead>
+                            <tbody >
+                            <tr ng-repeat="item in dataStoreView">
+                                <td ><b>{{item.name}}</b></td>
+                                <td ng-if="item.name != 'password'">{{item.value}}</td>
+                                <td ng-if="item.name == 'password'">......</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-previous value="上一步" />
+                    <input class="btn btn-success " type="submit" wz-next value="下一步" />
+                </div>
+            </wz-step>
+
+            <wz-step wz-title="第五步" canexit="exitValidation"  >
+                <div>
+                    <div class="row top-buffer">
+                        <div class="col-md-1"></div>
+
+                        <div class="col-md-10">
+                            <div style="padding-top: 8px;">
+                                <label >接口名称</label>
+                                <input  type="text"  name="{{name}}"
+                                        ng-model="data.name"
+                                        class="form-control warning_placeholder"
+                                        ng-readonly=true
+                                >
+                            </div>
+
+                            <div style="padding-top: 8px;" >
+                                <label >接口描述</label>
+                                <input type="text" name="{{description}}"
+                                       ng-model="data.description"
+                                       ng-mousedown="mousedown($event)"
+                                       draggable="false"
+                                       class="form-control warning_placeholder"
+                                       ng-readonly=true
+                                >
+                            </div>
+
+                            <div  style="padding-top: 8px;" >
+                                <label >数据来源</label>
+                                <input  type="text"  name="{{sourceDatasetId}}"
+                                        ng-model="sourceDatasetName"
+                                        ng-mousedown="mousedown($event)"
+                                        draggable="false"
+                                        class="form-control warning_placeholder"
+                                        ng-readonly=true
+                                >
+                            </div>
+
+                            <div style="padding-top: 8px;" >
+                                <label >目标数据</label>
+                                <input type="text" name="{{targetDatasetId}}"
+                                       ng-model="targetDatasetName"
+                                       ng-mousedown="mousedown($event)"
+                                       draggable="false"
+                                       class="form-control warning_placeholder"
+                                       ng-readonly=true
+
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-finish value="完成" />
+                </div>
+            </wz-step>
+
+        </wizard>
+    </div>
+    <div class="panel-body" ng-if="!auxo.isIE()" ng-style="{'max-height': '{{windowHeight-200}}px', 'min-height': '360px','overflow': 'auto'}">
+        <wizard  template="app/sharedInterface/wizard.html"  indicators-position = "top" on-finish="finishedWizard()" on-cancel="cancelledWizard()" >
+
+            <wz-step wz-title="第一步" canexit="exitValidation">
+                <div class="row top-buffer">
+
+                    <div class="col-md-1"></div>
+                    <div class="form-group col-md-10"  style="padding-top: 8px;">
+                        <label >接口名称</label>
+                        <input  type="text"
+                                name="{{name}}"
+                                ng-model="data.name"
+                                placeholder="接口名称 (必填)"
+                                class="form-control warning_placeholder"
+                                ng-required="true"
+                        >
+                    </div>
+                </div>
+                <div class="row top-buffer" style="padding-top: -8px;">
+                    <div class="col-md-1"></div>
+                    <div class="form-group col-md-10"  >
+                        <label >接口描述</label>
+                        <textarea  class="form-control"
+                                   style="height: 200px; resize: vertical; margin-top: 0px; margin-bottom: 0px;"
+                                   id={{data.description}}
+                                   name="data.description"
+                                   ng-model="data.description"
+                                   placeholder="填写接口描述"
+                                   rows = "10" ></textarea>
+                    </div>
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-next value="下一步" />
+                </div>
+            </wz-step>
+
+            <wz-step wz-title="第二步"  canexit="exitValidation" >
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div class="form-group col-md-10"  style="padding-top: 8px;">
+                        <label>选择数据来源</label>
+                        <p class="input-group">
+                            <input  type="text"  name="{{sourceDatasetName}}"
+                                    ng-model="sourceDatasetName"
+                                    placeholder="数据来源选择 (必填)"
+                                    class="form-control warning_placeholder"
+                                    ng-required
+                            >
+                            <span class="input-group-btn">
+                               <button type="button"
+                                       class="btn btn-default ng-pristine ng-valid ng-isolate-scope ng-not-empty ng-touched"
+                                       root-dir="数据集"
+                                       ng-disabled="disableEdit"
+                                       keyword="dataset"
+                                       ng-model="sourceDatasetName"
+                                       select-mode="single"
+                                       on-select-changed="onSelectChangedIn(data)"
+                                       share-interface-resource-selector>
+                                   <i class="glyphicon glyphicon-search"></i>
+                               </button>
+
+                           </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div  style="margin-top: -8px; " class="col-md-10">
+                        <table class="table ng-isolate-scope treetable">
+                            <thead>
+                            <tr>
+                                <th >属性名</th>
+                                <th >属性值</th>
+                            </tr>
+                            </thead>
+                            <tbody >
+                            <tr ng-repeat="item in dataSourceView">
+                                <td ><b>{{item.name}}</b></td>
+                                <td ng-if="item.name != 'password'">{{item.value}}</td>
+                                <td ng-if="item.name == 'password'">......</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-previous value="上一步" />
+                    <input class="btn btn-success " type="submit" wz-next value="下一步" />
+                </div>
+            </wz-step>
+
+            <wz-step  currentStep wz-title="第三步"  canexit="exitValidation"  >
+                <div>
+                    <table class="table" >
+                        <thead >
+                        <tr >
+                            <th ng-repeat="header in headers">{{header}}</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr  ng-repeat="filed in mappings ">
+                            <td >{{filed.filed.name}}</td>
+                            <td >
+                                <input type="checkbox" name = {{header}} ng-checked ="filed.queryFields"  value = {{filed}} ng-click="updateSelection($event, 'queryFields', filed)" />
+                            </td>
+                            <td >
+                                <input type="checkbox" name = {{header}}  ng-checked ="filed.selectedFields"  value = {{filed}} ng-click="updateSelection($event, 'selectedFields',filed)"  />
+                            </td>
+
+                            <td >
+                                <input type="checkbox" name = {{header}}  ng-checked ="filed.encryptFields" value = {{filed}} ng-click="updateSelection($event, 'encryptFields', filed)" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-previous value="上一步" />
+                    <input class="btn btn-success " type="submit" wz-next value="下一步" />
+                </div>
+            </wz-step>
+
+            <wz-step wz-title="第四步" canexit="exitValidation"  >
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div class="form-group col-md-10"  style="padding-top: 8px;">
+                        <label>选择目标数据（只支持es类型的数据）</label>
+                        <p class="input-group">
+                            <input  type="text"  name="{{targetDatasetName}}"
+                                    ng-model="targetDatasetName"
+                                    placeholder="目标数据选择 (必填)"
+                                    class="form-control warning_placeholder"
+                                    ng-required
+                            >
+                            <span class="input-group-btn">
+                               <button type="button"
+                                       class="btn btn-default ng-pristine ng-valid ng-isolate-scope ng-not-empty ng-touched"
+                                       root-dir="数据集"
+                                       ng-disabled="disableEdit"
+                                       keyword="dataset"
+                                       ng-model="targetDatasetName"
+                                       select-mode="single"
+                                       on-select-changed="onSelectChangedOut(data)"
+                                       share-interface-resource-selector>
+                                   <i class="glyphicon glyphicon-search"></i>
+                               </button>
+
+                           </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div  style="margin-top: 8px; " class="col-md-5">
+                        <label>被选中的数据来源字段列表</label>
+                    </div>
+                    <div  style="margin-top: 8px; " class="col-md-6">
+                        <label>目标数据字段列表</label>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div  style="margin-top: 8px; " class="col-md-5">
+                        <table class="table ng-isolate-scope treetable">
+                            <thead>
+                            <tr>
+                                <th >字段名</th>
+                                <th >类型</th>
+                            </tr>
+                            </thead>
+                            <tbody >
+                            <tr ng-repeat="item in mappingInSelect">
+                                <td ><b>{{item.name}}</b></td>
+                                <td>{{item.type}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div  style="margin-top: 8px; " class="col-md-5">
+                        <table class="table ng-isolate-scope treetable">
+                            <thead>
+                            <tr>
+                                <th >字段名</th>
+                                <th >类型</th>
+                            </tr>
+                            </thead>
+                            <tbody >
+                            <tr ng-repeat="item in mappingOut">
+                                <td ><b>{{item.name}}</b></td>
+                                <td>{{item.type}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row top-buffer">
+                    <div class="col-md-1"></div>
+                    <div  style="margin-top: 8px; " class="col-md-10">
+                        <table class="table ng-isolate-scope treetable">
+                            <thead>
+                            <tr>
+                                <th >属性名</th>
+                                <th >属性值</th>
+                            </tr>
+                            </thead>
+                            <tbody >
+                            <tr ng-repeat="item in dataStoreView">
+                                <td ><b>{{item.name}}</b></td>
+                                <td ng-if="item.name != 'password'">{{item.value}}</td>
+                                <td ng-if="item.name == 'password'">......</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-previous value="上一步" />
+                    <input class="btn btn-success " type="submit" wz-next value="下一步" />
+                </div>
+            </wz-step>
+
+            <wz-step wz-title="第五步" canexit="exitValidation"  >
+                <div>
+                    <div class="row top-buffer">
+                        <div class="col-md-1"></div>
+
+                        <div class="col-md-10">
+                            <div style="padding-top: 8px;">
+                                <label >接口名称</label>
+                                <input  type="text"  name="{{name}}"
+                                        ng-model="data.name"
+                                        class="form-control warning_placeholder"
+                                        ng-readonly=true
+                                >
+                            </div>
+
+                            <div style="padding-top: 8px;" >
+                                <label >接口描述</label>
+                                <input type="text" name="{{description}}"
+                                       ng-model="data.description"
+                                       ng-mousedown="mousedown($event)"
+                                       draggable="false"
+                                       class="form-control warning_placeholder"
+                                       ng-readonly=true
+                                >
+                            </div>
+
+                            <div  style="padding-top: 8px;" >
+                                <label >数据来源</label>
+                                <input  type="text"  name="{{sourceDatasetId}}"
+                                        ng-model="sourceDatasetName"
+                                        ng-mousedown="mousedown($event)"
+                                        draggable="false"
+                                        class="form-control warning_placeholder"
+                                        ng-readonly=true
+                                >
+                            </div>
+
+                            <div style="padding-top: 8px;" >
+                                <label >目标数据</label>
+                                <input type="text" name="{{targetDatasetId}}"
+                                       ng-model="targetDatasetName"
+                                       ng-mousedown="mousedown($event)"
+                                       draggable="false"
+                                       class="form-control warning_placeholder"
+                                       ng-readonly=true
+
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="text-align: center ;padding-top: 8px;">
+                    <input class="btn btn-success " type="submit" wz-finish value="完成" />
+                </div>
+            </wz-step>
+
+        </wizard>
+    </div>
+</div>
+</div>

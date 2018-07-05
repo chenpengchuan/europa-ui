@@ -1,0 +1,85 @@
+
+<div class="node-config-form left-margin-10 right-margin-10" ng-style="{'max-height':'{{windowHeight-180}}px', 'overflow': 'auto'} ">
+
+    <div class="" ng-init="itemIndex=$index" ng-repeat="item in configuration">
+
+        <div ng-if="item.type=='String' || item.type=='Number'" ng-class="" ng-show="item.show" class="top-margin-10">
+            <div>
+                <label for="{{item.name}}" class="col-sm-2 control-label" style="overflow:hidden; text-overflow: ellipsis; ">{{item.label?item.label: item.name}}</label>
+                <div class="col-sm-6 input-group" ng-if="item.$name!='cronExpression'" style="overflow: auto">
+                    <input type="text" class="form-control" id="{{item.name}}" ng-model="item.value"
+                           placeholder="" required>
+                </div>
+                <div class="col-sm-10 input-group" ng-if="item.$name=='cronExpression'" style="overflow: auto">
+                    <!--<input type="text" class="form-control" id="{{item.name}}" ng-model="item.value"-->
+                    <!--placeholder="" required>-->
+                    <cron-selection ng-model="item.value" config="cronConfig" ></cron-selection>
+                </div>
+
+                <!--<div class="col-sm-9 input-group" ng-if="item.$name=='cronExpression'">-->
+                <!--<input type="text" class="form-control" id="{{item.name}}" ng-model="item.value" placeholder="" required>-->
+                <!--<div class="input-group-btn" ng-if="item.$name=='cronExpression'" >-->
+                <!--<a  class="btn btn-primary"-->
+                <!--cron-maker ng-model="item.value"><span class="glyphicon glyphicon-time"></span> </a>-->
+                <!--</div>-->
+                <!--</div>-->
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div ng-if="item.type=='Date'" ng-show="item.show" ng-class="" class="top-margin-10">
+            <div  >
+                <label for="{{item.name}}" class="col-sm-2 control-label">{{item.label?item.label: item.name}}</label>
+                <div class="col-sm-6 input-group">
+                    <datetimepicker dateID="{{item.$name}}" class="form-control"
+                                    ng-model="item.value" format="Y-m-d H:i"></datetimepicker>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <!--ng-model="item.value"-->
+        <div ng-show="false" ng-if="item.type=='Dropdown'"  ng-class="" class="top-margin-10">
+            <div  >
+                <label for="{{item.id}}" class="col-sm-2 control-label">{{item.label}}</label>
+                <div class="col-sm-6 input-group">
+                    <select ng-if="item.type=='Dropdown'"  class="form-control" id="{{item.id}}"
+                            ng-change="onTypeChange(item.value)" ng-model="item.value"
+                            ng-options="v.code as v.title for v in item.enum"></select>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div ng-repeat="arg in arguments">
+        <div ng-class="" class="top-margin-10 col-sm-12 no-padding">
+            <label class="col-sm-2 control-label" style="overflow:hidden; text-overflow: ellipsis; ">{{arg.description || arg.name}}
+                <span class="glyphicon glyphicon-info-sign" uib-tooltip="{{arg.description}}"></span></label>
+            <div ng-show="!arg.options">
+                <div class="col-sm-6 input-group">
+                    <input class="form-control" ng-model="arg.value " ng-disabled="arg.disabled"/>
+                </div>
+            </div>
+            <div ng-show="arg.options">
+                <div class="col-sm-6 input-group">
+                    <select class="form-control" name="{{'arg_'+arg.name}}" ng-model="arg.value" ng-disabled="{{'arg.disabled || ' + arg.dependOn}}">
+                        <option ng-repeat="op in arg.options" ng-selected="op===arg.value" ng-value="'{{op}}'">{{op}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div ng-include="'app/common/flowRuntimeProperties.html'"></div>
+
+</div>
+<br>
+<!--<div data-ng-show="cronValidateResult && cronValidateResult.length>0" class="left-margin-15" >-->
+<!--<div><h4>最近5次运行时间:</h4></div>-->
+<!--<div ng-if="run.index" data-ng-repeat="run in cronValidateResult" class="left-margin-15">-->
+<!--<p >{{run.index}}. {{run.value}}</p>-->
+<!--</div>-->
+<!--</div>-->
+
+

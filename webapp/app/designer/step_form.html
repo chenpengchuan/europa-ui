@@ -1,0 +1,50 @@
+<div id="stepDialog" ng-controller="StepFormController">
+ <tabs>
+  <pane title="Input" id="title-input">
+   <!--  div class="stepFormGridStyle" ng-grid="inputGridOptions"-->
+   <div class="stepFormGridStyle" ng-grid="inputGridOptions">
+   </div>
+   <div class="col-xs-6">
+    <button ng-click="refreshInput()">refresh InPut</button>
+   </div>
+  </pane>
+ 
+  <pane title="Settings">
+  <div class="stepForm" >
+   <form class="well col-xs-12 form-horizontal">
+    <div class="form-group">
+     <label class="col-xs-2 control-label">name</label>
+     <div class="col-xs-9">
+      <input type="text" class="form-control" placeholder="Step Name" ng-model="stepFormData.name" />
+     </div>
+    </div>
+   
+    <div class="form-group" ng-repeat="item in stepFormData.settings">
+     <label class="col-xs-2 control-label">{{item.key}}</label>
+     <div class="col-xs-9">
+      <input type="text" class="form-control" ng-model="item.value" />
+     </div>
+     <button ng-click="remove($index)" ng-if="!item.required">X</button>
+    </div>
+   
+    <div class="form-group">
+     <div class="col-xs-5 col-md-offset-1">
+      <input type="text" class="form-control" ng-model="stepFormData.key"
+       placeholder="new key here">
+     </div>
+     <div class="col-xs-6">
+      <button ng-click="add()">Add new config item</button>
+     </div>
+    </div>
+   </form>
+  </div>
+  </pane>
+   
+  <pane title="Output">
+   <div class="stepFormGridStyle" ng-grid="outputGridOptions"></div>
+   <div class="col-xs-6">
+    <button ng-click="refreshOutput()">refresh OutPut</button>
+   </div>
+  </pane>
+ </tabs>
+</div>

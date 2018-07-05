@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>Flow类型</span>
+    </span>
+    <select  class="form-control" id="flow_type_select"  ng-model="flowTypeFilter" ng-change="onFlowTypeChange(flowTypeFilter)">
+        <option ng-repeat="o in auxo.flowTypeArray" value="{{o.value}}">{{o.name}}</option>
+    </select>
+</div>

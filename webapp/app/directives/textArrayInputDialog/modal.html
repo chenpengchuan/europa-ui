@@ -1,0 +1,18 @@
+<form class="form-horizontal clearfix" name="form" role="form" novalidate="novalidate">
+    <div class="control-group col-sm-12"  >
+        <label class="col-sm-12" style="text-align:left; padding-left: 0;">{{label}}</label>
+        <div ng-repeat="obj in arrTextarea track by $index">
+            <div class="controls col-sm-12 input-group" style="margin-bottom:15px">
+                 <textarea  class="form-control" style="resize:vertical;height:{{height}}px;" ng-model="arrTextarea[$index]"></textarea>
+                 <span ng-if="!single" class="input-group-btn">
+                    <a class="btn " style="padding-right: 0px; padding-left: 5px;"  ng-click="addObj($index, arrTextarea)"><span class="glyphicon glyphicon-plus-sign icon-green" aria-hidden="true"></span></a>
+                    <a class="btn " style="padding-right: 0px; padding-left: 5px;"  ng-style="arrTextarea.length<2 && {'visibility': 'hidden'}"  ng-click="removeObj($index, arrTextarea)" ><span class="glyphicon glyphicon-minus-sign icon-red" aria-hidden="true"></span></a>
+                  </span>
+            </div>
+        </div>
+    </div>
+</form>
+<div ng-if="note" class="alert-danger">
+    Note: {{note}}
+</div>
+

@@ -1,0 +1,79 @@
+<div class="panel panel-default" style="margin-top: -1px;" ng-controller="stepresourceSelectorController">
+    <div class="panel-heading ">
+        <div class="row ">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                      </span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                      <span class="input-group-btn">
+                        <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+                      </span>
+                    <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"
+                           options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+                           ng-keydown="keydown($event)"  readonly="readonly" />
+                </div>
+            </div>
+
+            <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+            </div>
+        </div>
+    </div>
+    <div class="panel-body"  ng-style="{'min-height': '300px', 'height': '{{windowHeight-300}}px', 'overflow': 'auto'}">
+    <div  ng-style="{'border': '1px lightgrey solid', 'padding': '5px 0 5px 0', 'position': 'relative','min-height': '300px','max-height': '{{windowHeight-245}}px' ,'overflow': 'auto'}">
+        <div ui-layout="{flow : 'column'}">
+            <div ui-layout-container size="200px" min-size="150px" max-size="400px" style="padding-top: 10px;">
+                <div treecontrol class="tree-light"
+                     tree-model="dataForTheTree"
+                     options="treeOptions"
+                     on-selection="onSelected(node)"
+                     on-node-toggle="onNodeToggle(node,expanded)"
+                     selected-node="selectedNode">
+
+                    <span ng-switch="" on="node.resType">
+                         <span ng-switch-when="dir" class="mdi mdi-folder" aria-hidden="true"></span>
+                         <span ng-switch-when="root" class="mdi mdi-folder" aria-hidden="true"></span>
+                         <span ng-switch-when="data_spool" class="mdi mdi-floppy" aria-hidden="true"></span>
+                         <span ng-switch-when="DB" class="mdi mdi-database" aria-hidden="true"></span>
+                         <span ng-switch-when="dataset_db" class="mdi mdi-table-large" aria-hidden="true"></span>
+                         <span ng-switch-when="dataset_spool" class="mdi mdi-table-large" style="color:dodgerblue;" aria-hidden="true"></span>
+                     </span>
+
+                    {{node.name}}
+                </div>
+            </div>
+            <div ui-layout-container="central">
+                <table st-table="rowCollection" st-pipe="fetchPage2 " class="table">
+                    <thead>
+                    <tr>
+                        <th><st-select-all all="rowCollection"></st-select-all></th>
+                        <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" >{{rh.disName}}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="row in rowCollection">
+                        <td cs-select="row" rows="rowCollection" mode="'single'" selected-rows="selectedRows"></td>
+                        <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" >
+                            <span >{{rh.converter(col,row)}}</span>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+
+

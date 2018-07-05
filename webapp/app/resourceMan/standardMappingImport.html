@@ -1,0 +1,29 @@
+<div ng-app="fileUpload" ng-controller="StandardMappingImportController" class="importPanel ">
+    <span style="padding-right: 20px;"><strong>选择Excel文件</strong></span>
+    <button type="file" class="btn btn-default" ngf-select="uploadFiles($file, $invalidFiles)" accept="application/vnd.ms-excel"> 浏览...</button>
+    <span style="padding-left: 20px;">{{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}</span>
+
+    <div   ng-style="{'margin-top': '10px', 'max-height': '{{windowHeight-320}}px', 'overflow': 'auto'}"  class="clearfix">
+
+        <table cellpadding="3" cellspacing="5">
+            <thead>
+            <tr>
+                <td ng-repeat="col in data[0]" style="padding: 2px 5px 2px 5px;">{{col}}</td>
+            </tr>
+
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in data" ng-if="$index>0" ng-init="lastNotify($last)">
+                <td ng-repeat="col in row" style="padding: 2px 5px 2px 5px;">{{col}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--
+    <div ng-show="data.length>1" style="padding: 15px;">
+        <div> <input type="checkbox" ng-model="treeMode" class="formcon"> 树形结构</div>
+    </div>
+    -->
+
+</div>

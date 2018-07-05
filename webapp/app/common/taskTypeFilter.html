@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>Task类型</span>
+    </span>
+    <select  class="form-control" id="task_type_select"  ng-model="taskTypeFilter" ng-change="onTaskTypeChange(taskTypeFilter)">
+        <option ng-repeat="o in auxo.taskTypeArray" value="{{o.value}}">{{o.name}}</option>
+    </select>
+</div>

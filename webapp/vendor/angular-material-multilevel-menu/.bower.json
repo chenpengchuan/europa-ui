@@ -1,0 +1,13 @@
+{
+  "name": "angular-material-multilevel-menu",
+  "homepage": "https://github.com/jmouriz/angular-material-multilevel-menu",
+  "_release": "1e8e5f4040",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "1e8e5f4040285b11a40f1c9e4c6585a29e917b28"
+  },
+  "_source": "https://github.com/jmouriz/angular-material-multilevel-menu.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/jmouriz/angular-material-multilevel-menu.git"
+}

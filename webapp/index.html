@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-cn" ng-app="AuxoApp">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <title>_title_europa</title>
+    <!-- build:css css/all.css -->
+    <link rel="stylesheet" type="text/css" href="app/resources/css/toastr.css" />
+    <!--向导-->
+    <link rel="stylesheet" type="text/css" href="app/resources/css/select2.css" />
+    <link rel="stylesheet" type="text/css" href="app/resources/css/ace-part2.css" />
+    <link rel="stylesheet" type="text/css" href="app/resources/css/ace-ie.css" />
+    <link rel="stylesheet" type="text/css" href="app/resources/css/ace.onpage-help.css" />
+    <link rel="stylesheet" type="text/css" href="app/resources/css/sunburst.css" />
+    <!--tree-->
+    <link rel="stylesheet" type="text/css" href="bower_components/codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/codemirror/addon/hint/show-hint.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/mdi/css/materialdesignicons.min.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-tags/dist/angular-tags-0.2.10.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/ng-dialog/css/ngDialog.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/ng-dialog/css/ngDialog-theme-default.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap-colorpicker/css/colorpicker.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/ng-tags-input/ng-tags-input.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap-daterangepicker/daterangepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-hotkeys/build/hotkeys.css"/>
+    <link rel="stylesheet" type="text/css" href="vendor/angular-material-multilevel-menu/angular-material-multilevel-menu.min.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-material-icons/angular-material-icons.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" type="text/css" href="vendor/angular-cron-jobs/angular-cron-jobs.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/sgDialogService/lib/sgDialogService.1.0.1.css" />
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-ui-layout/src/ui-layout.css"/>
+    <link rel="stylesheet" type="text/css" href="app/datepicker/jquery.datetimepicker.css" />
+    <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/angular-ui-select/dist/select.css"/>
+
+    <!-- link for CSS when using the tree as a Dom element -->
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-tree-control/css/tree-control.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-wizard/dist/angular-wizard.css"/>
+    <!-- link for CSS when using the tree as an attribute -->
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-tree-control/css/tree-control-attribute.css">
+    <link rel="stylesheet" type="text/css" href="vendor/angular-treetable/example/style/jquery.treetable.css">
+    <link rel="stylesheet" type="text/css" href="vendor/angular-treetable/example/style/jquery.treetable.theme.default.css">
+    <link rel="stylesheet" type="text/css"href="bower_components/angular-timeline/dist/angular-timeline.css"/>
+    <link rel="stylesheet" type="text/css" href="app/resources/css/app.css" />
+    <link rel="stylesheet" type="text/css" href="app/step/stepForm.css" />
+    <link rel="stylesheet" type="text/css" href="app/resources/css/linkoop.css" />
+    <link type="text/css" rel="stylesheet" href="app/resources/css/iconfont.css" />
+    <link type="text/css" rel="stylesheet" href="app/designer/designer.css"/>
+    <!-- endbuild -->
+</head>
+
+<body ng-controller="indexController" layout="column" ng-cloak>
+<div ng-if="!loaded" style="position: fixed; left:0; top:0; width: 100vw;height: 100vh; z-index: 10000; background-color: white">
+</div>
+
+<header ng-if="!auxo.isLoginPage() && !auxo.isLicensePage()" data-ng-controller="NavController">
+    <div ng-include="'app/common/header.html'"></div>
+    <hgroup ng-if="!auxo.isLoginPage() && !auxo.isLicensePage()" class="user-info fr">
+        <span  ng-show="busy"><img src="app/resources/img/waitting.gif" height="20" style="margin-top: 15px;"></span>
+        <span><i class="iconfont icon-user-3"></i>Welcome {{ user.name }}</span>
+        <span><i class="iconfont icon-tishi1"></i><a ng-click="showHistory()">历史消息</a> </span>
+        <span><i class="iconfont icon-locked-1"></i><a ng-click="changeUserInfo(user)">修改密码</a></span>
+        <span><i class="iconfont icon-power"></i><a ng-click="logout()">注销</a></span></hgroup>
+</header>
+
+<md-content layout="row" flex  data-ng-controller="SideBarController" style="color: #ffffff;">
+    <md-sidenav class="md-sidenav-left" ng-if="!auxo.isLoginPage() && !auxo.isLicensePage() && user.name !== 'root'" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" style="width: 200px; background-color:#618eda ;color: #ffffff;">
+        <md-multi-level-menu md-breadcrumb="false" md-style-accordion></md-multi-level-menu>
+        <md-divider></md-divider>
+    </md-sidenav>
+    <md-content data-ui-view flex ></md-content>
+</md-content>
+
+<div ng-if="auxo.isLoginPage()" ng-include="'app/login/login_form.html'"></div>
+<div id="root-container" class="container" style="display: block;">
+    {{auxo.getFooterMsg()|json}}
+</div>
+
+<!-- build:js scripts/all.js -->
+<script src="app/first.js"></script>
+
+<script src="bower_components/codemirror/lib/codemirror.js"></script>
+<script src="bower_components/codemirror/addon/hint/show-hint.js"></script>
+<script src="bower_components/codemirror/addon/hint/sql-hint.js"></script>
+<script src="bower_components/codemirror/mode/sql/sql.js"></script>
+<script src="bower_components/font-awesome/src/assets/js/prettify.min.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
+<script src="bower_components/angular-wizard/dist/angular-wizard.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-i18n/angular-locale_zh-cn.js"></script>
+<script src="bower_components/jsPlumb/dist/js/jsPlumb-2.1.3.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script src="bower_components/angular-smart-table/dist/smart-table.js"></script>
+<script src="bower_components/angular-tags/dist/angular-tags-0.2.10-tpls.js"></script>
+<script src="bower_components/lodash/dist/lodash.js"></script>
+<script src="bower_components/restangular/dist/restangular.js"></script>
+<script src="bower_components/ng-dialog/js/ngDialog.js"></script>
+<script src="bower_components/angular-messages/angular-messages.js"></script>
+
+<!-- adapt-strap -->
+<!--<script src="bower_components/adapt-strap/dist/adapt-strap.min.js"></script>-->
+<!--<script src="bower_components/adapt-strap/dist/adapt-strap.tpl.min.js"></script>-->
+<script src="bower_components/moment/moment.js"></script>
+<script src="bower_components/moment-timezone/moment-timezone.js"></script>
+<script src="bower_components/moment-timezone/moment-timezone-utils.js"></script>
+<script src="bower_components/angular-uuid2/dist/angular-uuid2.js"></script>
+<script src="bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js"></script>
+<script src="bower_components/ng-tags-input/ng-tags-input.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="vendor/angular-ui-select/dist/select.js"></script>
+<script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="bower_components/angular-daterangepicker/js/angular-daterangepicker.js"></script>
+<script src="bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js"></script>
+<script src="bower_components/angular-hotkeys/build/hotkeys.js"></script>
+
+<script type="text/javascript" src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
+<script src="bower_components/angular-websocket/dist/angular-websocket.js"></script>
+<script src="bower_components/ng-file-upload/ng-file-upload.min.js"></script>
+<script src="bower_components/ng-file-upload/ng-file-upload-shim.min.js"></script>
+<script src="bower_components/checklist-model/checklist-model.js"></script>
+<script src="app/resources/js/EventSource.js"></script>
+<!--<script type="text/javascript" src="bower_components/raf/index.js"></script>-->
+<!-- operation history timeline -->
+<script src="bower_components/angular-timeline/dist/angular-timeline.js"></script>
+<script src="vendor/ngInfiniteScroll/infinite-scroll.js"></script>
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-material-icons/angular-material-icons.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-material/angular-material.js"></script>
+<script src="bower_components/angular-marked/dist/angular-marked.js"></script>
+<script src="bower_components/angular-material-badge/angular-material-badge.min.js"></script>
+<script src="vendor/angular-material-multilevel-menu/source/angular-material-multilevel-menu.js"></script>
+<!--<script src="bower_components/marked/bin/marked"></script>-->
+<script src="app/datepicker/jquery.datetimepicker.js"></script>
+<script src="vendor/angular-cron-jobs/angular-cron-jobs.js"></script>
+
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="vendor/sgDialogService/lib/sgDialogService.1.0.1.js"></script>
+<script src="vendor/ui-router-tabs/ui-router-tabs.js"></script>
+<script src="app/login/routingConfig.js"></script>
+<script src="app/resources/js/auxo.js"></script>
+<script src="app/resources/js/app.js"></script>
+<script src="app/login/services.js"></script>
+<script src="app/resources/js/CrudBaseController.js"></script>
+<script src="app/resources/js/ConfigController.js"></script>
+<script src="app/resources/js/ProcessConfigController.js"></script> <!-- 流程管理配置 -->
+<script src="app/resources/js/DataController.js"></script>
+<script src="app/resources/js/services.js"></script>
+<script src="app/cron/CronFormController.js"></script>
+<script src="app/designer/flow/FlowController.js"></script>
+<script src="app/designer/DesignerController.js"></script>
+<script src="app/step/stepFormController.js"></script>
+<script src="app/resources/js/MonitorController.js"></script>
+<script src="app/resources/js/ScheduleController.js"></script>
+<script src="app/resources/js/SideBarController.js"></script>
+<script src="app/resources/js/filters.js"></script>
+<script src="app/resources/js/directives.js"></script>
+<script src="app/resources/js/DesignerDirectives.js"></script>
+
+<script src="app/cron/CronDirective.js"></script>
+<script src="app/datepicker/DatetimeDirective.js"></script>
+<script src="app/modal/modalDialogDirective.js"></script>
+<script src="app/designer/schema/SchemaController.js"></script>
+<script src="app/designer/schema/SchemaFormController.js"></script>
+<script src="app/designer/DataflowPreviewController.js"></script>
+
+<script src="app/designer/flow/DFConfigController.js"></script>
+<script src="app/designer/flow/DFConfigSettingController.js"></script>
+<script src="app/designer/flow/DFConfigInOutputController.js"></script>
+<script src="app/process/processController.js"></script>
+<script src="app/process/processDetailController.js"></script>
+<script src="app/process/processExecutionHistoryController.js"></script>
+<script src="app/process/processExecutionController.js"></script>
+<script src="app/process/processPlanController.js"></script>
+<script src="app/process/share.js"></script>
+<script src="app/process/processDialog.js"></script>
+<script src="app/process/historyController.js"></script>
+<script src="app/monitor/monitorSummaryController.js"></script>
+
+<script src="app/scheduler/SchedulerFormController.js"></script>
+<script src="app/scheduler/SchedulerFormDirective.js"></script>
+
+<script src="app/login/controllers.js"></script>
+<script src="app/login/directives.js"></script>
+<script src="app/users/UserControllers.js"></script>
+<script src="app/users/UserDirectives.js"></script>
+
+<script src="app/users/tenantsController.js"></script>
+<script src="app/home/HomeController.js"></script>
+<script src="app/home/TestController.js"></script>
+
+<script src="app/step/controllers.js"></script>
+<script src="app/step/directives.js"></script>
+<script src="app/step/stepData.js"></script>
+<script src="app/step/stepInputFormController.js"></script>
+<script src="app/step/stepWInputFormController.js"></script>
+<script src="app/step/stepWOutputFormController.js"></script>
+
+<script src="app/BodyController.js"></script>
+<script src="app/directives/timePeriod/timePeriod.js"></script>
+<script src="app/directives/textArrayInputDialog/modalDirective.js"></script>
+<script src="app/directives/textArrayInputDialog/ModalsController.js"></script>
+<script src="app/directives/checklistDialog/CheckListController.js"></script>
+<script src="app/directives/checklistDialog/CheckListDirective.js"></script>
+<script src="app/license/controllers.js"></script>
+<script src="app/test/testPage.js"></script>
+<script src="app/test/testDetail.js"></script>
+<script src="app/test/testModalController.js"></script>
+<script src="app/directives/validateErrorsDirective.js"></script>
+<script src="app/directives/MiscDirectives.js"></script>
+<script src="app/designer/flow/ExportController.js"></script>
+<script src="app/debug/controllers.js"></script>
+<script src="app/audit/auditLogController.js"></script>
+<!--同步任务-->
+<script src="app/synchronization/js/SynchronizationController.js"></script>
+<script src="app/synchronization/js/SynchronizationDetailController.js"></script>
+<script src="app/synchronization/js/SynchronizationTaskController.js"></script>
+<script src="app/synchronization/js/datasetController.js"></script>
+<script src="app/synchronization/js/europaResourceSelectorController.js"></script>
+<!--向导-->
+<script src="app/resources/js/elements.wizard.js"></script>
+<script src="app/resources/js/ace.js"></script>
+<script src="app/resources/js/fuelux.wizard.js"></script>
+
+<!--弹出列表-->
+<script src="app/synchronization/js/EtlDetailController.js"></script>
+
+<!--采集器控制器-->
+<script src="app/collector/js/CollectorController.js"></script>
+<script src="app/collector/js/CollectorDetailController.js"></script>
+<script src="app/collector/js/CollectorTaskLogController.js"></script>
+<script src="app/collector/js/CollectorRegisteredController.js"></script>
+<script src="app/collector/js/CollectorResourceDirController.js"></script>
+<script src="app/collector/js/CollectorSourceController.js"></script>
+<script src="app/collector/js/CollectorUpgradeController.js"></script>
+<script src="app/collector/js/CollectorLogController.js"></script>
+<script src="app/collector/js/CollectorExecController.js"></script>
+<script src="app/collector/js/DataSetPreviewController.js"></script>
+<script src="app/role/RoleControllers.js"></script>
+<!--<script src="app/organization/organizationControllers.js"></script>-->
+<script src="app/permission/PermissionControllers.js"></script>
+
+<!--dataList-->
+<script src="app/dataList/dataListController.js"></script>
+<script src="app/dataList/triggerSettingController.js"></script>
+<script src="app/dataList/zebraResourceSelectorController.js"></script>
+
+<!--loading-->
+<script type="text/javascript" src="vendor/jquery.modalLoading/js/modalLoading.js"></script>
+
+<!--tree-->
+<script src="vendor/angular-treetable/example/lib/jquery.treetable.js"></script>
+<script src="vendor/angular-treetable/src/angular-treetable.js"></script>
+<script src="bower_components/angular-tree-control/angular-tree-control.js"></script>
+
+<!--resourceMan-->
+<script src="app/resourceMan/treeControlCommon.js"></script>
+<script src="app/resourceMan/resourceManController.js"></script>
+<script src="app/resourceMan/dataSourceController.js"></script>
+<script src="app/resourceMan/webSourceController.js"></script>
+<script src="app/resourceMan/otherSourceController.js"></script>
+<script src="app/resourceMan/datasetForDB.js"></script>
+<script src="app/resourceMan/SchemaFormController.js"></script>
+<script src="app/resourceMan/dataSpool.js"></script>
+<script src="app/resourceMan/datasetForSpool.js"></script>
+<script src="app/resourceMan/objMessage.js"></script>
+<script src="app/resourceMan/SuperEdit.js"></script>
+<script src="app/resourceMan/dataPreview.js"></script>
+<script src="app/resourceMan/standard.js"></script>
+<script src="app/resourceMan/standardDetail.js"></script>
+<script src="app/resourceMan/standardEdit.js"></script>
+<script src="app/resourceMan/standardImport.js"></script>
+<script src="app/resourceMan/standardMappingImport.js"></script>
+<script src="app/resourceMan/share.js"></script>
+<script src="app/resourceMan/standardMapping.js"></script>
+<script src="app/resourceMan/standardMappingEdit.js"></script>
+<script src="app/resourceMan/SchemaDetailController.js"></script>
+<script src="app/resourceMan/schemaFromDataset.js"></script>
+<script src="app/resourceMan/dirSelector.js"></script>
+<script src="app/resourceMan/resourceSelector.js"></script>
+<script src="app/resourceMan/dataset.js"></script>
+
+<!--ui-layout-->
+<script src="bower_components/angular-ui-layout/src/ui-layout.js"></script>
+<script src="app/step/resourceSelector.js"></script>
+<script src="app/resources/js/toastr.min.js"></script>
+
+<!--
+<script src="app/step/resourceSelectora.html"></script>
+-->
+<!--DqModelController-->
+<script src="app/resources/js/DqCommon.js"></script>   <!-- Data Quality - Common -->
+<script src="app/resources/js/DqModelController.js"></script>   <!-- Data Quality - Model -->
+<script src="app/resources/js/DqRuleController.js"></script>   <!-- Data Quality - Rule -->
+<script src="app/resources/js/DqRuleCategoryController.js"></script>   <!-- Data Quality - RuleCategory -->
+<!--<script src="app/resources/js/DqModelDetailController.js"></script>   &lt;!&ndash; Data Quality - Model Details &ndash;&gt;-->
+<script src="app/resources/js/DqModelRulesController.js"></script>   <!-- Data Quality - Model Rules Binding -->
+<script src="app/resources/js/DqFlowController.js"></script>   <!-- Data Quality - Flows information of submitted jobs -->
+<script src="app/resources/js/DqFlowStatsController.js"></script>   <!-- Data Quality - Statistical report -->
+
+<script src="app/qualityAnalysis/js/echarts.min.js"></script>   <!-- Data Quality - eCharts-->
+<script src="app/qualityAnalysis/js/item_selection_directives.js"></script>   <!-- Data Quality - itemSelection directive -->
+<script src="app/qualityAnalysis/js/ItemSelectionController.js"></script>   <!-- Data Quality - itemSelection controlller -->
+<!-- hippo -->
+<script src="app/hippo/js/echarts.min.js"></script>
+<script src="app/hippo/js/IndexMonitorController.js"></script>
+<script src="app/hippo/js/DrawingEcharts.js"></script>
+<script src="app/hippo/js/ScheduleHistoryController.js"></script>
+<script src="app/hippo/js/TaskhistoryController.js"></script>
+<script src="app/hippo/js/CrudBaseController_hippo.js"></script>
+<script src="app/hippo/js/AlarmController.js"></script>
+<script src="app/hippo/js/AlarmrulesController.js"></script>
+<script src="app/hippo/js/JobanalysisController.js"></script>
+<script src="app/hippo/js/DatastatusController.js"></script>
+<script src="app/hippo/js/ComponentController.js"></script>
+<script src="app/hippo/js/NewAlarmrulesController.js"></script>
+<script src="app/hippo/js/Utils.js"></script>
+<script src="app/hippo/js/KinshipController.js"></script>
+<script src="app/hippo/js/ResourcesController.js"></script>
+<script src="app/hippo/step/controllers.js"></script>
+<script src="app/hippo/js/HippoMonitorController.js"></script>
+<script src="app/hippo/js/HippoResourceSelectController.js"></script>
+
+<!--sharedInterface-->
+<script src="app/sharedInterface/js/SharedInterfaceController.js"></script>
+<script src="app/sharedInterface/js/SharedInterfaceDetailController.js"></script>
+<script src="app/sharedInterface/js/shareInterfaceResourceSelectorController.js"></script>
+
+<!--sharedPermission-->
+<script src="app/sharedPermission/SharedPermissionController.js"></script>
+<script src="app/sharedPermission/addUserController.js"></script>
+<!-- endbuild -->
+</body>
+</html>

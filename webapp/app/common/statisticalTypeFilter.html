@@ -1,0 +1,6 @@
+<div class="input-group">
+    <span class="input-group-addon">统计方式</span>
+    <select class="form-control" style="left:0px;" uib-tooltip="{{statsTypeSelected}}" ng-model="statsType" ng-change="onStatsTypeSelected(statsType)">
+        <option ng-repeat="st in statTimeScope" ng-selected="st.id == statsType" value="{{st.id}}" style="color:{{st.color}}">{{st.name}}</option>
+    </select>
+</div>

@@ -1,0 +1,173 @@
+<div class="panel panel-default" ng-controller="EditDatasetController">
+	<div class="panel-heading">
+		{{isNew ? "创建" : "查看"}}Dataset
+
+		<!-- <button ng-if="!isNew" class="btn {{disableEdit ? 'btn-warning' : 'btn-info'}} mdi {{ disableEdit ? 'mdi-lock' : 'mdi-lock-open'}}" type="button" ng-click="switchLock()">{{disableEdit ? '解锁' : '锁定'}}</button> -->
+
+		<button ng-if="!isNew" class="btn mdi" type="button" ng-model="entity.id" style="background:#339;color:#fff;" cdo-history-popup-dialog>历史信息</button>
+	</div>
+	<div class="panel-body">
+		<div class="row top-buffer">
+			<div class="col-md-4">
+				<form name="entityForm" novalidate>
+
+					<div class="form-group" ng-if="!isNew" ng-class="{ 'has-error': entityForm.id.$touched && entityForm.id.$invalid }">
+						<label>ID</label> <input type="text" name="id" class="form-control" ng-readonly="true" ng-model="entity.id">
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.name.$touched && entityForm.name.$invalid }">
+						<label>名称</label> 
+						<input type="text" name="name" class="form-control warning_placeholder" ng-readonly="disableEdit" placeholder="名称 (必填)"
+							   ng-model="entity.name" ng-minlength="1" ng-maxlength="255" required>
+
+						<div class="help-block" ng-messages="entityForm.name.$error" ng-if="entityForm.name.$touched">
+							<p ng-message="minlength">名称太短.</p>
+							<p ng-message="maxlength">名称太长.</p>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.schema.$touched && entityForm.schema.$invalid }">
+						<label>Schema</label>
+
+						<p class="input-group">
+							<input type="text" name="schema"
+								   placeholder="schema选择 (必填)" ng-readonly="disableEdit" class="form-control warning_placeholder" ng-model="schemaName"
+								   readonly required>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-disabled="disableEdit"
+										on-select-changed="onSelectChanged(selectedRow)"
+										ng-model="entity.schemaName"  step-popup>
+									<i class="glyphicon glyphicon-search"></i>
+								</button>
+							</span>
+						</p>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.expiredPeriod.$touched && entityForm.expiredPeriod.$invalid }">
+						<label>过期时间</label>
+						<div class="" data-ng-init="expiredPeriodOrigin = entity.expiredPeriod">
+							<!--edit-disable="!isNew"-->
+							<time-period output="entity.expiredPeriod" init="entity.expiredPeriod" edit-disable="disableEdit"></time-period>
+							<input type="hidden" name="expiredPeriod" ng-model="entity.expiredPeriod" required>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.storage.$touched && entityForm.storage.$invalid }">
+						<label>类型</label> <select class="form-control" name="storageSelect" id="storageSelect" ng-model="entity.storage" ng-change="onStorageChange()" ng-disabled="disableEdit">
+							<option ng-repeat="s in supportedStorages" ng-value="'{{s}}'">{{s}}</option>
+						</select>
+					</div>
+
+					<div ng-repeat="s in storageDesc" class="form-group" ng-class="{ 'has-error': entityForm['storage_'+s.name].$touched && entityForm['storage_'+s.name].$invalid }">
+						<label>{{s.label? s.label: s.name}}</label>
+						<select ng-if="s.type === 'select'" class="form-control select-placeholder" name="{{'storage_'+s.name}}"
+								ng-required="s.required? true: false"
+								ng-model="entity.storageConfigurations[s.name]" ng-change="onStorageDescChange(s)" ng-disabled="disableEdit">
+							<option value="" disabled selected>{{s.name}} (必填)</option>
+							<option ng-repeat="op in s.options" ng-value="'{{op}}'">{{op}}</option>
+						</select>
+						<input ng-if="s.type === 'string'" type="text" name="{{'storage_'+s.name}}" class="form-control"
+							   ng-class="{'warning_placeholder': s.isRequired(entity.storageConfigurations,s)}"
+							   placeholder="{{s.name}}{{s.isRequired(entity.storageConfigurations,s)?' (必填)':''}}"
+							   ng-readonly="disableEdit"
+							   ng-model="entity.storageConfigurations[s.name]"
+							   ng-required="s.isRequired(entity.storageConfigurations,s)===true? true:false" >
+
+						<input ng-if="s.type === 'password'" type="password" name="{{'storage_'+s.name}}" class="form-control"
+							   ng-class="{'warning_placeholder':s.required}"
+							   placeholder="{{s.name}}{{s.required? ' (必填)':''}}"
+							   ng-readonly="disableEdit" ng-model="entity.storageConfigurations[s.name]" ng-required="s.required===true? true:false" >
+
+						<p class="input-group" ng-if="s.type === 'pairInput'">
+							<input type="text" name="{{'storage_'+s.name}}"
+								   placeholder="{{s.name}}{{s.required? ' (必填)':''}}"
+								   class="form-control warning_placeholder"
+								   ng-model="entity.storageConfigurations[s.name]"
+								   readonly required>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-disabled="disableEdit"
+										on-input-changed="onInputChanged(inputText, inputName)"
+										ng-model="entity.storageConfigurations[s.name]"
+										input-name="{{s.name}}"
+										single="true"
+                                    	modals-directive
+                                    	pop-title="编辑"
+                                    	pop-label="Columns"
+										pop-note="{{s.tooltip}}"
+                                   >
+									<i class="glyphicon glyphicon-edit"></i>
+								</button>
+							</span>
+						</p>
+
+					</div>
+
+					<div ng-repeat="f in formatDesc" class="form-group" ng-class="{ 'has-error': entityForm['format_'+f.name].$touched && entityForm['format_'+f.name].$invalid }">
+						<label>{{f.name}}</label> <select ng-show="f.options" class="form-control" name="{{'format_'+f.name}}" ng-model="entity.storageConfigurations[f.name]" ng-disabled="disableEdit">
+							<option ng-repeat="op in f.options" ng-value="'{{op}}'">{{op}}</option>
+						</select>
+						<input ng-if="!f.options"  type="text" name="{{'format_'+f.name}}" class="form-control"
+							   ng-class="{'warning_placeholder':f.required}"
+							   placeholder="{{f.name}}{{f.required? ' (必填)':''}}"
+							   ng-readonly="disableEdit" ng-model="entity.storageConfigurations[f.name]" ng-required="f.required===true? true:false"
+							   ng-trim="false">
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.sliceType.$touched && entityForm.sliceType.$invalid }">
+						<label>sliceType</label>
+						<select class="form-control" name="sliceTypeSelect" id="sliceTypeSelect" ng-model="entity.sliceType"  ng-disabled="disableEdit">
+							<option ng-repeat="s in ['1','5','Q','F', 'H', 'D']" ng-value="'{{s}}'">{{s}}</option>
+						</select>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.sliceTime.$touched && entityForm.sliceTime.$invalid }">
+						<label>sliceTime</label>
+						<input ng-if="disableEdit" ng-value="'{{entity.sliceTime}}'" ng-readonly="true" class="form-control"/>
+						<datetimepicker ng-if="!disableEdit" name="sliceTime" dateid="sliceTime" class="form-control ng-untouched ng-valid ng-isolate-scope ng-not-empty ng-dirty ng-valid-parse" ng-model="entity.sliceTime" format="YmdHi"><input ng-readonly="disableEdit" ng-model="bindModel" style="border:none;width:100%" id="date-sliceTime" class="ng-pristine ng-valid ng-not-empty ng-touched"></datetimepicker>
+					</div>
+
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="!entityForm.$valid ||!entityForm.$dirty || saving || disableEdit">{{saving ? "保存中..." : "保存"}}</button>
+						<button ng-show="!saving" type="button" class="btn btn-warning" ng-click="cancel()">取消</button>
+					</div>
+					<div ng-show="error">
+						<uib-alert type="danger">保存失败:{{error.err}}</uib-alert>
+					</div>
+				</form>
+			</div>
+			<div class="col-md-8">
+
+			
+				<div class="panel panel-default">
+					<div class="panel panel-success">
+						<div class="panel-heading">预览数据
+							<button class="btn btn-success glyphicon glyphicon-refresh" ng-click="doRefreshPreview()">刷新</button>
+						</div>
+					</div>
+					<div class="panel-body">
+						<div class="form-group" ng-show="previewLoading">
+							<div class="col-md-12 text-center">
+								<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+							</div>
+						</div>
+						<div ng-show="previewError">
+						    <uib-alert type="danger">加载失败:{{previewError.err}}</uib-alert>
+						</div>
+						<table ng-show="!previewLoading && !previewError" st-table="rowCollection" class="table">
+							<thead>
+								<tr>
+									<th ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.name}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="row in rowCollection">
+									<td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)"><span>{{col}}</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

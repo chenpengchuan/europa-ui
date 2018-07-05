@@ -1,0 +1,164 @@
+<div class="DraggableList" style="max-width: 800px;" window-size-getter>
+    <div class="panel panel-info" style="">
+        <div class="panel-heading">{{isNew ? "创建" : isCopy ? "复制" : "查看"}}告警规则</div>
+        <div class="panel-body"  ng-style="{'max-height':'{{windowHeight-180}}px', 'overflow-y': 'auto'} ">
+            <form name="entityForm" novalidate>
+                <div ng-init="itemIndex=$index" ng-repeat="item in formDef">
+                    <div ng-if="item.type=='String' || item.type=='Number'" ng-class="" class="bottom-margin-5">
+                        <div>
+                            <label for="{{item.name}}" class="col-md-3 control-label">{{item.label?item.label:
+                                item.name}}</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="{{item.name}}" ng-model="data[item.$name]"
+                                       name="itemName" validate-errors-directive placeholder=""
+                                       ng-required="item.required">
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div ng-if="item.type=='TimePeriod'" ng-class="" class="bottom-margin-5">
+                        <div data-ng-init="item.initValue = data[item.$name]">
+                            <label for="{{item.name}}" class="col-md-3 control-label">{{item.label?item.label:
+                                item.name}}</label>
+                            <div class="col-sm-9">
+                                <time-period output="data[item.$name]" init="data[item.$name]"></time-period>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div ng-repeat="s in storageDesc" class="form-group" ng-class="{ 'has-error': entityForm['storage_'+s.name].$touched && entityForm['storage_'+s.name].$invalid }">
+                    <label>{{s.label? s.label: s.name}}</label>
+                    <select ng-if="s.type === 'select'" class="form-control select-placeholder" name="{{'storage_'+s.name}}"
+                            ng-required="s.required? true: false"
+                            ng-model="entity.storageConfigurations[s.name]" ng-change="onStorageDescChange(s)" ng-disabled="disableEdit">
+                        <option value="" disabled selected>{{s.name}} (必填)</option>
+                        <option ng-repeat="op in s.options" ng-value="'{{op}}'">{{op}}</option>
+                    </select>
+                </div>
+                <br>
+                <div class="col-md-12">
+                    <ul dnd-list="fields" dnd-drop="onDrop(fields, item, index)">
+                        <li
+                                dnd-draggable="getSelectedItemsIncluding(fields, item)"
+                                dnd-moved="onMoved(fields)"
+                                dnd-effect-allowed="move"
+                                dnd-disable-if="dragDisabled"
+                                dnd-dragend="fields.dragging = false"
+                                dnd-selected="onSelected(fields,item,event)"
+                                ng-class="{'selected': item.selected}"
+                                ng-hide="fields.dragging && item.selected"
+                                data-ng-mousedown="mousedown($event)"
+                                class="clearfix"
+                        >
+                            <div class="col-sm-12">
+                                <div class="col-sm-4" style="padding-top: 8px;">
+                                    触发条件:
+                                </div>
+
+                            </div>
+                            <div class="col-sm-12" style="padding-top: 8px;">
+                                <div class="col-md-6">
+                                <div class="input-group">
+                                  <span class="input-group-addon">
+                                   <span>单个任务失败超过(次):</span>
+                                  </span>
+                                    <input maxlength="9" type="int" class="form-control" placeholder="整数(选填)" style="width: 100%;"
+                                           ng-change="data.failed=data.failed*1>0?data.failed*1:null"
+                                           ng-model="data.failed"
+                                           ng-keyup="$event.keyCode == 13 ">
+                                </div>
+                            </div>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                  <span class="input-group-addon">
+                                   <span>任务等待时间超过(分钟):</span>
+                                  </span>
+                                        <input maxlength="9" type="int" class="form-control" placeholder="整数(选填)" style="width: 100%;"
+                                               ng-change="data.waitTime=data.waitTime*1>0?data.waitTime*1:null"
+                                               ng-model="data.waitTime"
+                                               ng-keyup="$event.keyCode == 13 && changeCurrentCount(data.waitTime)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" style="padding-top: 8px;">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                  <span class="input-group-addon">
+                                   <span>系统资源资源不足(%):</span>
+                                  </span>
+                                        <input maxlength="2" type="int" class="form-control" placeholder="整数(选填)" style="width: 100%;"
+                                               ng-change="data.resource=(data.resource*1>0)?data.resource*1:null"
+                                               ng-model="data.resource"
+                                               ng-keyup="$event.keyCode == 13 ">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <br>
+                            <div class="col-sm-12">
+                                <div class="col-sm-6" style="padding-top: 8px;">
+                                    负责人:
+                                </div>
+                                <!--<div class="col-sm-4" style="padding-top: 8px;">-->
+                                    <!--触发条件:-->
+                                <!--</div>-->
+                                <div class="col-sm-6" style="padding-top: 8px;">
+                                    告警等级:
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="owner"
+                                           ng-model="data.principal"
+                                           validate-errors-directive
+                                           placeholder="principal必填"
+                                           data-ng-mousedown="mousedown($event)" required>
+                                </div>
+
+                                <!--<div class="col-sm-4 ">-->
+                                    <!--<div class="input-group">-->
+                                        <!--<select class="form-control group_select" name="conditions"-->
+                                                <!--ng-model="data.conditions"-->
+                                                <!--ng-options="v for v in fieldDef.type.enum"></select>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <div class="col-sm-6 ">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <select class="form-control group_select"
+                                                    id="flow_type_select"  name="type" ng-model="data.type" >
+                                                <option ng-repeat="o in auxo.alarmTypeArray_new" value="{{o.value}}">{{o.name}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>
+
+<div class="form-group">
+    <div class="form-group">
+        <!--!entityForm.$valid ||!entityForm.$dirty|| (!isNew && !isCopy) || saving || isReadOnlyView-->
+        <button type="submit" class="btn btn-primary" ng-click="save()"
+                ng-disabled="isCopy==true? (!entityForm.$valid  || saving) : (!entityForm.$valid ||!entityForm.$dirty || saving)">
+            {{saving ? "保存中..." : "保存"}}
+        </button>
+        <button ng-show="!saving" type="button" class="btn btn-warning" ng-click="cancel()">取消</button>
+    </div>
+    <div ng-show="error">
+        <uib-alert type="danger">保存失败:{{error.err}}</uib-alert>
+    </div>
+</div>

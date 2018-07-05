@@ -1,0 +1,45 @@
+<div class="panel panel-default" ng-controller="LicenseController">
+    <div class="panel-heading">{{isNew ? "激活" : "更新"}}许可证</div>
+    <div class="panel-body" style="width: 750px;">
+        <form name="entityForm" novalidate>
+
+            <div class="form-group">
+                <label>ID</label>
+                <input type="text" name="sid" class="form-control" ng-disabled="true"
+                       ng-model="entity.sid">
+            </div>
+
+            <div class="form-group" ng-if="!isNew" ng-class="{ 'has-error': entityForm.usr.$touched && entityForm.usr.$invalid }">
+                <label>用户</label>
+                <input type="text" name="usr" class="form-control"
+                       ng-model="entity.usr" ng-disabled="true"
+                       required>
+            </div>
+
+            <div class="form-group" ng-if="!isNew" ng-class="{ 'has-error': entityForm.prd.$touched && entityForm.prd.$invalid }">
+                <label>产品</label>
+                <input colorpicker type="text" name="prd" class="form-control"
+                       ng-model="entity.prd" ng-disabled="true"
+                       required>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': entityForm.license.$touched && entityForm.license.$invalid }">
+                <label>许可证</label>
+                <textarea type="text" name="license" class="form-control"
+                       ng-model="entity.license" rows="20" placeholder="请将许可证粘贴此处"
+                       required>
+                </textarea>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="!entityForm.$valid ||!entityForm.$dirty || saving || disableEdit">{{saving ? "激活中..." : "激活"}}</button>
+                <button ng-show="!saving" type="button" class="btn btn-warning" ng-disabled="true" ng-click="cancel()">取消</button>
+            </div>
+            
+            
+            <div ng-show="error">
+                <uib-alert type="danger">激活失败:{{error.err}}</uib-alert>
+            </div>
+        </form>
+    </div>
+</div>

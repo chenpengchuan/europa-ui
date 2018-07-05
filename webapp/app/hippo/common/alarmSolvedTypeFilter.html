@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>处理状态</span>
+    </span>
+    <select  class="form-control" id="alarm_type_select"  ng-model="alarmStatusFilter" ng-change="onAlarmStatusTypeChange(alarmStatusFilter)">
+        <option ng-repeat="o in alarmStatusArray" value="{{o.value}}">{{o.name}}</option>
+    </select>
+</div>

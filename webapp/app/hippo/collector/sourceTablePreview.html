@@ -1,0 +1,31 @@
+<div class="panel panel-default" ng-controller="sourceTablePreviewController">
+    <div class="panel panel-success">
+        <div class="panel-heading">预览数据
+        </div>
+    </div>
+    <div class="panel-body" style="max-height: 300px; overflow: auto;">
+        <div class="form-group" ng-show="previewLoading">
+            <div class="col-md-12 text-center">
+                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+            </div>
+        </div>
+        <div ng-show="previewError">
+            <uib-alert type="danger">加载失败:{{previewError.err}}</uib-alert>
+        </div>
+        <table ng-show="!previewLoading && !previewError" st-table="rowCollection" class="table">
+            <thead>
+            <tr>
+                <th st-sort="{{rh}}" st-skip-natural="true" ng-repeat="rh in rowHeaders track by $index">{{rh}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in rowCollection">
+                <td ng-repeat="rh in rowHeaders track by $index">
+                    <span >{{row[$index]}}</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

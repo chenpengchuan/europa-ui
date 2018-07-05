@@ -1,0 +1,56 @@
+<div class="panel panel-default" ng-controller="SelectSchemaController">
+  <div class="panel-heading">请选择一个Schema</div>
+  <div class="panel-body">
+
+		<div class="panel panel-default">
+		    <div class="panel-heading">
+				<div class="row top-buffer">
+				  <div class="col-md-3">
+				    <div class="input-group">
+				      <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+				      <span class="input-group-btn">
+				        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				      </span>
+				    </div>
+				  </div>
+					<div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+					</div>
+				</div><!-- /1.row -->
+				<div class="row top-buffer">
+				  <div class="col-md-12">
+				  	<div class="checkbox">
+					   <label ng-repeat="tf in tagfacets" style="margin-right: 25px;"><input type="checkbox" ng-value="'{{tf.name}}'" ng-change="doTagFilter()" ng-model="tagfilters[tf.name]">
+					      <span style="color:#fff;background-color:{{tf.color}};">{{tf.name}}({{tf.count}})</span></label>
+					</div>
+				  </div>
+				</div><!-- 2.row -->
+		    </div>
+			<div class="panel-body">
+		      <table st-table="rowCollection" st-pipe="fetchPage" class="table">
+					<thead>
+					<tr>
+						<th></th>
+						<th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="row in rowCollection">
+						<td cs-select="row" rows="rowCollection" mode="'single'" selected-rows="selectedRows"></td>
+						<td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+							<span ng-if="rh.name != 'status'">{{rh.converter(col)}}</span>
+							<!-- <tags ng-show="rh == rowHeaders[0]" options="{addable: false}" model="row.tags" src="s as s.name for s in tags"></tags> -->
+							<uib-progressbar ng-if="rh.name == 'status'" class="progress-striped {{col['type'] == 'RUNNING' ? 'active':''}}" max="col.estimateTotal" value="col.processed" type="{{statusColor(col)}}" style="margin-bottom: 0px;"><i>{{rh.converter(col)}}</i></uib-progressbar></div>
+							<span ng-if="rh == rowHeaders[0]" ng-repeat="t in row.tags" style="color:#fff;background-color: {{tagsColorMap[t]}};">{{t}}</span>
+						</td>
+					</tr>
+					</tbody>
+				</table>				
+			</div>
+		</div>
+		
+ <div class="form-group">
+	      <button type="submit" class="btn btn-primary" ng-click="closeThisDialog(selectedRows)" ng-disabled="">确定</button>
+	      <button type="button" class="btn btn-warning" ng-click="closeThisDialog('cancel')">取消</button>
+</div> 	
+  </div>
+</div>

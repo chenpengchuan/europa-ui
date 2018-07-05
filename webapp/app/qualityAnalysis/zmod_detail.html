@@ -1,0 +1,92 @@
+<div class="panel panel-default" ng-controller="EditDqModelController">
+	<div class="panel-heading">
+		{{isNew ? "创建" : "查看"}}分析模板
+		<button ng-if="!isNew" class="btn {{disableEdit ? 'btn-warning' : 'btn-info'}} mdi {{ disableEdit ? 'mdi-lock' : 'mdi-lock-open'}}" type="button" ng-click="switchLock()">{{disableEdit ? '解锁' : '锁定'}}</button>
+	</div>
+	<div class="panel-body">
+		<div class="row top-buffer">
+			<div class="col-md-5">
+				<form name="entityForm" novalidate>
+
+					<div class="form-group" ng-if="!isNew" ng-class="{ 'has-error': entityForm.id.$touched && entityForm.id.$invalid }">
+						<label>ID</label> <input type="text" name="id" class="form-control" ng-readonly="true" ng-model="entity.id">
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.name.$touched && entityForm.name.$invalid }">
+						<label>名称</label> 
+						<input type="text" name="name" class="form-control warning_placeholder" ng-readonly="disableEdit" placeholder="名称 (必填)"
+							   ng-model="entity.name" ng-minlength="1" ng-maxlength="255" required>
+
+						<div class="help-block" ng-messages="entityForm.name.$error" ng-if="entityForm.name.$touched">
+							<p ng-message="minlength">名称太短.</p>
+							<p ng-message="maxlength">名称太长.</p>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.preprocessflow.$touched && entityForm.preprocessflow.$invalid }">
+						<label>预处理 Flow</label>
+
+						<p class="input-group">
+							<input type="text" name="preprocessflow"
+								   placeholder=" 预处理流程选择 " ng-readonly="disableEdit" class="form-control warning_placeholder" ng-model="entity.preProcessFlowId"
+								   ng-change="onEntityChanged(entity)" readonly>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-disabled="disableEdit"
+										pop-input="flows"
+										pop-filter="flowType=dataflow&-source=zebra"
+										on-select-changed="onSelectFlowChanged(selectedRow)"
+										ng-model="entity.preProcessFlowId" step-popup>
+									<i class="glyphicon glyphicon-search"></i>
+								</button>
+							</span>
+						</p>
+						<div class="help-block">
+							<input type="text" name="preProcessFlowName" ng-show="entity.preProcessFlowId"
+								   placeholder="" ng-readonly="disableEdit" ng-disabled="disableEdit" class="form-control warning_placeholder" ng-model="entity.preProcessFlowName"
+								   readonly>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.dataid.$touched && entityForm.dataid.$invalid }">
+						<label>Dataset</label>
+						<div class="input-group">
+							<input type="text" name="dataid"
+								   placeholder="数据选择 (必填)" ng-readonly="disableEdit" class="form-control warning_placeholder" ng-model="entity.processDataId"
+								   readonly required>
+							<span class="input-group-btn">
+								<!--<button type="button" class="btn btn-default" ng-disabled="disableEdit"-->
+										<!--pop-input="datasets"-->
+										<!--ng-model="entity.processDataId"  step-popup>-->
+									<!--<i class="glyphicon glyphicon-search"></i>-->
+								<!--</button>-->
+								<button type="button" class="btn btn-default" ng-disabled="disableEdit"
+										root-dir="数据集"
+										keyword="dataset"
+										ng-model="entity.processDataId"
+										select-mode="single"
+										resource-selector>
+									<i class="glyphicon glyphicon-search"></i>
+								</button>
+							</span>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': entityForm.description.$touched && entityForm.description.$invalid }">
+						<label>Description</label>
+						<input type="text" name="description" class="form-control warning_placeholder" ng-readonly="disableEdit" placeholder="说明信息"
+							   ng-model="entity.description" ng-minlength="1" ng-maxlength="255">
+					</div>
+
+					<div class="form-group">
+						<button class="btn btn-primary" ng-click="save(true)" ng-disabled="!entityForm.$valid || (isNew && !entityForm.$dirty) || saving || (disableEdit && isNew)">{{entityForm.$dirty?"保存/":""}}编辑规则</button>
+						<button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="!entityForm.$valid ||!entityForm.$dirty || saving || disableEdit">{{saving ? "保存中..." : "保存"}}</button>
+						<button ng-show="!saving" type="button" class="btn btn-warning" ng-click="cancel()">取消</button>
+					</div>
+					<div ng-show="error">
+						<uib-alert type="danger">保存失败:{{error.err}}</uib-alert>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

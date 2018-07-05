@@ -1,0 +1,75 @@
+<div ng-app="fileUpload" ng-controller="ImportController" class="importPanel ">
+    <div>
+        <label> 导入目标路径:  {{ path }} </label>
+    </div>
+    <span style="padding-right: 20px;"><strong>选择上传的文件</strong></span>
+    <button type="file" class="btn btn-default" ngf-select="uploadFiles($file, $invalidFiles)" accept=".europa"> 浏览...</button>
+    <span style="padding-left: 20px;">{{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}</span>
+
+    <div style="margin-top: 10px; " class="clearfix">
+        <div  class="col-sm-3 no-padding " style="padding-right: 5px !important;;">
+            <div ng-if="flow && flow.length>0" class="  panel panel-default"  ng-style="{'max-height':'{{windowHeight-350}}px', 'overflow-y': 'auto'} " >
+                <!-- Default panel contents -->
+                <div class="panel-heading top-padding-5 bottom-padding-5">流程</div>
+
+                <!-- List group -->
+                <ul class="list-group">
+                    <a ng-repeat="item in flow" class="list-group-item" ng-click="" >{{item.name}}<i ng-if="item.active" class="pull-right glyphicon glyphicon-ok"></i></a>
+                </ul>
+            </div>
+        </div>
+        <div  class="col-sm-3 no-padding " style="padding-right: 5px !important;">
+            <div ng-if="dataset && dataset.length>0" class=" panel panel-default" ng-style="{'max-height':'{{windowHeight-350}}px', 'overflow-y': 'auto'} " >
+                <!-- Default panel contents -->
+                <div class="panel-heading top-padding-5 bottom-padding-5">datasets</div>
+
+                <!-- List group -->
+                <ul class="list-group">
+                    <a ng-repeat="item in dataset" class="list-group-item" ng-click="" >{{item.name}}<i ng-if="item.active" class="pull-right glyphicon glyphicon-ok"></i></a>
+                </ul>
+            </div>
+        </div>
+        <div  class="col-sm-3 no-padding" style="padding-right: 5px !important;">
+            <div ng-if="schema && schema.length>0" class="panel panel-default" ng-style="{'max-height':'{{windowHeight-350}}px', 'overflow-y': 'auto'} " >
+                <!-- Default panel contents -->
+                <div class="panel-heading top-padding-5 bottom-padding-5">schemas</div>
+
+                <!-- List group -->
+                <ul class="list-group">
+                    <a ng-repeat="item in schema" class="list-group-item" ng-click="" >{{item.name}}<i ng-if="item.active" class="pull-right glyphicon glyphicon-ok"></i></a>
+                </ul>
+            </div>
+        </div>
+        <div  class="col-sm-3 no-padding">
+            <div ng-if="tag && tag.length>0" class="panel panel-default" ng-style="{'max-height':'{{windowHeight-350}}px', 'overflow-y': 'auto'} " >
+                <!-- Default panel contents -->
+                <div class="panel-heading top-padding-5 bottom-padding-5">tags</div>
+
+                <!-- List group -->
+                <ul class="list-group">
+                    <a ng-repeat="item in tag" class="list-group-item" ng-click="" >{{item.name}}<i ng-if="item.active" class="pull-right glyphicon glyphicon-ok"></i></a>
+                </ul>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div ng-if="flow&&flow.length>0"  class="col-sm-12 no-padding ">
+        <span >导入信息:</span>
+        <span style="padding-left: 20px;" ng-if="flow&&flow.length>0">流程: {{flow.length}}</span>
+
+        <!--
+        <span style="padding-left: 20px;" ng-if="dataset&&dataset.length>0">datasets: {{dataset.length}}</span>
+
+        <span style="padding-left: 20px;" ng-if="schema&&schema.length>0">schemas: {{schema.length}}</span>
+        <span style="padding-left: 20px;" ng-if="tag&&tag.length>0">tags: {{tag.length}}</span>
+    </div>
+    <!--
+    <div class="list-group-item no-border col-sm-12 no-padding top-margin-5" ng-if="flow&&flow.length>0">
+        <input type="checkbox" aria-label="{{importOptions.mode.label}}" ng-model="importOptions.mode.overWrite">
+        <a ng-click="importOptions.mode.overWrite=!importOptions.mode.overWrite"><span>{{importOptions.mode.label}} </span></a>
+    </div>
+    -->
+    <div class="list-group-item no-border col-sm-12 no-padding top-margin-10" ng-if="flow&&flow.length>0">
+        <span style="color: red"><strong> 警告: 导入前请检查数据的正确性, 备份相关数据, 导入操作无法撤销.</strong></span>
+    </div>
+</div>

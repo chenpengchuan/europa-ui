@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>聚合类型</span>
+    </span>
+    <select class="form-control" style="left:0px;" ng-model="valueTypeFilter" ng-change="drawChart(valueTypeFilter)">
+        <option ng-repeat="s in valueAggTypes" ng-selected="s.value == valueTypeFilter" value="{{s.value}}">{{s.name}}</option>
+    </select>
+</div>

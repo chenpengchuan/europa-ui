@@ -1,0 +1,19 @@
+<div name="shareForm" ng-controller="ProcessShareController">
+    <div style="width: 100%; "  class="clearfix">
+        <div ng-repeat="item in meta.fields"  class="bottom-margin-2">
+            <div class="clearfix" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+
+            <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <br>
+    <div ng-show="error">
+        <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+    </div>
+</div>

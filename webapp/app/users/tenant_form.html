@@ -1,0 +1,115 @@
+<div class="panel panel-default">
+    <div class="panel-heading">{{isNew ? "创建" : "更新"}}{{meta.title}}</div>
+    <div class="panel-body" style="">
+        <form name="entityForm">
+            <div style="width: 100%; max-width: 500px;"  class="clearfix">
+                <div ng-repeat="item in meta.fields"  class="bottom-margin-2">
+                    <div class="clearfix" ng-if="item.type !== 'StringArray' && item.$name !== 'maxRam' && item.$name !== 'maxCpus'" data-ng-init="itemCopy=item" ng-include="'app/users/form_tpl.html'" ></div>
+
+                    <!-- 选择queue -->
+                    <div class="clearfix" ng-if="item.type === 'StringArray'" data-ng-init="itemCopy=item">
+                        <div class="{{itemCopy.input_length_class}}" ng-style="auxo.exec(itemCopy.style, itemCopy)" >
+                            <label  for="{{itemCopy.id}}" data-ng-class="{'col-sm-3': !itemCopy.label_length_class}"
+                                    ng-style="itemCopy.label_align=='left' && {'text-align': 'left'}"
+                                    class="{{itemCopy.label_length_class}}  control-label">{{itemCopy.label?itemCopy.label: itemCopy.$name}}
+                                <span class ="glyphicon glyphicon-info-sign"   uib-tooltip-html="'{{itemCopy.tooltip? itemCopy.tooltip:itemCopy.label}}'"></span>
+                            </label>
+                            <tags-input ng-init=""
+                                        min-length="1"
+                                        ng-model="itemCopy.data[itemCopy.$name]"
+                                        ng-required="itemCopy.optional? false: true"
+                                        display-property="text"
+                                        placeholder="资源队列 (必填)"
+                                        max-length="200"
+                                        add-on-comma="false"
+                                        ng-class="{'warning_placeholder':!itemCopy.optional}"
+                                        ##allowed-tags-pattern="^[\u0000-\u00FF 0-9a-zA-Z_-]+$"
+                                        replace-spaces-with-dashes="false"
+                                        add-from-autocomplete-only="true"
+                                        on-tag-added="onTagAdded($tag, itemCopy)"
+                                        on-tag-removed="onTagRemoved($tag, itemCopy)">
+                                <auto-complete source="loadTagInputSource('resourceQueues')"
+                                               min-length="1"
+                                               load-on-focus="true"
+                                               load-on-empty="true"
+                                               debounce-delay="0"
+                                               max-results-to-show="500"
+                                ></auto-complete>
+                            </tags-input>
+
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <!-- 最大内存 -->
+                    <div ng-if="item.type=='Number' && item.$name=='maxRam'">
+                        <div ng-style="auxo.exec(item.style, item)">
+                            <label  for="{{item.id}}" data-ng-class="{'col-sm-3': !item.label_length_class}"
+                                    ng-style="item.label_align=='left' && {'text-align': 'left'}"
+                                    class="{{item.label_length_class}}  control-label">{{item.label?item.label: item.$name}}{{item.unit? ' ('+item.unit+')':''}}
+                                <span class = "glyphicon glyphicon-info-sign"    uib-tooltip-html ="'{{item.label?item.label: item.tooltip}}'"></span>
+                            </label>
+                            <div class="{{item.input_length_class}}"
+                                 data-ng-class="{'col-sm-9': !item.input_length_class, 'has-error':!item.optional&&!item.data[item.$name]}">
+                                <input class="form-control"
+                                       id="{{item.id}}"
+                                       name="{{item.id}}"
+                                       ng-class="{'warning_placeholder':!item.optional}"
+                                       ng-model="item.data[item.$name]"
+                                       ng-required="item.optional? false: true"
+                                       type="number"
+                                       max="{{item.max}}"
+                                       min="{{item.min}}"
+                                       placeholder="{{item.$name}}{{item.optional?'':' (必填)'}}">
+                            </div>
+
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <!-- 最大CPU数 -->
+                    <div ng-if="item.type=='Number'&& item.$name=='maxCpus'">
+                        <div ng-style="auxo.exec(item.style, item)">
+                            <label  for="{{item.id}}" data-ng-class="{'col-sm-3': !item.label_length_class}"
+                                    ng-style="item.label_align=='left' && {'text-align': 'left'}"
+                                    class="{{item.label_length_class}}  control-label">{{item.label?item.label: item.$name}}{{item.unit? ' ('+item.unit+')':''}}
+                                <span class = "glyphicon glyphicon-info-sign"    uib-tooltip-html ="'{{item.label?item.label: item.tooltip}}'"></span>
+                            </label>
+                            <div class="{{item.input_length_class}}"
+                                 data-ng-class="{'col-sm-9': !item.input_length_class, 'has-error':!item.optional&&!item.data[item.$name]}">
+                                <input class="form-control"
+                                       id="{{item.id}}"
+                                       name="{{item.id}}"
+                                       ng-class="{'warning_placeholder':!item.optional}"
+                                       ng-model="item.data[item.$name]"
+                                       ng-required="item.optional? false: true"
+                                       type="number"
+                                       max="{{item.max}}"
+                                       min="{{item.min}}"
+                                       placeholder="{{item.$name}}{{item.optional?'':' (必填)'}}">
+                            </div>
+
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <br>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary ng-binding" ng-click="save()" ng-disabled="!entityForm.$valid || saving || error">{{saving ? "保存中..." : "保存"}}</button>
+                <button ng-show="!saving" type="button" class="btn btn-warning" ng-click="cancel()">取消</button>
+            </div>
+            <div ng-show="error">
+                <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+            </div>
+        </form>
+    </div>
+</div>

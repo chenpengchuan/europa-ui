@@ -1,0 +1,14 @@
+
+        <div>
+            <ul class="nav nav-tabs" >
+                <li ng-class="{'active': isCurrentPage(tab.id)}"  ng-repeat="tab in tabs">
+                    <a ng-click="openTab(tab.id)">{{tab.label}}</a></li>
+
+           </ul>
+        </div>
+
+        <! --tab details -->
+        <div ng-init="" ng-repeat="tab in tabs"  ng-class="{hide: currentTab!=tab.id, show: currentTab==tab.id}"  ng-include="'app/cron/cron_tab_form.html'">
+        </div>
+
+        <div  ng-include="'app/cron/cron_expression_form.html'" class="left-margin-15"></div>

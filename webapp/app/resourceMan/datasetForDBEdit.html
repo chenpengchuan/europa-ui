@@ -1,0 +1,106 @@
+<div class="" ng-controller="DatasetDBController">
+    <ul  class="nav nav-tabs"  data-ng-init="">
+        <li data-ng-init="" ng-class="{active:page==3}">
+            <a data-ng-click="selectPage(3,true)" data-toggle="tab" >
+                <span uib-tooltip="">&nbsp;&nbsp;基本信息</span></a>
+        </li>
+        <li data-ng-init="" ng-class="{active:page==2}">
+            <a data-ng-click="selectPage(2)" data-toggle="tab" >
+                <span uib-tooltip="">&nbsp;&nbsp;表信息</span></a>
+        </li>
+        <li data-ng-init="" ng-class="{active:page==1}">
+            <a data-ng-click="selectPage(1)" data-toggle="tab" >
+                <span uib-tooltip="">&nbsp;&nbsp;数据源</span></a>
+        </li>
+    </ul>
+
+    <div class="tab-content top-margin-5">
+        <div class="tab-pane clearfix" data-ng-class="{active: page==1}"   id="tab_1">
+            <table tt-table tt-params="dynamic_params" class="table" >
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Driver</th>
+                    <th>Url</th>
+                </tr>
+                </thead>
+                <tbody ng-mousedown="onNodeSelected(node)"></tbody>
+            </table>
+        </div>
+        <div class="tab-pane clearfix" data-ng-class="{active: page==2}"   id="tab_2">
+            <div class="row clearfix">
+                <div class="col-xs-4">
+                    <label class="control-label">表或者视图</label>
+                    <ui-select ng-model="selectedTable" theme="bootstrap" on-select="onTableChange($select)">
+                        <ui-select-match placeholder="输入表/视图名显示查询结果...">
+                            {{$select.selected}}
+                        </ui-select-match>
+                        <ui-select-choices
+                                refresh="fetchTable($select)"
+                                refresh-delay="300"
+                                repeat="table in tables | filter: $select.search"
+                        >
+                            {{ table }}
+                            <div ng-if="$index == $select.items.length-1 && !isLastPage">
+                                <button
+                                        class="btn btn-xs btn-success"
+                                        style="width: 100%; margin-top: 5px;"
+                                        ng-click="fetchTable($select, $event);"
+                                        ng-disabled="disableSelectTable">加载更多...</button>
+
+                            </div>
+                        </ui-select-choices>
+                    </ui-select>
+                    <!--<select data-ng-model="selectedTable" ng-disabled="disableSelectTable" class="form-control" ng-change="onTableChange()"  size="10">-->
+                        <!--<option ng-repeat="table in tables track by $index" value="{{table}}">{{table}}</option>-->
+                    <!--</select>-->
+                </div>
+                <div class="col-xs-4">
+                    <label class="control-label">字段列表</label>
+                    <select data-ng-model="selectedColumns" class="form-control" ng-change="onSelectedColumnChange()"  multiple="multiple" size="10">
+                        <option ng-repeat="col in columns track by $index" value="{{col.name}}">{{col.name + "(" + col.dataType + ")"}}</option>
+                    </select>
+                </div>
+                <div class="col-xs-4">
+                    <label class="control-label">Where 子句</label>
+                    <textarea  class="form-control"
+                               ng-model="whereString"
+                               ng-change="onWhereChange()"
+                               style="height:200px; resize:vertical;" ></textarea>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-xs-12">
+                    <label class="control-label">Sql 语句</label>
+                    <textarea  class="form-control"
+                               ng-model="sqlString"
+                               style="height:200px; resize:vertical;" ></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane clearfix" data-ng-class="{active: page==3}"  id="tab_3">
+            <div name="entityForm">
+                <div style="width: 100%; "  class="clearfix">
+                    <div ng-repeat="item in meta.fields"  class="bottom-margin-2">
+                        <div class="clearfix" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+
+                        <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+                        </div>
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <br>
+                <div ng-show="error">
+                    <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+                </div>
+            </div>
+            <div ng-hide="datasetEntity.attributes.schema.reference==='true'">
+                <div ng-include="'app/resourceMan/SchemaForm.html'" ng-controller="SchemaFieldsController2"></div>
+            </div>
+        </div>
+    </div>
+</div>

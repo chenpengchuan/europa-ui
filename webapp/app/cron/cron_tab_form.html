@@ -1,0 +1,32 @@
+<div class=" left-margin-15 right-margin-15" id="tab-{{data.id}}" >
+    <form class="form-horizontal" role="form">
+        <div class="" ng-init="lineNo = $index" ng-repeat="line in tab.data ">
+
+        <div class="top-margin-5">
+                <span  ng-repeat="item in line">
+                    <span ng-if="item.beforeLabel" style="{{item.beforeLabelStyle}}"> {{item.beforeLabel}} </span>
+
+                    <select id="{{item.id}}" initValue="{{tab.model[item.id]}}" style="width:60px;"  ng-if="item.options" ng-change="doValueChange(tab.id, item.id, item.radioValue)" ng-model="tab.model[item.id]" ng-init=""
+                            ng-options="option for option in item.options" >
+                    </select>
+
+                    <input type="{{item.type}}" name="{{item.name}}" value="{{item.value}}" style="{{item.style}}" ng-click="doOptionChange(item.name)" ng-model="tab.model['option']" ng-if="item.type =='radio'">
+
+                    <input type="{{item.type}}" style="{{item.style}}" value="{{item.value}}" ng-change="doCheckChange(tab.id, item.value)" ng-model="tab.model.list[item.value]" ng-if="item.type=='checkbox'">
+
+                    <span ng-if="item.afterLabel"> {{item.afterLabel}} </span>
+                </span>
+        </div>
+
+        <div ng-if="item.type=='title'" class="">
+            <h4 class="modal-title left-margin-15"> {{item.name}}</h4>
+        </div>
+        <div ng-if="item.type=='label'" class="">
+            <h5 class="modal-title left-margin-15"> {{item.name}}</h5>
+        </div>
+        <div ng-if="item.type=='separate'" class="" style="">
+            <br>
+        </div>
+        </div>
+    </form>
+</div>

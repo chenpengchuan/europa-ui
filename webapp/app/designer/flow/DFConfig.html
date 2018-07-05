@@ -1,0 +1,30 @@
+<div class="  " style="">
+    <form class="form-horizontal" name="stepForm" role="form" data-ng-init="">
+
+        <ul ng-if="!isWorkflow()" class="nav nav-tabs"  data-ng-show="tabs.length > 1">
+            <li ng-class="{active:tab.active}" ng-if="!tab.state.hidden"  ng-repeat="tab in tabs">
+                <a data-ng-click="onTabChange(tab)" data-toggle="tab" >
+                    <i class="glyphicon text-info" data-ng-class="{'glyphicon-arrow-down': tab.category=='Input','glyphicon-arrow-up': tab.category=='Output','glyphicon-cog': tab.category=='Other'}"></i>
+                    <span>&nbsp;&nbsp;{{tab.title}}</span></a></li>
+        </ul>
+        <br>
+
+        <div class="tab-content" ng-if="!isWorkflow()">
+            <div class="tab-pane " data-ng-class="{active: tab.active}"  ng-repeat="tab in tabs" id="tab_{{$index}}">
+                <div ng-if="tab.category == 'Input'"  ng-include="'app/designer/flow/DFConfigInOutput.html'" class=" "></div>
+                <div ng-if="tab.category == 'Output'"  ng-include="'app/designer/flow/DFConfigInOutput.html'" class=" "></div>
+                <div ng-if="tab.category == 'Other'"  ng-include="'app/designer/flow/DFConfigSetting.html'" class=" "></div>
+            </div>
+        </div>
+
+        <div ng-if="isWorkflow()"  ng-include="'app/designer/flow/DFConfigSetting.html'" class=" "></div>
+        <div ng-show="error" style="padding-left: 15px;">
+            <h4 style="color:red;">{{errmessage.empty}}{{errmessage.message}}</h4>
+        </div>
+    </form>
+    <div class="col-sm-12 no-padding" style="padding-left: 15px;">
+        <br>
+        <h5 style="color: #0a0a0a;">提示：名称允许的字符包括字母,数字和下划线.</h5>
+    </div>
+
+</div>

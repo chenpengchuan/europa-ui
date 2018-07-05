@@ -1,0 +1,132 @@
+<div ng-controller="CollectorDetailController">
+    <div class="panel panel-default" >
+        <div class="panel-heading">采集器信息</div>
+        <div class="panel-body" class="row">
+            <uib-tabset  active="activeTabIndex">
+                <uib-tab heading="采集器详细信息"  select=""  ng-click="showTab('detail')" index="0"></uib-tab>
+                <uib-tab heading="采集器任务列表"  select="" ng-click="showTab('tasks')" index="1"></uib-tab>
+
+                <!--<uib-tab index="2" select="goResourceDir()" >-->
+                    <!--<uib-tab-heading>-->
+                        <!--</i><span >采集器资源目录</span>-->
+                    <!--</uib-tab-heading>-->
+                <!--</uib-tab>-->
+            </uib-tabset>
+            <div ng-show="activeTab=='detail'" style="min-height: 470px;" >
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4" style="padding-top:10px;">
+                                <form name="entityForm" novalidate>
+                                    <div class="form-group">
+                                        <label>ID</label><input type="text" name="id" class="form-control" ng-readonly="true" ng-model="id" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>名称</label><input type="text" name="name" class="form-control" ng-model="entity.hostname"  readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>地址</label><input type="text" name="address" class="form-control" ng-model="entity.ip" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>运行状态</label><input class="form-control" ng-readonly="true"  ng-model="entity.viewStatus"  readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>cpu</label><input class="form-control" ng-readonly="true"  ng-model="entity.cpu"  readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>内存</label><input class="form-control" ng-readonly="true"  ng-model="entity.memory"  readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>磁盘</label><input class="form-control" ng-readonly="true"  ng-model="entity.disk"  readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>JDK</label><input class="form-control" ng-readonly="true"  ng-model="entity.jdk"  readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>开始时间</label><input class="form-control" ng-readonly="true"  ng-model="entity.startedTime"  readonly>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-8">
+                                <div style="padding-top:40px;">
+                                    <div class="panel panel-default" >
+                                        <div class="panel-heading">日志信息<a data-ng-click="refresh()">--刷新日志</a></div>
+                                        <div class="panel-body" style="width:770px;height:540px;overflow: auto;word-break:break-all;">
+                                            <div data-ng-model="detail.name" style="width:740px;padding-top:5px;padding-bottom:2px" data-ng-repeat="loga in log track by $index" >{{log[$index]}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="activeTab=='tasks'" style="min-height: 470px;">
+                <div class="panel panel-default" style="margin-top: -1px;" >
+                    <div class="panel-heading">
+                        <div class="row top-buffer">
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                  <span class="input-group-btn">
+                                    <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+                                  </span>
+                                    <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange" options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} " ng-keydown="keydown($event)"  readonly="readonly" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary"  ng-disabled="selectedRows.length == 0" ng-click="startTask(selectedRows)"><i class="icon icon-ok-circle">&nbsp;</i>启动</button>
+                                <button class="btn btn-danger" type="button" ng-click="killExecution(selectedRows)" ng-disabled="selectedRows.length == 0"><i class="icon icon-remove-circle">&nbsp;</i>停止</button>
+                                <button class="btn btn-danger" ng-click="remove(selectedRows)" ng-disabled="selectedRows.length == 0"><i class="icon icon-trash">&nbsp;</i>删除</button>
+                            </div>
+                            <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+                            </div>
+                        </div>
+                        <div class="row top-buffer">
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <table st-table="rowCollection" st-pipe="fetchPage" class="table">
+                            <thead>
+                            <tr>
+                                <th><st-select-all all="rowCollection"></st-select-all></th>
+                                <th  st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="row in rowCollection">
+                                <td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+                                <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+                                    <span ng-if="['name','dataSource','object','status'].indexOf(rh.name)<0">{{rh.converter(col)}}</span>
+                                    <!--<a ng-if="rh.name == 'name'" href="" ng-click="op(row)">{{rh.converter(col)}}</a>-->
+                                    <span ng-if="rh.name == 'name'">{{rh.converter(col)}}</span>
+                                    <a ng-if="rh.name == 'dataSource'" href="" ng-click="viewDataSource(row)">{{rh.converter(col)}}</a>
+                                    <a ng-if="rh.name == 'object'" href="" ng-click="viewObject(row)">{{rh.converter(col)}}</a>
+                                    <div ng-if="row['status'] == 0 && rh.name == 'status'" style="background-color:#337ab7;padding:4px;" ><font color="white" size="2px">{{rh.converter(col)}}</font></div>
+                                    <div ng-if="row['status'] == 1 && rh.name == 'status'" style="background-color:#5cb85c;padding:4px;" ><font color="white" size="2px">{{rh.converter(col)}}</font></div>
+                                    <div ng-if="row['status'] == 2 && rh.name == 'status'" style="background-color:#d9534f;padding:4px;" ><font color="white" size="2px">{{rh.converter(col)}}</font></div>
+                                    <div ng-if="row['status'] == -1 && rh.name == 'status'" style="background-color:#ffa54f;padding:4px;" ><font color="white" size="2px">{{rh.converter(col)}}</font></div>
+                                    <!--<a ng-if="rh.name == 'dataStore'" href="" ng-click="viewDataStore(row)">{{rh.converter(col)}}</a>-->
+                                </td>
+                                <!--<td><a href="" ng-click="exec(row)">执行列表</a></td>-->
+                                <td><a href="" ng-click="previewDataSet(row)">预览数据集</a></td>
+
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <a href="#/hippo/collector" type="button" class="btn btn-warning" ><i class="icon icon-reply">&nbsp;</i>返回</a>
+    </div>
+</div>

@@ -1,0 +1,171 @@
+<div class="panel panel-default" >
+    <div class="panel-heading">
+       同步任务信息
+    </div>
+    <div class="panel-body" style="max-height:450px;min-height: 60px; overflow: auto;">
+
+        <div class="col-md-6" style="padding-top: 3px;"><label style="color: #337ab7">任务详情</label></div>
+        <div class="col-md-6" style="padding-top: 3px;"><label style="color: #337ab7">字段映射</label></div>
+        <div class="col-md-6" style="padding-top: 3px;">
+            <div class="panel panel-primary" style="max-height:350px;min-height: 350px; overflow: auto;padding: 10px 10px 10px 10px">
+                <div style="padding-top: 3px;">
+                    <label >任务名称</label>
+                    <input  type="text"  name="{{name}}"
+                            ng-model="data.name"
+                            class="form-control warning_placeholder"
+                            ng-readonly=true
+                    >
+                </div>
+
+                <div  style="padding-top: 3px;" ng-if="data.trigger && data.dataSource.type != 'SOCKET'" >
+                    <label>周期</label>
+                    <cron-selection template="cronselection-readonly-view.html" output="data.trigger" init="data.trigger" config="cronConfig" ng-model="data.trigger"  edit-disable="true" ng-readonly=true></cron-selection>
+
+                </div>
+
+                <div  style="padding-top: 3px;"  ng-if="data.trigger && data.dataSource.type != 'SOCKET'" >
+                    <label>增量字段</label>
+                    <input type="textarea"
+                           class="form-control"
+                           id="cursorCol"
+                           ng-model="data.cursorCol"
+                           name="cursorCol"
+                           ng-readonly=true >
+                </div>
+
+                <div  style="padding-top: 3px;" >
+                    <label>分区键</label>
+                    <div  ng-class="{ 'has-error': entityForm.sliceType.$touched && entityForm.sliceType.$invalid }">
+                        <input type="textarea" class="form-control" id="partitionKey" ng-model="data.partitionKey"
+                               name="partitionKey" ng-readonly=true >
+                    </div>
+                </div>
+
+                <div  style="padding-top: 8px;" ng-if="isDate">
+                    <label>分区键格式</label>
+                    <input type="textarea"
+                           class="form-control"
+                           id="format5"
+                           data-ng-model="data.partitionPattern"
+                           name="data.errorNumber"
+                           ng-readonly=true
+                           placeholder="yyyy-mm-dd"
+                           ng-blur="changepartitionKeyFormat(data.partitionPattern)"
+                    >
+                </div>
+
+                <div  style="padding-top: 3px;" >
+                    <label >并行度</label>
+                    <div  ng-class="{ 'has-error': entityForm.sliceType.$touched && entityForm.sliceType.$invalid }">
+                        <input type="textarea" class="form-control" id="parallelism" ng-model="data.parallelism"
+                               name="parallelism" ng-readonly=true >
+                    </div>
+                </div>
+
+                <div  style="padding-top: 3px;">
+                    <label  >错误记录上限数</label>
+                    <input type="textarea"
+                           class="form-control"
+                           ng-model="data.errorNumber"
+                           name="data.errorNumber"
+                           ng-required
+                           ng-readonly=true>
+
+                </div>
+
+                <div style="padding-top: 3px;" data-ng-if="!CollectorID">
+                    <label >Schema变动</label>
+                    <input  type="text"  name="{{name}}"
+                            ng-model="data.stopOnSchemaChanged"
+                            class="form-control warning_placeholder"
+                            ng-readonly=true>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6" style="padding-top: 3px;" >
+            <div class="panel panel-primary" style="max-height:350px;min-height: 350px; overflow: auto;padding: 10px 10px 10px 10px">
+                <table >
+                    <thead>
+                    <tr>
+                        <th class="col-md-3"> 数据源表</th>
+                        <th class="col-md-2"></th>
+                        <th class="col-md-3"> 数据集表</th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-3"> 脱敏规则</th>
+                    </tr>
+                    </thead>
+                    <tbody ng-repeat="item in data.fieldMapping " >
+                    <tr >
+                        <td >
+                            <input
+                                    type="text" name="{{item.sourceField}}"
+                                    class="form-control warning_placeholder"
+                                    ng-readonly = true
+                                    ng-model="item.sourceField"
+                                    uib-tooltip="{{item.sourceField}}"
+                            >
+                        </td>
+                        <td style="font-size:30px;color:#00BFFF ;text-align:center" >&harr;</td>
+                        <td >
+                            <input
+                                    type="text" name="{{item.targetField}}"
+                                    class="form-control warning_placeholder"
+                                    ng-readonly = true
+                                    ng-model="item.targetField"
+                                    uib-tooltip="{{item.targetField}}"
+                            >
+                        </td>
+                        <td></td>
+                        <td>
+                            <input
+                                    type="text" name="{{item.encrypt}}"
+                                    class="form-control warning_placeholder"
+                                    ng-readonly = true
+                                    ng-model="item.encrypt"
+                                    uib-tooltip="{{item.encrypt}}"
+                            >
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-6" style="padding-top: 3px;"><label style="color: #337ab7">数据源</label></div>
+        <div class="col-md-6" style="padding-top: 3px;"><label style="color: #337ab7">数据集</label></div>
+        <div class="col-md-6" style="padding-top: 3px;">
+            <div class="panel panel-primary" style="max-height:400px;min-height: 400px; overflow: auto;padding: 10px 10px 10px 10px">
+
+                <div  style="padding-top: 3px;" ng-repeat="item in dataSource" >
+                    <label >{{item.name}}</label>
+                    <input  type="text"  name="{{dataSource.name}}"
+                            ng-model="item.value"
+                            ng-mousedown="mousedown($event)"
+                            draggable="false"
+                            class="form-control warning_placeholder"
+                            ng-readonly=true
+                    >
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6" style="padding-top: 3px;">
+            <div  class="panel panel-primary" style="max-height:400px;min-height: 400px; overflow: auto;padding: 10px 10px 10px 10px">
+
+                <div  style="padding-top: 3px;" ng-repeat="item in dataStore" >
+                    <label >{{item.name}}</label>
+                    <input  type="text"  name="{{dataStore.name}}"
+                            ng-model="item.value"
+                            ng-mousedown="mousedown($event)"
+                            draggable="false"
+                            class="form-control warning_placeholder"
+                            ng-readonly=true
+                    >
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

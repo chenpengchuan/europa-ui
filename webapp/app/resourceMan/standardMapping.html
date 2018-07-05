@@ -1,0 +1,99 @@
+<div class="panel panel-default" style="margin-top: -1px;" ng-controller="StandardMappingController">
+    <div class="panel-heading ">
+        <div class="row ">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <button class="btn btn-primary right-margin-2" type="button" ng-click="addNode()" ng-disabled="isButtonDisabled('add')" uib-tooltip="增加" ><i class="iconfont icon-built"></i>增加</button>
+                <button class="btn btn-primary right-margin-2" type="button" ng-click="deleteNode()" ng-disabled="isButtonDisabled('delete')" uib-tooltip="删除" ><i class="iconfont icon-delete"></i>删除</button>
+                <button class="btn btn-primary right-margin-2" type="button" ng-click="import()" ng-disabled="isButtonDisabled('import')" uib-tooltip="导入的同时会删除掉所有原来的项目" ><i class="iconfont icon-built"></i>导入</button>
+
+                <div class="btn-group ">
+                    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="iconfont icon-arrow-bottom"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="deleteAll()" uib-tooltip="test" data-ng-disabled="">全部删除</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="panel-body" style="min-height: 300px; ">
+        <div class="" >
+            <form name="entityForm1">
+                <div style="width: 100%; "  class="clearfix">
+                    <div ng-repeat="item in meta.fields"  class="bottom-margin-2 col-sm-6 " style="padding-left: 0;padding-right: 0;">
+                        <div class="clearfix" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+
+                        <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+                        </div>
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </form>
+        </div>
+        <div style="margin-top: 20px; min-width: 500px;height: 1px; border-bottom: solid 1px lightgrey;"></div>
+        <!--
+        <div style="margin-top: 10px; ">
+            <form name="entityForm2">
+                <div style="width: 100%; "  class="clearfix">
+                    <div ng-repeat="item in meta2.fields"  class="bottom-margin-2 col-sm-6 " style="padding-left: 0;padding-right: 0;">
+                        <div class="clearfix" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+
+                        <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+                        </div>
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                    <div style="margin-left:15px; ">
+                        <a class="btn btn-success right-margin-2" type="button" ng-click="addItem()" ng-disabled="isButtonDisabled('addItem')" uib-tooltip="增加项" ><i class="iconfont icon-built"></i>增加</a>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        -->
+        <div ng-style="{'border': '1px lightgrey solid', 'padding': '5px 0 5px 0', 'position': 'relative','max-height': '{{windowHeight-340}}px', 'overflow-y': 'auto'}">
+            <table st-table="rowCollection" st-pipe="fetchPage " class="table">
+                <thead>
+                <tr>
+                    <th><st-select-all all="rowCollection"></st-select-all></th>
+                    <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" >{{rh.disName}}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="row in rowCollection">
+                    <td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+                    <td ng-repeat="rh in rowHeaders" >
+                        <a ng-click="editRow(row)" >{{row[rh.name]}}</a>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div>共: {{rowCollection.length}}条</div>
+         </div>
+        <div ng-show="error">
+            <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+        </div>
+    </div>
+</div>
+
+
+

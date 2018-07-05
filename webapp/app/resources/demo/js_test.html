@@ -1,0 +1,52 @@
+<html>
+<script src="../../bower_components/jquery/dist/jquery.js"></script>
+<script>
+
+    var monthDef = [
+        [
+            {
+                id: 'M_option_1',
+                onclick: "everyTime(this)",
+                name: "month",
+                value: 'everyTime',
+                type: 'radio',
+                afterLabel: '月 允许的通配符[, - * /]'
+            },
+        ],
+        [
+            {
+                id: 'M_option_2',
+                onclick: "unAppoint(this)",
+                name: "month",
+                value: 'unAppoint',
+                type: 'radio',
+                afterLabel: '不指定'
+            },
+        ],
+        [
+            {id: 'M_option_3', onclick: "cycle(this)", name: "month", value: 'cycle', type: 'radio', afterLabel: '周期从'},
+            {id: 'monthStart_0', type: 'text', minVal: 1, maxVal: 12, afterLabel: '-'},
+            {id: 'monthEnd_0', type: 'text', minVal: 2, maxVal: 12, afterLabel: '月'},
+        ],
+        [
+            {
+                id: 'M_option_4',
+                onclick: "startOn(this)",
+                name: "month",
+                value: 'startOn',
+                type: 'radio',
+                afterLabel: '从'
+            },
+            {id: 'monthStart_1', type: 'text', minVal: 1, maxVal: 12, afterLabel: '月开始,每'},
+            {id: 'monthEnd_1', type: 'text', minVal: 1, maxVal: 12, afterLabel: '月执行一次'}
+        ],
+        [
+            {id: 'month_appoint', value: 'appoint', type: 'radio', afterLabel: '指定'},
+        ],
+    ];
+
+
+</script>
+
+
+</html>

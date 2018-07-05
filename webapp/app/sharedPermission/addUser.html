@@ -1,0 +1,38 @@
+<div  class="" ng-controller="AddUserController">
+    <form name="entityForm" style="padding-left: 20px;padding-top: 10px" >
+        <div class="row" style="margin-bottom: 20px">
+            <div class="form-inline">
+                <label style="width: 100px;text-align: right;margin-right: 20px;">用户名:</label>
+                <input data-ng-model="data.account" class="form-control warning_placeholder" style="width:400px;" placeholder="(用户名)必填" required="">
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 20px">
+            <div class="form-inline">
+                <label style="width: 100px;text-align: right;margin-right: 20px;">验证账号:</label>
+                <input data-ng-model="data.name" class="form-control  warning_placeholder" style="width:400px;" required="" placeholder="(验证号码)必填" required="">
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 20px">
+            <div class="form-inline">
+                <label style="width: 100px;text-align: right;margin-right: 20px;">验证key:</label>
+                <input type="password" data-ng-model="data.password" class="form-control  warning_placeholder" style="width:400px;" placeholder="(验证key)必填" required="">
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 20px">
+            <div class="form-inline" style="display: flex;flex-direction: row">
+                <label style="width: 100px;text-align: right;margin-right: 20px;">接口权限设置:</label>
+                <div style="width: 400px;overflow-y:scroll;max-height: 220px">
+                    <div ng-repeat="param in resourceData">
+                        <label style="margin-left: 20px">
+                            <input type="checkbox" ng-model="param.isChecked" style="margin-left: 15px;margin-right: 15px" ng-true-value="'true'" ng-false-value="'false'">{{param.name}}
+                        </label><br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div>
+        <button type="button" style="margin-left:130px" class="btn btn-primary" ng-click="submit()">确定</button>
+        <button type="button" style="margin-left:100px" class="btn btn-warning" ng-click="close()">取消</button>
+    </div>
+</div>

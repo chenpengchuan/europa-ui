@@ -1,0 +1,179 @@
+<div class="panel panel-default" ng-controller="EditUserController">
+	<div class="panel-heading">{{isNew ? "创建" : "更新"}}{{entityDisplayName}}</div>
+	<div class="panel-body" style="width: 750px;">
+		<form name="entityForm" novalidate>
+
+			<div class="form-group" ng-if="!isNew" ng-class="{ 'has-error': entityForm.id.$touched && entityForm.id.$invalid }">
+				<label>ID</label>
+				<input type="text" name="id" class="form-control" ng-disabled="true"
+					   ng-model="entity.id">
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': entityForm.name.$touched && entityForm.name.$invalid }">
+				<label>姓名</label>
+				<input type="text" name="name" class="form-control"
+					   ng-model="entity.name"
+					   ng-minlength="2"
+					   ng-maxlength="32"
+					   placeholder="姓名 (必填)"
+					   required>
+				<div class="help-block" ng-messages="entityForm.name.$error" ng-if="entityForm.name.$touched">
+					<p ng-message="minlength">姓名太短.</p>
+					<p ng-message="maxlength">姓名太长.</p>
+					<p ng-message="required">姓名必填</p>
+				</div>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': entityForm.loginId.$touched && entityForm.loginId.$invalid }">
+				<label>登录名</label>
+				<input type="text" name="loginId" class="form-control" ng-disabled="!isNew"
+					   ng-model="entity.loginId"
+					   ng-minlength="4"
+					   ng-maxlength="32"
+					   placeholder="登录名 (必填)"
+					   required>
+				<div class="help-block" ng-messages="entityForm.loginId.$error" ng-if="entityForm.loginId.$touched">
+					<p ng-message="minlength">登录名太短.</p>
+					<p ng-message="maxlength">登录名太长.</p>
+					<p ng-message="required">登录名必填</p>
+				</div>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': entityForm.password.$touched && entityForm.password.$invalid }">
+				<label>密码</label>
+				<input type="password" name="password" class="form-control"
+					   ng-model="entity.password"
+					   ng-minlength="6"
+					   ng-maxlength="32"
+					   placeholder="密码 (必填)"
+					   required>
+				<div class="help-block" ng-messages="entityForm.password.$error" ng-if="entityForm.password.$touched">
+					<p ng-message="minlength">密码太短.</p>
+					<p ng-message="maxlength">密码太长.</p>
+					<p ng-message="required">密码必填</p>
+				</div>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': entityForm.verifyPassword.$touched && entityForm.verifyPassword.$invalid }">
+				<label>重复密码</label>
+				<input type="password" name="verifyPassword" class="form-control"
+					   ng-model="verifyPassword" nx-equal-ex="entity.password" placeholder="确认密码 (必填)"
+					   required>
+				<div class="help-block" ng-messages="entityForm.verifyPassword.$error" ng-if="entityForm.verifyPassword.$touched">
+					<p ng-message="required">两次密码不一样</p>
+					<p ng-message="nxEqualEx">两次密码不一样</p>
+				</div>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': entityForm.permissions.$touched && entityForm.permissions.$invalid}" style="margin-bottom: 22px;">
+				<label>权限</label>
+				<div class="form-control" style="height: 102px">
+					<div><label><input type="checkbox" ng-model="permissions['europa.admin']" ng-disabled="isAdmin" ng-click="toggleAdmin()" >{{ 'europa.admin' | permission_display  }}</label></div>
+					<div><label><input type="checkbox" ng-model="permissions['europa.user']"ng-disabled="isAdmin" ng-click="toggleUser('europa.user')" >{{ 'europa.user' | permission_display  }}</label></div>
+					<!--<label ng-repeat="(permission, enabled) in permissions">-->
+						<!--&lt;!&ndash;<input ng-if="permission !== 'europa.admin' && permission !== 'europa.user'" ng-disabled="isAdmin" type="checkbox" value="" ng-click="toggleUser(permission)" ng-model="permissions[permission]" ng-disabled="entity.loginId == 'admin'" >&ndash;&gt;-->
+						<!--&lt;!&ndash;<span ng-if="permission !== 'europa.admin' && permission !== 'europa.user'">{{ permission | permission_display  }}</span>&ndash;&gt;-->
+					<!--</label>-->
+					<div style="padding-down: 8px;" class="help-block"
+						 ng-show="permissions['europa.admin'] == false && permissions['europa.user'] == false">
+						<p><span style="color: red">权限必选</span></p>
+					</div>
+					<!--<div style="padding-down: 8px;" class="help-block"-->
+						 <!--ng-show="permissions['europa.user'] == true &&-->
+						 <!--(permissions['hippo.user'] == false && permissions['zebra.user'] == false &&-->
+						 <!--permissions['europa.user'] == false && permissions['rhinos.user'] == false)">-->
+						<!--<p><span style="color: red">至少选择一个用户</span></p>-->
+					<!--</div>-->
+				</div>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-errora': entityForm.resourceQueues.$touched && entityForm.resourceQueues.$invalid }">
+				<label>资源队列</label>
+				<tags-input ng-init=""
+							min-length="1"
+							name="resourceQueues"
+							ng-model="entity.resourceQueues"
+							ng-required="true"
+							display-property="text"
+							placeholder="资源队列 (必填)"
+							max-length="200"
+							add-on-comma="false"
+							ng-class="{'warning_placeholder':true}"
+							##allowed-tags-pattern="^[\u0000-\u00FF 0-9a-zA-Z_-]+$"
+							replace-spaces-with-dashes="false"
+							add-from-autocomplete-only="true"
+							on-tag-added="onTagAdded($tag, itemCopy)"
+							on-tag-removed="onTagRemoved($tag, itemCopy)">
+					<auto-complete source="loadTagInputSource('resourceQueues')"
+								   min-length="1"
+								   load-on-focus="true"
+								   load-on-empty="true"
+								   debounce-delay="0"
+								   max-results-to-show="500"
+					></auto-complete>
+				</tags-input>
+				<div class="help-block" ng-messages="entityForm.resourceQueues.$error" ng-if="entityForm.resourceQueues.$touched">
+					<p ng-message="required">资源队列必填</p>
+				</div>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': entityForm.maxRam.$touched && entityForm.maxRam.$invalid}">
+				<label>最大内存(M)</label>
+				<input ng-required="true" type="number" class="form-control" name="maxRam" ng-model="entity.maxRam" min="1" max="{{maxRam}}">
+				</input>
+				<div class="help-block" ng-messages="entityForm.maxRam.$error" ng-if="entityForm.maxRam.$touched">
+					<p ng-message="max">最大值不能超过{{maxRam}}</p>
+					<p ng-message="min">不能小于1</p>
+				</div>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': entityForm.maxCpus.$touched && entityForm.maxCpus.$invalid}">
+				<label>最大CPU数(vCore)</label>
+				<input ng-required="true" type="number" class="form-control" name="maxCpus" ng-model="entity.maxCpus" min="1" max="{{maxCpus}}">
+				</input>
+				<div class="help-block" ng-messages="entityForm.maxCpus.$error" ng-if="entityForm.maxCpus.$touched">
+					<p ng-message="max">最大值不能超过{{maxCpus}}</p>
+					<p ng-message="min">不能小于1</p>
+				</div>
+
+			</div>
+
+
+			<div class="form-group" ng-class="{ 'has-error': entityForm.maxRunningJobs.$touched && entityForm.maxRunningJobs.$invalid}">
+				<label>最大并行任务数</label>
+				<input ng-required="true" type="number" class="form-control" name="maxRunningJobs" ng-model="entity.maxRunningJobs" min="1" max="{{maxRunningJobs}}">
+				</input>
+				<div class="help-block" ng-messages="entityForm.maxRunningJobs.$error" ng-if="entityForm.maxRunningJobs.$touched">
+					<p ng-message="max">最大值不能超过{{maxRunningJobs}}</p>
+					<p ng-message="min">不能小于1</p>
+				</div>
+
+			</div>
+
+			<!--
+			<div class="form-group" ng-class="{ 'has-error': entityForm.hdfsSpaceQuota.$touched && entityForm.hdfsSpaceQuota.$invalid}">
+				<label>存储配额(G)
+					<span class ="glyphicon glyphicon-info-sign"   uib-tooltip-html="'<div>默认为0, 即不设置</div>'"></span>
+				</label>
+				<input type="number" class="form-control" name="hdfsSpaceQuota" ng-model="entity.hdfsSpaceQuota" min="0" max="{{hdfsSpaceQuota}}">
+				</input>
+				<div class="help-block" ng-messages="entityForm.hdfsSpaceQuota.$error" ng-if="entityForm.hdfsSpaceQuota.$touched">
+					<p ng-message="max">最大值不能超过{{hdfsSpaceQuota}}</p>
+					<p ng-message="min">不能小于0</p>
+				</div>
+			</div>
+			-->
+
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary ng-binding" ng-click="save()"
+						ng-disabled="!entityForm.$valid || saving || error
+						|| permissions['europa.admin'] == false && permissions['europa.user'] == false"
+				>{{saving ? "保存中..." : "保存"}}</button>
+				<button ng-show="!saving" type="button" class="btn btn-warning" ng-click="cancel()">取消</button>
+			</div>
+			<div ng-show="error">
+				<uib-alert type="danger">保存失败:{{error.err}}</uib-alert>
+			</div>
+		</form>
+	</div>
+</div>

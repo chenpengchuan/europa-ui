@@ -1,0 +1,112 @@
+<div id="DashBoard-overview" class="container-fluid" >
+	<div class="col-fluid">
+		<uib-tabset active="0">
+			<uib-tab index="0">
+				<uib-tab-heading>
+					<i class="glyphicon glyphicon-list text-info"></i><span class="left-margin-5">分析模板</span>
+				</uib-tab-heading>
+				<div class="panel panel-default" style="margin-top: -1px;" ng-controller="DqModelController">
+					<div class="panel-heading">
+						<div class="row top-buffer">
+							<div class="col-md-3">
+								<div class="input-group">
+									<input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+				      <span class="input-group-btn">
+				        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)" uib-tooltip="支持 and ,or 关系,例如field1=cdo | field2=0721 或者  field1=cdoname & field2=0721" tooltip-placement="top-right"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				      </span>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="input-group">
+								  <span class="input-group-btn">
+									<button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+								  </span>
+									<input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"
+										   options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+										   ng-keydown="keydown($event)"  readonly="readonly" />
+								</div>
+							</div>
+							<div class="col-md-3">
+								<a class="btn btn-primary" type="button" href="#/zmod/new">增加</a>
+												    <button class="btn btn-primary" type="button">复制</button>
+								<!--
+                                                    <button class="btn btn-primary" type="button">导入</button>
+                                                    <button class="btn btn-primary" type="button">导出</button>
+                                -->
+								<!--<button class="btn btn-success" type="button"  ng-disabled="selectedRows.length == 0">启用</button>-->
+								<!--<button class="btn btn-danger" type="button" ng-disabled="selectedRows.length == 0">停用</button>-->
+								<button class="btn btn-danger" type="button" ng-click="remove()" ng-disabled="selectedRows.length == 0">删除</button>
+							</div>
+							<div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+							</div>
+						</div>
+						<!-- /1.row -->
+						<div class="row top-buffer">
+							<div class="col-md-3">
+								<div class="input-group">
+									<select class="form-control" uib-tooltip="{{tagSelected}}" ng-model="tagSelected" ng-change="onTagSelected(tagSelected)" style="color:{{tags[tagSelected].color}};">
+										<option ng-repeat="tag in tags" value="{{tag.id}}" style="color:{{tag.color}};">{{tag.name}}</option>
+									</select>
+				      <span class="input-group-btn">
+				        <button class="btn btn-primary" type="button" ng-click="addTags()" ng-disabled="selectedRows.length == 0">
+				        	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				        </button>
+				        <button class="btn btn-danger" type="button" ng-click="removeTags()" ng-disabled="selectedRows.length == 0">
+				        	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+				        </button>
+				      </span>
+								</div>
+							</div>
+							<div class="col-md-9">
+								<div class="checkbox">
+									<label ng-repeat="tf in tagfacets" style="margin-right: 25px;"><input type="checkbox" value="{{tf.name}}" ng-change="doTagFilter()" ng-model="tagfilters[tf.name]">
+										<span class="label" style="color:#fff;background-color:{{tf.color}};">{{tf.name}}({{tf.count}})</span></label>
+								</div>
+							</div>
+						</div><!-- 2.row -->
+
+
+					</div>
+					<div class="panel-body">
+						<table st-table="rowCollection" st-pipe="fetchPage" class="table">
+							<thead>
+							<tr>
+								<th><st-select-all all="rowCollection"></st-select-all></th>
+								<th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="row in rowCollection">
+								<td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+								<td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+									<span ng-if="['name','schemaName'].indexOf(rh.name)<0">{{rh.converter(col)}}</span>
+									<a ng-if="rh.name == 'name'" href="#zmod/{{row.id}}">{{rh.converter(col)}}</a>
+									<a ng-if="rh.name == 'schemaName'" href="#/designer/schema/{{row.schema}}/edit" target="_blank">{{rh.converter(col)}}</a>
+									<!-- <tags ng-show="rh == rowHeaders[0]" options="{addable: false}" model="row.tags" src="s as s.name for s in tags"></tags> -->
+									<span ng-if="rh == rowHeaders[0]" ng-repeat="t in row.tags" class="label" style="color:#fff;background-color: {{tagsColorMap[t]}};">{{t}}</span>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+</div>
+			</uib-tab>
+			<uib-tab index="1" select="auxo.go('/zrule')" >
+				<uib-tab-heading>
+					<i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">分析规则</span>
+				</uib-tab-heading>
+			</uib-tab>
+			<uib-tab index="2" select="auxo.go('/zrule')" >
+				<uib-tab-heading>
+					<i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">任务执行信息</span>
+				</uib-tab-heading>
+			</uib-tab>
+			<uib-tab index="3" select="auxo.go('/zrule')" >
+				<uib-tab-heading>
+					<i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">统计</span>
+				</uib-tab-heading>
+			</uib-tab>
+		</uib-tabset>
+	</div>
+</div>

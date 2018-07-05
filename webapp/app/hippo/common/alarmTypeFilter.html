@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>警告类型</span>
+    </span>
+    <select class="form-control" id="alarm_type_select" ng-model="alarmTypeFilter" ng-change="onAlarmTypeChange(alarmTypeFilter)">
+        <option ng-repeat="o in auxo.alarmTypeArray" value="{{o.value}}">{{o.name}}</option>
+    </select>
+</div>

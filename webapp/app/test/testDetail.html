@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+    <div class="panel-heading">{{isNew ? '创建': '更新'}}信息</div>
+    <div class="panel-body" style="width: 750px;">
+        <form name="EditForm" novalidate="novalidate">
+            <label for="testDetail"  class="col-sm-12  control-label" style="text-align: left;">condition</label>
+            <div class="col-sm-12" >
+                <textarea class="form-control " id="testDetail" name="testDetail" ng-model="entity"   style="height: 600px; resize: vertical; " required="required">
+                </textarea>
+            </div>
+
+            <div class="clear"></div>
+            <div class="col-sm-12" style="margin-top: 20px;">
+                <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="!EditForm.$valid || saving">{{saving ? "保存中..." : "保存"}}</button>
+                <button ng-show="!saving" type="button" class="btn btn-warning" ng-click="cancel()">取消</button>
+            </div>
+        </form>
+    </div>
+
+</div>

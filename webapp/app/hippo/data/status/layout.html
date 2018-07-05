@@ -1,0 +1,73 @@
+<div class="container-fluid no-padding">
+    <div class="col-fluid">
+        <uib-tabset active="0">
+            <uib-tab index="0">
+                <uib-tab-heading>
+                    <i class="glyphicon glyphicon-cog text-info"></i><span class="left-margin-5">数据源状态</span>
+                </uib-tab-heading>
+                <div class="panel panel-default" style="margin-top: -1px;" ng-controller="DatastatusController">
+                    <div class="panel-heading">
+                    <div class="panel-heading">
+                        <div class="row top-buffer">
+                            <div class="col-md-3" ng-class="{ 'has-error': entityForm.schema.$touched && entityForm.schema.$invalid }">
+                                <div ng-include="'app/hippo/common/hippoResourceSelector.html'"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+				      <span class="input-group-btn">
+				        <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span
+                                class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+				      </span>
+                                    <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text"
+                                           ng-model="dateRange"
+                                           options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+                                           ng-keydown="keydown($event)" readonly="readonly"/>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <a class="btn btn-primary" type="button" ng-click="auxo.go('/hippo/data/status/list')" >详情列表</a>
+
+                                <!--<button class="btn btn-danger" type="button" ng-click="disconnect()" ng-disabled="selectedRows.length == 0">断开连接-->
+                                <!--</button>-->
+                            </div>
+
+                        </div>
+                    </div><!-- /1.row -->
+                        <div class="row top-buffer">
+
+                        </div><!-- 2.row -->
+                    </div>
+                </div>
+                <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                <div id="datastatus_id" style="width:85%;height:500%;margin-top:5%"></div>
+            </uib-tab>
+
+            <!--<uib-tab index="1" select="auxo.go('/hippo/data/directory')">-->
+                <!--<uib-tab-heading>-->
+                    <!--<i class="glyphicon glyphicon-cog text-info"></i><span class="left-margin-5">资源监控</span>-->
+                <!--</uib-tab-heading>-->
+            <!--</uib-tab>-->
+
+            <uib-tab index="2" select="auxo.go('/hippo/data/quality')">
+                <uib-tab-heading>
+                    <i class="glyphicon glyphicon-cog text-info"></i><span class="left-margin-5">数据质量</span>
+                </uib-tab-heading>
+
+            </uib-tab>
+
+            <uib-tab index="3" select="auxo.go('/hippo/data/map')">
+                <uib-tab-heading>
+                    <i class="glyphicon glyphicon-cog text-info"></i><span class="left-margin-5">数据地图</span>
+                </uib-tab-heading>
+            </uib-tab>
+
+            <!--<uib-tab index="4" select="auxo.go('/hippo/data/desensitization')">-->
+                <!--<uib-tab-heading>-->
+                    <!--<i class="glyphicon glyphicon-cog text-info"></i><span class="left-margin-5">数据脱敏</span>-->
+                <!--</uib-tab-heading>-->
+            <!--</uib-tab>-->
+
+
+        </uib-tabset>
+    </div>
+</div>

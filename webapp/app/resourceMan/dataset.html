@@ -1,0 +1,80 @@
+<div class="" ng-controller="DatasetController">
+    <div ng-show="page===1" class="clearfix" ng-style="{'max-height':'{{windowHeight-300}}px', 'overflow': 'auto'} ">
+        <div>
+            <table tt-table tt-params="dynamic_params" class="table" >
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Path</th>
+                </tr>
+                </thead>
+                <tbody ng-mousedown="onNodeSelected(node)"></tbody>
+            </table>
+        </div>
+    </div>
+    <div ng-show="page===2" class="clearfix">
+        <div name="storeForm">
+            <div style="width: 100%" class="clearfix">
+            <div class="col-sm-3" style="padding-top: 8px;">
+                Type:
+            </div>
+            <div class="col-sm-9 ">
+                <div class="input-group">
+                    <div class="input-group-btn" >
+                        <select class="form-control group_select" style="width: 100%"
+                                    id="flow_type_select"  name="type" ng-model="storageType" ng-change="ontypechange(storageType)" >
+                        <option ng-repeat="o in saveType" value="{{o.value}}">{{o.name}}
+                    </select>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div style="height: 2px"></div>
+            <div style="width: 100%; "  class="clearfix">
+                <div ng-repeat="item in storeMeta.fields"  class="bottom-margin-2">
+                    <div class="clearfix" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+
+                    <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <br>
+            <div ng-show="error">
+                <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="page===3" class="clearfix">
+        <div name="entityForm">
+            <div style="width: 100%; "  class="clearfix">
+                <div ng-repeat="item in meta.fields"  class="bottom-margin-2">
+                    <div class="clearfix" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+
+                    <div ng-if="$last" style="padding-left: 15px;">
+                        <span>
+                        </span>
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <br>
+            <div ng-show="error">
+                <uib-alert type="danger">{{error.err}}{{error}}</uib-alert>
+            </div>
+        </div>
+        <!--<div ng-hide="datasetEntity.attributes.schema.reference==='true'">-->
+        <div>
+            <div ng-include="'app/resourceMan/SchemaForm.html'" ng-controller="SchemaFieldsController2"></div>
+        </div>
+    </div>
+
+</div>

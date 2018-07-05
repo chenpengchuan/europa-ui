@@ -1,0 +1,79 @@
+<div  class="" ng-controller="TriggerSettingController">
+    <form name="entityForm" style="overflow: auto;margin-left: 15px" >
+        <div class="form-group" style="padding-top: 8px;"  >
+            <label>资源目录</label>
+            <p class="input-group">
+                <input type="hidden" ng-model="data.dataStore.id" name="{{data.dataStore.id}}">
+                <input  type="text"  name="{{data.dataStore.name}}"
+                        ng-model="data.dataStore.name"
+                        placeholder="资源目录 (必填)"
+                        class="form-control warning_placeholder"
+                        ng-required>
+                <span class="input-group-btn">
+                       <button type="button"
+                               class="btn btn-default ng-pristine ng-valid ng-isolate-scope ng-not-empty ng-touched"
+                               root-dir="数据集"
+                               ng-disabled="disableEdit"
+                               keyword="dataset"
+                               ng-model="data.dataStore.name"
+                               select-mode="single"
+                               on-select-changed="onSelectChanged(data, rootId)"
+                               zebra-selector>
+                           <i class="glyphicon glyphicon-search"></i>
+                       </button>
+                   </span>
+            </p>
+        </div>
+           <!-- <div class="form-group">
+                <div class="col-md-9 " style="margin-left: -15px">
+                        <label>资源目录</label>
+                        <p class="input-group " style="max-width: 300px!important;">
+                            <input type="hidden" ng-model="data.dataStore.id" name="{{data.dataStore.id}}">
+                            <input  type="text"  name="{{data.dataStore.name}}"
+                                    ng-model="data.dataStore.name"
+                                    placeholder="资源目录 (必填)"
+                                    class="form-control warning_placeholder"
+                                    ng-required>
+                            <span class="input-group-btn">
+                                   <button type="button"
+                                           class="btn btn-default ng-pristine ng-valid ng-isolate-scope ng-not-empty ng-touched"
+                                           root-dir="数据集"
+                                           ng-disabled="disableEdit"
+                                           keyword="dataset"
+                                           ng-model="data.dataStore.name"
+                                           select-mode="single"
+                                           on-select-changed="onSelectChanged(data, rootId)"
+                                           zebra-selector>
+                                       <i class="glyphicon glyphicon-search"></i>
+                                   </button>
+                               </span>
+                        </p>
+                </div>
+            </div>-->
+           <!-- <div class="form-group">
+                <div  style="margin-top: -5px; " class="col-md-3">
+                    <label></label>
+                    <div><button type="button" class="btn btn-primary" ng-click="permissionAssignment(data.dataStore.id)">权限分配</button></div>
+                </div>
+            </div>-->
+            <!--<div class="form-group" ng-class="{ 'has-error': entityForm.name.$touched && entityForm.name.$invalid }" >
+                <label style="margin-top: 35px">执行周期</label>
+                <cron-selection ng-model="data.trigger" output="data.trigger" init="data.trigger" config="cronConfig" ></cron-selection>
+            </div>-->
+        <div class="form-group" ng-class="{ 'has-error': entityForm.name.$touched && entityForm.name.$invalid }"  ng-show="isShow">
+            <label>执行周期</label>
+            <cron-selection ng-model="data.trigger" output="data.trigger" init="data.trigger" config="cronConfig" ></cron-selection>
+        </div>
+            <div class="form-group" ng-show="isShow">
+                <label >是否启动</label>
+                <select class="form-control " data-ng-model="data.selectData" style="width: 200px!important">
+                    <option value ="" >是</option>
+                    <option value ="off" >否</option>
+                </select>
+            </div>
+    </form>
+    <div>
+        <button type="button" style="margin-left:400px" class="btn btn-primary" ng-click="submit()">提交</button>
+        <button type="button" style="margin-left:-150px" class="btn btn-warning" ng-click="close()">取消</button>
+    </div>
+</div>

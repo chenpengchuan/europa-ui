@@ -1,0 +1,68 @@
+<div class="panel panel-default" style="margin-top: -1px;" ng-controller="collectorResourceDirController">
+    <div class="panel-heading">
+        <div class="row top-buffer">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)" uib-tooltip="支持 and ,or 关系,例如field1=cdo | field2=0721 或者  field1=cdoname & field2=0721" tooltip-placement="top-right"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                                <span class="input-group-btn">
+                                  <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+                                </span>
+                    <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"
+                           options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+                           ng-keydown="keydown($event)"  readonly="readonly" />
+                </div>
+            </div>
+            <div class="col-md-3" >
+                <button class="btn btn-primary" type="button" data-ng-click="synchronizationData(selectedRows)"><i class="icon  icon-download-alt">&nbsp;</i>元数据同步</button>
+            </div>
+            <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table st-table="rowCollection" st-pipe="fetchPage" class="table">
+            <thead>
+            <tr>
+                <th><st-select-all all="rowCollection"></st-select-all></th>
+                <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" >{{rh.disName}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in rowCollection">
+                <td cs-select="row" rows="rowCollection"  selected-rows="selectedRows"></td>
+                <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" >
+                    <span ng-if="rh.name != 'name' " >{{rh.converter(col,row)}}</span>
+                    <a ng-if="rh.name === 'name'" ng-click="editDataSource(row)" >{{rh.converter(col,row)}}</a>
+                    <uib-progressbar  class="progress-striped  active"
+                                      ng-if="rh.name == 'attributes'&&rh.hiddenName == 'lastSyncTaskId'"
+                                      value="row.progressValue? row.progressValue: 0"
+                                      style="margin-bottom: 0px;"
+                    >
+                        <i>{{row.progressValue? row.progressValue: 0}}%</i>
+                    </uib-progressbar>
+                </td>
+                <td>
+                    <a on-select-changed ="appointSpool(data,row)"
+                       root-dir="存储池"
+                       ng-disabled="disableEdit"
+                       keyword="dataset"
+                       ng-model="spoolEntity"
+                       selection-id="spoolEntity1"
+                       europa-spool>
+                        指定存储池
+                    </a>
+                </td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

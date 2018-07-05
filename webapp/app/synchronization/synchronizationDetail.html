@@ -1,0 +1,781 @@
+<div class=" col-md-12 panel panel-default"   ng-controller="SynchronizationDetailController">
+    <div class="panel-body">
+        <div class="row">
+            <form name="entityForm" novalidate>
+                <div class="widget-box">
+                    <div class="widget-header widget-header-blue widget-header-flat">
+                        <div class="panel-heading" >
+                            创建 数据导入任务
+                        </div>
+                    </div>
+                    <!--将弹出框以span形式添加到页面-->
+                    <div id = "errormsg"  ></div>
+
+                    <div class="widget-body">
+                       <div class="widget-main">
+                           <div id="fuelux-wizard-container">
+                               <div>
+                                   <ul class="steps">
+                                       <li data-step="1" class="active">
+                                           <span class="step">1</span>
+                                           <span class="title">选择来源</span>
+                                       </li>
+
+                                       <li data-step="2">
+                                           <span class="step">2</span>
+                                           <span class="title">选择目标</span>
+                                       </li>
+
+                                       <li data-step="3">
+                                           <span class="step">3</span>
+                                           <span class="title">字段映射</span>
+                                       </li>
+
+                                       <li data-step="4">
+                                           <span class="step">4</span>
+                                           <span class="title">任务设置</span>
+                                       </li>
+                                       <li data-step="5">
+                                           <span class="step">5</span>
+                                           <span class="title">预览保存</span>
+                                       </li>
+                                   </ul>
+                               </div>
+                               <div class="step-content pos-rel">
+                                   <div class="step-pane active" data-step="1" >
+
+                                       <div class="col-md-1"></div>
+
+                                       <div class="col-md-3"  >
+                                           <div class="form-group"  style="padding-top: 8px;">
+                                               <label >任务名称</label>
+                                               <input  type="text"  name="{{name}}"
+                                                       ng-model="data.name"
+                                                       placeholder="同步任务名称 (必填)"
+                                                       class="form-control warning_placeholder"
+                                                       required
+                                                       ng-blur = "setBlur()"
+                                                       ng-focus = "setFocus()"
+                                               >
+                                           </div>
+
+                                           <!--<div class="form-group" style="padding-top: 8px;">-->
+                                               <!--<label >数据源</label>-->
+                                               <!--<p class="input-group">-->
+                                                   <!--<input  type="text"  name="{{data.dataSource.name}}"-->
+                                                           <!--ng-model="data.dataSource.name"-->
+                                                           <!--placeholder="数据源选择 (必填)"-->
+                                                           <!--class="form-control warning_placeholder"-->
+                                                           <!--ng-required-->
+                                                   <!--&gt;-->
+                                                   <!--<span class="input-group-btn" >-->
+                                                       <!--<button type="button" class="btn btn-default" ng-disabled="disableEdit"-->
+                                                               <!--ng-click="selectDataSource()"-->
+                                                               <!--source-id = {{sourceId}} source-type = {{sourceType}}>-->
+                                                           <!--<i class="glyphicon glyphicon-search"></i>-->
+                                                       <!--</button>-->
+                                                   <!--</span>-->
+                                               <!--</p>-->
+                                           <!--</div>-->
+
+                                           <div class="form-group" style="padding-top: 8px;">
+                                               <label >数据源</label>
+                                               <p class="input-group">
+                                               <div class="form-group" ng-include="'app/hippo/common/dataSourcesSelector.html'"></div>
+                                               </p>
+                                           </div>
+
+                                           <div class="form-group" style="padding-top: 8px;" data-ng-if="statusType == 'DB'">
+                                               <label >表选择</label>
+                                               <div>
+                                                   <ui-select ng-model="data.dataSource.table" theme="bootstrap" on-select="onTableChange($select)">
+                                                       <ui-select-match placeholder="输入表/视图名显示查询结果...">
+                                                           {{$select.selected}}
+                                                       </ui-select-match>
+                                                       <ui-select-choices
+                                                               refresh="fetchTable($select)"
+                                                               refresh-delay="300"
+                                                               repeat="table in tables | filter: $select.search"
+                                                       >
+                                                           {{ table }}
+                                                           <div ng-if="$index == $select.items.length-1 && !isLastPage">
+                                                               <button
+                                                                       class="btn btn-xs btn-success"
+                                                                       style="width: 100%; margin-top: 5px;"
+                                                                       ng-click="fetchTable($select, $event);"
+                                                                       ng-disabled="disableSelectTable">加载更多...</button>
+
+                                                           </div>
+                                                       </ui-select-choices>
+                                                   </ui-select>
+                                                   <!--<select class="form-control "-->
+                                                           <!--placeholder="表选择 (必填)"-->
+                                                           <!--ng-model="data.dataSource.table"-->
+                                                           <!--required-->
+                                                           <!--ng-change="getColumns(data.dataSource.table)"-->
+                                                   <!--&gt;-->
+                                                       <!--<option ng-repeat="s in sourceTables " ng-value="'{{s}}'">{{s}}</option>-->
+                                                   <!--</select>-->
+                                               </div>
+                                           </div>
+
+                                           <div class="form-group" style="padding-top: 8px;" data-ng-if="statusType == 'SOCKET'">
+                                               <label >选择操作类型</label>
+                                               <div ng-repeat="operate in operateType">
+                                                           {{operate.value}}: <input type="radio" value="{{operate.name}}" ng-model="data.dataSource.operateType"/>
+                                               </div>
+                                           </div>
+                                           <div class="form-group" style="padding-top: 8px;" data-ng-if="statusType == 'DB'">
+                                               <label>数据过滤</label>
+                                               <div >
+                                                   <input type="textarea" class="form-control" id="whereSql1" ng-model="data.dataSource.selectSQL"
+                                                          name="itemName"
+                                                          placeholder="按照sql语法填写where部分，但是不需要写where关键字" ng-required=false
+                                                   >
+                                               </div>
+                                           </div>
+
+                                       </div>
+                                       <div class="col-md-8" data-ng-show="statusType == 'HTTP'|| statusType == 'SOCKET' || statusType == 'FTP'" style="min-height: 280px; ">
+                                            <div class="col-md-2"  ></div>
+                                            <div class="col-md-8"  >
+                                                <div class="form-group" style="padding-top: 8px;" data-ng-if="statusType == 'HTTP'|| statusType == 'FTP'||  (statusType == 'SOCKET')"  >
+                                               <label>Schema</label>
+                                               <p class="input-group">
+                                                   <input  type="text"  name="{{data.dataSource.schemaName}}"
+                                                           ng-model="data.dataSource.schemaName"
+                                                           placeholder="Schema选择 (必填)"
+                                                           class="form-control warning_placeholder"
+                                                           ng-required
+                                                   >
+                                                   <span class="input-group-btn">
+                                                           <button type="button"
+                                                                   class="btn btn-default ng-pristine ng-valid ng-isolate-scope ng-not-empty ng-touched"
+                                                                   root-dir="Schemas"
+                                                                   ng-disabled="disableEdit"
+                                                                   keyword="Schemas"
+                                                                   ng-model="data.dataSource.schemaName "
+                                                                   select-mode="single"
+                                                                   on-select-changed="onSelectChangedSchema(data,row)"
+                                                                   europa-schema>
+                                                               <i class="glyphicon glyphicon-search"></i>
+                                                           </button>
+
+                                                       </span>
+                                               </p>
+                                           </div>
+
+                                                <div  style="padding-top: 8px;" ng-show="statusType == 'SOCKET' && data.dataSource.operateType != 0">
+
+                                                    <label ng-show="statusType == 'HTTP'">数据过滤</label>
+                                                    <label ng-show="statusType == 'SOCKET'">正则表达式</label>
+                                                    <label ng-show="statusType == 'FTP'">文件名</label>
+                                                    <textarea  class="form-control"
+                                                               style="height: 200px; resize: vertical; margin-top: 0px; margin-bottom: 0px;"
+                                                               data-ng-show="statusType == 'HTTP'"
+                                                               id={{data.dataSource.parameters}}
+                                                               name="itemName"
+                                                               ng-model="data.dataSource.parameters"
+                                                               placeholder="填写过滤条件"
+                                                               rows = "10" ></textarea>
+                                                    <textarea  class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required warning_placeholder ng-touched"
+                                                               style="height: 80px; resize: vertical; margin-top: 0px; margin-bottom: 0px;"
+                                                               data-ng-show="statusType == 'SOCKET'"
+                                                               id={{data.dataSource.bind}}
+                                                               name="itemName"
+                                                               ng-model="data.dataSource.regex"
+                                                               ng-change="changeTest()"
+                                                               placeholder="正则表达式 (必填)"
+                                                               rows = "10" ></textarea>
+                                                    <label ng-show="statusType == 'SOCKET'">待测文本</label>
+
+                                                    <textarea  class="form-control "
+                                                               style="height: 80px; resize: vertical; margin-top: 0px; margin-bottom: 10px;"
+                                                               data-ng-show="statusType == 'SOCKET'"
+                                                               id={{testText}}
+                                                               name="itemName"
+                                                               ng-model="data.dataSource.testText"
+                                                               ng-change="changeTest()"
+                                                               placeholder="待测文本"
+                                                               rows = "10" ></textarea>
+                                                    <a data-ng-show="statusType == 'SOCKET'" ng-disabled="isTest" class="btn btn-primary" type="button" ng-click="testTextCheck()">测试</a>
+                                                    <textarea  class="form-control"
+                                                               style="height: 200px; resize: vertical; margin-top: 0px; margin-bottom: 0px;"
+                                                               data-ng-show="statusType == 'FTP'"
+                                                               id={{data.dataSource.filename}}
+                                                               name="itemName"
+                                                               ng-model="data.dataSource.filename"
+                                                               placeholder="请填写文件名的正则表达式(必填)"
+                                                               rows = "10" ></textarea>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2"  ></div>
+
+                                        </div>
+
+                                       <div class="col-md-8" data-ng-if="statusType == 'DB'" style="min-height: 330px; ">
+                                               <div class="panel panel-default">
+                                                       <div class="panel panel-success">
+                                                           <div class="panel-heading">
+                                                               <button class="btn btn-success glyphicon glyphicon-refresh" ng-click="previewData()">刷新数据</button>
+                                                           </div>
+                                                       </div>
+                                                       <div class="panel-body" style="max-height:320px;min-height:280px;overflow: scroll;">
+                                                           <div class="form-group" ng-show="previewLoading" >
+                                                               <div class="col-md-12 text-center">
+                                                                   <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                                                               </div>
+                                                           </div>
+                                                           <div ng-show="previewError">
+                                                               <uib-alert type="danger">加载失败:{{previewError.err}}</uib-alert>
+                                                           </div>
+                                                           <table ng-show="page==='preview'" st-table="rowCollection" class="table" >
+                                                               <thead>
+                                                               <tr>
+                                                                   <th st-sort="{{rh}}" st-skip-natural="true" ng-repeat="rh in rowHeaders track by $index">{{rh}}</th>
+                                                               </tr>
+                                                               </thead>
+                                                               <tbody>
+                                                               <tr ng-repeat="row in rowCollection">
+                                                                   <td ng-repeat="rh in rowHeaders track by $index" >
+                                                                       <span >{{row[$index]}}</span>
+                                                                   </td>
+                                                               </tr>
+                                                               </tbody>
+                                                           </table>
+                                                       </div>
+                                                   </div>
+                                           </div>
+
+                                   </div>
+
+                                   <div class="step-pane" data-step="2">
+                                       <div class="col-md-1"></div>
+                                       <div class="col-md-3"  >
+                                           <label>目标选择</label>
+                                           <p class="input-group">
+                                               <input  type="text"  name="{{data.dataStore.name}}"
+                                                       ng-model="data.dataStore.name"
+                                                       placeholder="目标数据选择 (必填)"
+                                                       class="form-control warning_placeholder"
+                                                       ng-required
+                                               >
+                                               <span class="input-group-btn">
+                                                   <button type="button"
+                                                           class="btn btn-default ng-pristine ng-valid ng-isolate-scope ng-not-empty ng-touched"
+                                                           root-dir="Datasets"
+                                                           ng-disabled="disableEdit"
+                                                           keyword="dataset"
+                                                           ng-model="data.dataStore.name"
+                                                           select-mode="single"
+                                                           on-select-changed="onSelectChanged1(data)"
+                                                           europa-selector>
+                                                       <i class="glyphicon glyphicon-search"></i>
+                                                   </button>
+
+                                               </span>
+                                           </p>
+                                           <div  style="padding-top: 8px;" ng-if="data.dataStore.type == 'HDFS' ">
+                                               <label>写入模式</label>
+                                               <br>
+                                               <div  >
+                                                   <span class="radio_box">
+                                                        <input type="radio"
+                                                               id="radio_3"
+                                                               name="radio1"
+                                                               ng-model="data.modeTmp"
+                                                               ng-value="true"
+                                                        >
+                                                        <label for="radio_3"></label>
+                                                        &nbsp;&nbsp;追加
+                                                   </span>
+                                                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                   <span class="radio_box">
+                                                       <input type="radio"
+                                                              id="radio_4"
+                                                              name="radio1"
+                                                              ng-model="data.modeTmp"
+                                                              ng-value="false"
+                                                       >
+                                                       <label for="radio_4"></label>
+                                                       &nbsp;&nbsp;覆盖
+                                                   </span>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-md-8" style="margin-top: 20px; ">
+                                           <div class="col-md-8">
+                                           <table class="table ng-isolate-scope treetable">
+                                               <thead>
+                                               <tr>
+                                                   <th >属性名</th>
+                                                   <th >属性值</th>
+                                               </tr>
+                                               </thead>
+                                               <tbody >
+                                               <tr ng-repeat="item in dataStoreView">
+                                                   <td ><b>{{item.name}}</b></td>
+                                                   <td>{{item.value}}</td>
+                                               </tr>
+                                               <!--<tr >-->
+                                                   <!--<td ><b>Path</b></td>-->
+                                                   <!--<td ng-model="data.dataStore.path">{{data.dataStore.path}}</td>-->
+                                               <!--</tr>-->
+                                               <!--<tr >-->
+                                                   <!--<td ><b>Format</b></td>-->
+                                                   <!--<td ng-model="data.dataStore.format">{{data.dataStore.format}}</td>-->
+                                               <!--</tr>-->
+                                               <!--<tr >-->
+                                                   <!--<td ><b>Type</b></td>-->
+                                                   <!--<td ng-model="data.dataStore.type">{{data.dataStore.type}}</td>-->
+                                               <!--</tr>-->
+                                               <!--<tr  ng-if="isCsv">-->
+                                                   <!--<td ><b>Separator</b></td>-->
+                                                   <!--<td ng-model="data.dataStore.separator">{{data.dataStore.separator}}</td>-->
+                                               <!--</tr>-->
+                                               </tbody>
+                                           </table>
+                                               </div>
+                                       </div>
+                                   </div>
+                                   <div class="step-pane" data-step="3">
+                                       <div class="center">
+                                           <div class="row top-buffer">
+                                               <div class="col-md-6 " ></div>
+                                               <div class="col-md-6" >
+                                                   <button type="button" class="btn btn-primary "
+                                                           ng-click ="autoMatch()"  >
+                                                       <i class="icon icon-exchange">&nbsp;</i>
+                                                       <i >自动匹配</i>
+                                                   </button>
+                                               </div>
+                                               <div class="col-md-3"></div>
+                                               <div class="col-md-9" style="padding-top: 8px;">
+                                                   <div class="col-md-12"  >
+                                                       <table >
+                                                           <thead>
+                                                               <tr>
+                                                                   <th class="col-md-3"> 源头表(字段)</th>
+                                                                   <th class="col-md-2"></th>
+                                                                   <th class="col-md-3"> 目标表(字段)</th>
+                                                                   <th class="col-md-1"></th>
+                                                                   <th class="col-md-3"> 脱敏规则</th>
+                                                               </tr>
+                                                           </thead>
+                                                           <tbody ng-repeat="item in fieldMapping " style="height:20px;">
+                                                               <tr >
+                                                                   <td >
+                                                                       <select class="form-control select-placeholder"
+                                                                               ng-model="item.sourceField"
+                                                                               ng-options="s for s in sf"
+                                                                               required
+                                                                       >
+                                                                           <option value="" disabled selected>数据源表字段 </option>
+                                                                       </select>
+                                                                   </td>
+                                                                   <td style="font-size:30px;color:#00BFFF;text-align:center" >&harr;</td>
+
+                                                                   <td >
+                                                                       <input
+                                                                               type="text" name="{{item.targetField}}"
+                                                                               class="form-control warning_placeholder"
+                                                                               ng-model="item.targetField"
+                                                                               ng-readonly = true
+                                                                       >
+                                                                   </td>
+                                                                   <td></td>
+                                                                   <td>
+                                                                       <select  class="form-control select-placeholder"
+                                                                                ng-model="item.encrypt"
+                                                                       >
+                                                                           <option  ng-repeat="s in rulers" ng-value="s" >{{s}}</option>
+                                                                       </select>
+                                                                   </td>
+                                                               </tr>
+                                                           </tbody>
+                                                       </table>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="step-pane" data-step="4">
+                                       <div class="center">
+                                           <div class="row top-buffer">
+                                               <div class="col-md-4"></div>
+                                               <div class="col-md-6" style="padding-top: 8px;">
+                                                   <div  style="padding-top: 8px;" ng-class="{ 'has-error': entityForm.sliceType.$touched && entityForm.sliceType.$invalid }">
+                                                       <label>
+                                                           扩展表
+                                                       </label><label class="glyphicon glyphicon-info-sign" uib-tooltip = "扩展表格式,  #FUNC_NAME(ARGS)#
+1. 动态获取当前日期, 如表名为Table1, 表达式Table1_#DATE(yyyy_MM_dd)#,  可获得Table1_ 2018_03_23"></label>
+                                                       <input type="textarea"
+                                                              class="form-control"
+                                                              id="tableExt"
+                                                              ng-model="data.dataSource.tableExt"
+                                                              name="tableExt"
+                                                              placeholder="请填扩展表的表达式"
+                                                              uib-tooltip = "扩展表格式,  #FUNC_NAME(ARGS)#
+1. 动态获取当前日期, 如表名为Table1, 表达式Table1_#DATE(yyyy_MM_dd)#,  可获得Table1_ 2018_03_23"
+                                                       >
+                                                   </div>
+
+                                                   <div  style="padding-top: 8px;" ng-class="{ 'has-error': entityForm.sliceType.$touched && entityForm.sliceType.$invalid }">
+                                                       <label>并行度</label>
+                                                       <input type="textarea" class="form-control" id="speed1" ng-model="data.parallelism"
+                                                              name="speed"  placeholder="填写并行度数值" >
+                                                   </div>
+
+                                                   <div   style="padding-top: 8px;"class="bottom-margin-5">
+                                                           <label  >错误记录上限数</label>
+                                                           <input type="textarea"
+                                                                  class="form-control"
+                                                                  id="errorNumber1"
+                                                                  ng-model="data.errorNumber"
+                                                                  name="data.errorNumber"
+                                                                  placeholder="错误记录数超过此值任务自动结束" >
+                                                   </div>
+
+                                                   <div style="padding-top: 8px;" data-ng-if="CollectorID && CollectorID!='EUROPA-SERVER'">
+                                                       <label>Schema发生改变后，此任务应该</label>
+                                                       <br>
+                                                       <div  >
+                                                           <span class="radio_box">
+                                                                <input type="radio"
+                                                                       id="radio_1"
+                                                                       name="radio"
+                                                                       ng-model="data.stopOnSchemaChanged"
+                                                                       ng-value="false"
+                                                                       >
+                                                                <label for="radio_1"></label>
+                                                                &nbsp;&nbsp;继续
+                                                           </span>
+                                                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                           <span class="radio_box">
+                                                               <input type="radio"
+                                                                      id="radio_2"
+                                                                      name="radio"
+                                                                      ng-model="data.stopOnSchemaChanged"
+                                                                      ng-value="true"
+                                                                      >
+                                                               <label for="radio_2"></label>
+                                                               &nbsp;&nbsp;停止
+                                                           </span>
+                                                       </div>
+                                                   </div>
+
+                                                   <div  style="padding-top: 8px;" ng-if="data.dataSource.type != 'SOCKET' ">
+                                                       <label  >触发器 </label>
+                                                       <select class="form-control select-placeholder"
+                                                               ng-model="triggerTypeAs"
+                                                               ng-change="cycle(triggerTypeAs)"
+                                                               placeholder="触发器"
+                                                       >
+                                                           <option  ng-repeat="s in triggerTypes" ng-value="'{{s}}'">{{s}}</option>
+                                                       </select>
+                                                   </div>
+
+                                                   <div class="form-group" ng-if="triggerType =='cron' && data.dataSource.type != 'SOCKET' " ng-class="{ 'has-error': entityForm.name.$touched && entityForm.name.$invalid }" >
+                                                       <label>周期</label>
+                                                       <cron-selection ng-model="data.trigger" output="data.trigger" init="data.trigger" config="cronConfig" ></cron-selection>
+                                                   </div>
+                                                   <div  style="padding-top: 8px;" ng-if="triggerType =='cron' && data.dataSource.type != 'SOCKET'">
+                                                       <label>增量字段</label>
+                                                       <select class="form-control select-placeholder"
+                                                               ng-model="data.cursorCol"
+                                                               placeholder="增量字段"
+                                                       >
+                                                           <option  ng-repeat="s in sf " ng-value="'{{s}}'">{{s}}</option>
+                                                       </select>
+                                                   </div>
+                                                   <div  style="padding-top: 8px;" >
+                                                       <label>分区键</label>
+
+                                                       <select class="form-control select-placeholder"
+                                                               ng-model="data.partitionKey"
+                                                               ng-change = "partitionKeyType(data.partitionKey)"
+                                                       >
+                                                           <option  ng-repeat="s in stTmp " ng-value="'{{s}}'">{{s}}</option>
+                                                       </select>
+                                                   </div>
+
+                                                   <div  style="padding-top: 8px;" ng-if="isDate">
+                                                       <label>分区键格式</label>
+                                                       样例: {{partitionKeyText}}
+                                                       <input type="textarea"
+                                                              class="form-control"
+                                                              id="format"
+                                                              data-ng-model="data.partitionPattern"
+                                                              name="data.errorNumber"
+                                                              placeholder="yyyy-MM-dd"
+                                                              ng-blur="changepartitionKeyFormat(data.partitionPattern)"
+                                                       >
+                                                   </div>
+
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+
+                                   <div class="step-pane" data-step="5">
+                                       <div class="row top-buffer">
+                                           <div class="col-md-1"></div>
+                                           <div class="col-md-4">
+
+                                               <div style="padding-top: 8px;">
+                                                   <label >任务名称</label>
+                                                   <input  type="text"  name="{{name}}"
+                                                       ng-model="data.name"
+                                                       class="form-control warning_placeholder"
+                                                       ng-readonly=true
+                                                   >
+                                               </div>
+                                               <div  style="padding-top: 8px;" >
+                                                   <label >数据源选择</label>
+                                                   <input  type="text"  name="{{data.dataSource.name}}"
+                                                           ng-model="data.dataSource.name"
+                                                           ng-mousedown="mousedown($event)"
+                                                           draggable="false"
+                                                           class="form-control warning_placeholder"
+                                                           ng-readonly=true
+                                                   >
+                                               </div>
+
+                                               <div style="padding-top: 8px;" data-ng-if="statusType == 'DB'">
+                                                   <label >表选择</label>
+                                                   <input type="text" name="{{data.dataSource.table}}"
+                                                          ng-model="data.dataSource.table"
+                                                          ng-mousedown="mousedown($event)"
+                                                          draggable="false"
+                                                          class="form-control warning_placeholder"
+                                                          ng-readonly=true
+
+                                                   >
+                                               </div>
+                                               <div style="padding-top: 8px;" data-ng-if="statusType == 'SOCKET'">
+                                                   <label >操作类型</label>
+                                                   <input type="text" name="{{data.dataSource.operateType}}"
+                                                          ng-model="data.dataSource.operateType == 0? '原样' : data.dataSource.operateType == 1? '抽取' :data.dataSource.operateType == 2? '分割' : '过滤'"
+                                                          ng-mousedown="mousedown($event)"
+                                                          draggable="false"
+                                                          class="form-control warning_placeholder"
+                                                          ng-readonly=true
+                                                   >
+                                               </div>
+                                               <div style="padding-top: 8px;" data-ng-if="statusType == 'HTTP' || statusType == 'FTP' || statusType == 'SOCKET'">
+                                                   <label >Schema</label>
+                                                   <input type="text" name="{{data.dataSource.schemaName}}"
+                                                          ng-model="data.dataSource.schemaName"
+                                                          ng-mousedown="mousedown($event)"
+                                                          draggable="false"
+                                                          class="form-control warning_placeholder"
+                                                          ng-readonly=true
+                                                   >
+                                               </div>
+
+                                               <div  style="padding-top: 8px;" data-ng-if="statusType == 'HTTP'|| statusType == 'FTP' ||  statusType == 'SOCKET'" >
+                                                   <label ng-if="statusType == 'HTTP'">数据过滤</label>
+                                                   <label ng-if="statusType == 'SOCKET'">正则表达式</label>
+                                                   <label ng-if="statusType == 'FTP'">文件名</label>
+                                                   <input ng-if="statusType == 'HTTP'"type="textarea" class="form-control"  ng-model="data.dataSource.parameters"
+                                                          name="itemName"
+                                                          ng-required=false
+                                                          ng-readonly=true
+                                                   >
+                                                   <input ng-if="statusType == 'SOCKET'" type="textarea" class="form-control"  ng-model="data.dataSource.regex"
+                                                          name="itemName"
+                                                          ng-required=false
+                                                          ng-readonly=true
+                                                   >
+                                                   <input ng-if="statusType == 'FTP'" type="textarea" class="form-control"  ng-model="data.dataSource.filename"
+                                                          name="itemName"
+                                                          ng-required=false
+                                                          ng-readonly=true
+                                                   >
+
+                                               </div>
+
+                                               <div  style="padding-top: 8px;"  data-ng-if="statusType == 'DB'">
+                                                   <label >数据过滤</label>
+                                                   <input type="textarea" class="form-control" ng-model="data.dataSource.selectSQL"
+                                                          name="itemName"
+                                                          ng-required=false
+                                                          ng-readonly=true
+                                                   >
+                                               </div>
+
+                                               <div  style="padding-top: 8px;" >
+                                                   <label >数据存储</label>
+                                                   <input  type="text"  name="{{data.dataStore.path}}"
+                                                           ng-model="data.dataStore.name"
+                                                           ng-mousedown="mousedown($event)"
+                                                           draggable="false"
+                                                           class="form-control warning_placeholder"
+                                                           ng-readonly=true
+                                                   >
+                                               </div>
+                                               <div style="padding-top: 8px;" ng-if="data.dataStore.type == 'HDFS' ">
+                                                   <label>写入模式
+                                                   </label>
+                                                   <input type="textarea"
+                                                          class="form-control"
+                                                          name="data.modeTmp"
+                                                          ng-value="'{{data.modeTmp}}'?'追加':'覆盖'"
+                                                          ng-required
+                                                          ng-readonly=true>
+
+                                               </div>
+
+                                               <div style="padding-top: 8px;">
+                                                   <label >扩展表</label>
+                                                   <input  type="text"  name="{{tableExt}}"
+                                                           ng-model="data.dataSource.tableExt"
+                                                           class="form-control warning_placeholder"
+                                                           ng-readonly=true
+                                                   >
+                                               </div>
+
+                                               <div  style="padding-top: 8px;" >
+                                                   <label >并行度</label>
+                                                   <div  ng-class="{ 'has-error': entityForm.sliceType.$touched && entityForm.sliceType.$invalid }">
+                                                       <input type="textarea" class="form-control" id="parallelism" ng-model="data.parallelism"
+                                                              name="parallelism" ng-readonly=true >
+                                                   </div>
+                                               </div>
+
+                                               <div  style="padding-top: 8px;">
+                                                   <label  >错误记录上限数</label>
+                                                   <input type="textarea"
+                                                          class="form-control"
+                                                          ng-model="data.errorNumber"
+                                                          name="errorNumber"
+                                                          ng-required
+                                                          ng-readonly=true>
+                                               </div>
+
+                                               <div style="padding-top: 8px;"data-ng-if="CollectorID && CollectorID!='EUROPA-SERVER'">
+                                                   <label>Schema发生改变后，此任务将会
+                                                   </label>
+                                                   <input type="textarea"
+                                                          class="form-control"
+                                                          name="stopOnSchemaChanged"
+                                                          ng-value="'{{stopOnSchemaChanged}}'?'停止':'继续'"
+                                                          ng-required
+                                                          ng-readonly=true>
+
+                                               </div>
+                                               <!--config是判断多值，input是设置下次显示初始值，output是设置此次显示-->
+                                               <div  style="padding-top: 8px;" ng-if="triggerType =='cron' && data.dataStore.type != 'SOCKET'">
+                                                   <label>周期</label>
+                                                   <cron-selection template="cronselection-readonly-view.html" output="data.trigger" init="data.trigger" config="cronConfig" ng-model="data.trigger"  edit-disable="true" ng-readonly=true></cron-selection>
+
+                                               </div>
+
+                                               <div  style="padding-top: 8px;" ng-if="triggerType =='cron' && data.dataStore.type != 'SOCKET'">
+                                                   <label>增量字段</label>
+                                                   <input type="textarea"
+                                                          class="form-control"
+                                                          id="cursorCol"
+                                                          ng-model="data.cursorCol"
+                                                          name="cursorCol"
+                                                          ng-readonly=true >
+                                               </div>
+
+                                               <div  style="padding-top: 8px;" >
+                                                   <label>分区键</label>
+                                                   <input type="textarea"
+                                                          class="form-control"
+                                                          id="data.partitionKey"
+                                                          ng-model="data.partitionKey"
+                                                          name="data.partitionKey"
+                                                          ng-readonly=true
+                                                          placeholder="根据此字段进行分区">
+                                               </div>
+
+                                               <div  style="padding-top: 8px;" ng-if="isDate" uib-tooltip = "">
+                                                   <label>分区键格式</label>
+                                                   <input type="textarea"
+                                                          class="form-control"
+                                                          id="format5"
+                                                          data-ng-model="data.partitionPattern"
+                                                          name="data.errorNumber"
+                                                          ng-readonly=true
+                                                          placeholder="yyyy-mm-dd"
+                                                          ng-blur="changepartitionKeyFormat(data.partitionPattern)"
+                                                   >
+                                               </div>
+
+                                           </div>
+                                           <div class="col-md-7 " style="padding-top: 8px;" >
+                                               <div class="panel panel-primary col-md-10" style="max-height:600px;min-height: 350px; overflow: auto;padding: 15px 15px 15px 15px">
+                                                   <table >
+                                                       <thead   >
+                                                           <tr>
+                                                               <th class="col-md-3"> 源头表(字段)</th>
+                                                               <th class="col-md-2"></th>
+                                                               <th class="col-md-3"> 目标表(字段)</th>
+                                                               <th class="col-md-1"></th>
+                                                               <th class="col-md-3"> 脱敏规则</th>
+                                                           </tr>
+                                                       </thead>
+                                                       <tbody ng-repeat="item in data.fieldMapping " >
+                                                           <tr >
+                                                               <td >
+                                                                   <input
+                                                                           type="text" name="{{item.sourceField}}"
+                                                                           class="form-control warning_placeholder"
+                                                                           ng-readonly = true
+                                                                           ng-model="item.sourceField"
+                                                                   >
+                                                               </td>
+                                                               <td style="font-size:30px;color:#00BFFF ;text-align:center" >&harr;</td>
+                                                               <td >
+                                                                   <input
+                                                                           type="text" name="{{item.targetField}}"
+                                                                           class="form-control warning_placeholder"
+                                                                           ng-readonly = true
+                                                                           ng-model="item.targetField"
+                                                                   >
+                                                               </td>
+                                                               <td></td>
+                                                               <td>
+                                                                   <input
+                                                                           type="text"
+                                                                           class="form-control warning_placeholder"
+                                                                           ng-readonly = true
+                                                                           ng-model="item.encrypt"
+                                                                   >
+                                                               </td>
+                                                           </tr>
+                                                       </tbody>
+                                                   </table>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                           <div class=" wizard-actions " style=" padding:10px" >
+                               <button class="btn btn-prev" >
+                                   <span class="icon icon-hand-left"></span>
+                                   上一步
+                               </button>
+                               <button class="btn btn-success btn-next" data-last="提交 " data-ng-click="nextStep()">
+                                   下一步
+                                   <span class="icon icon-hand-right" ></span>
+                               </button>
+                               <button class="btn btn-warning" style=" float : right" ng-click="back()" uib-tooltip="返回{{backTitle}}列表页"><i class="icon icon-reply">&nbsp;</i>返回</button>
+
+                               <!--<a href="{{backUrl}}" style=" float : right" class="btn btn-warning" data-ng-click="back()" uib-tooltip="返回{{backTitle}}列表页">-->
+                                   <!--<i class="icon icon-reply">&nbsp;</i>返回-->
+                               <!--</a>-->
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </form>
+       </div>
+   </div>
+
+</div>

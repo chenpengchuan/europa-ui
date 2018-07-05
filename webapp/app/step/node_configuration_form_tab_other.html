@@ -1,0 +1,46 @@
+<div ng-style="{'max-height': '{{windowHeight-300}}px','width': '100%', 'overflow': 'hidden', 'overflow-y': 'auto'}" ng-init="tab.advancedShown=false" class="clearfix">
+    <div  ng-if="item.type!=='tabs'" ng-repeat="item in tab.content"  class="bottom-margin-2">
+        <div class="clearfix" ng-hide="item.advanced && !tab.advancedShown" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+        <div ng-if="$last" style="padding-left: 15px;">
+            <span>
+                <a ng-hide="tab.advancedShown" data-ng-click="tab.advancedShown=true"><span class="right-padding-5 glyphicon glyphicon-menu-down"></span>高级选项</a>
+                <a ng-show="tab.advancedShown" data-ng-click="tab.advancedShown=false"><span class="right-padding-5 glyphicon glyphicon-menu-up"></span>高级选项</a>
+            </span>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+</div>
+
+
+<div ng-if="map.nestTabs" ng-init="">
+    <ul class="nav nav-tabs" data-ng-init="tab.currentTab=0">
+        <li ng-class="{active:tab.currentTab===$index}"
+            ng-repeat="group in map.nestTabs.content track by $index"  >
+            <a data-ng-click="tab.currentTab=$index" data-toggle="tab">{{$index+1}}</a>
+        </li>
+
+        <li data-ng-init="" ><a  ng-click="addGroup(tab, tab.currentTab)" class=""><span class="glyphicon glyphicon-plus-sign icon-green"></span></a> </li>
+        <li data-ng-init="" ><a  ng-click="removeGroup(tab, tab.currentTab)" data-ng-show="map.nestTabs.content.length>1"><span class="glyphicon glyphicon-minus-sign icon-red"></span></a></li>
+    </ul>
+
+
+    <div class="tab-content" ng-style="{'max-height': '{{windowHeight-400}}px', 'overflow': 'hidden', 'overflow-y': 'auto', 'width': '100%' }">
+        <div class="tab-pane "  ng-class="{active:tab.currentTab===$index}"
+             ng-repeat="group in map.nestTabs.content track by $index" id="tab_{{$index}}">
+            <div ng-repeat="item in group.content" class="bottom-margin-5">
+
+                <div ng-hide="item.advanced && !group.advancedShown" data-ng-init="itemCopy=item" ng-include="'app/step/node_configuration_form_nest.html'" ></div>
+                <div ng-if="$last" style="padding-left: 15px;">
+                    <span>
+                        <a ng-hide="group.advancedShown" data-ng-click="group.advancedShown=true"><span class="right-padding-5 glyphicon glyphicon-menu-down"></span>高级选项</a>
+                        <a ng-show="group.advancedShown" data-ng-click="group.advancedShown=false"><span class="right-padding-5 glyphicon glyphicon-menu-up"></span>高级选项</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

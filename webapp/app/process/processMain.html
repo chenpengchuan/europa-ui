@@ -1,0 +1,69 @@
+<div id="DashBoard-overview" class="container-fluid" window-size-getter ng-style="{'width': '{{ windowWidth - 80 }}px'}">
+        <div class="panel panel-default" style="margin-top: -1px;" ng-controller="ProcessControllerNew">
+            <div class="panel-heading ">
+                <div class="row ">
+                    <div class="col-md-12">
+                        <i class="glyphicon glyphicon-list text-info"></i><span class="left-margin-5">流程管理</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body" style="min-height: 500px; ">
+                <div  ng-style="{'border': '1px lightgrey solid', 'padding': '5px 0 5px 0', 'position': 'relative','min-height': '{{windowHeight-160}}px'}">
+                    <div ui-layout="{flow : 'column'}">
+                        <div ui-layout-container size="200px" min-size="150px" max-size="400px"
+                             style="padding-top: 10px; border-right: 1px solid lightgray;">
+                            <div class="btn-group" style="padding-left: 10px; padding-bottom: 10px;">
+                                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <i class="iconfont icon-built"></i>新建
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <!-- dropdown menu links -->
+                                    <li ng-class="{'disabled':isButtonDisabled('dir')}"><a ng-click="addOrEditDir()"><i class="glyphicon glyphicon-folder-open"></i> 目录</a></li>
+                                    <li ng-class="{'disabled' : isButtonDisabled('process')}"><a ng-click="addProcess()"><i class="iconfont icon-workflow"></i>流程</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="btn-group" style="padding-bottom: 10px;" ng-show="isShowDropdownMenu()">
+                                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="iconfont icon-arrow-bottom"></i></a>
+                                <ul class="dropdown-menu">
+                                    <li ng-show="!isButtonDisabled('share')" ><a ng-click="batchShare()" uib-tooltip="共享选中的目录或流程"><i class="glyphicon glyphicon-share"></i>共享</a></li>
+                                    <li ng-show="!isButtonDisabled('delete')"><a ng-click="deleteNode()" uib-tooltip="删除选中的目录或流程"><i class="iconfont icon-delete"></i>删除</a></li>
+                                    <li ng-show="!isButtonDisabled('rename')"><a ng-click="editResource()" uib-tooltip="重命名目录或流程"><i class="iconfont glyphicon-pencil"></i>重命名...</a></li>
+                                    <li ng-show="!isButtonDisabled('move')"><a ng-click="moveProcess()" uib-tooltip="移动目录或流程"><i class="glyphicon glyphicon-move"></i>移动...</a></li>
+                                    <li ng-show="!isButtonDisabled('copy')"><a ng-click="copyProcess()" uib-tooltip="复制目录或流程"><i class="glyphicon glyphicon-copy"></i>复制...</a></li>
+                                    <li ng-show="!isButtonDisabled('export')"><a ng-click="exportProcess(true)" uib-tooltip="导出流程"><i class="glyphicon glyphicon-export"></i>导出...</a></li>
+                                    <li ng-show="!isButtonDisabled('import')"><a ng-click="importProcess()" uib-tooltip="导入流程"><i class="glyphicon glyphicon-import"></i>导入...</a></li>
+                                    <li ng-show="!isButtonDisabled('history')"><a ng-click="showHistory()" uib-tooltip="操作历史"><i class="glyphicon glyphicon-record"></i>操作历史</a></li>
+                                </ul>
+                            </div>
+                            <div treecontrol class="tree-light"
+                                 tree-model="dataForTheTree"
+                                 options="treeOptions"
+                                 on-selection="onSelected(node, $parentNode, $path)"
+                                 on-node-toggle="onNodeToggle(node,expanded)"
+                                 selected-node="selectedNode">
+
+                                <span ng-switch="" on="node.processType">
+                                    <span ng-switch-when="dir" class="mdi mdi-folder" aria-hidden="true">
+                                        <span uib-tooltip-html="tooltip(node)" ng-class="{ 'mdi-share':auxo.isMyShared(node), 'mdi-share-variant': auxo.sharedWithMe(node) }"></span>
+                                    </span>
+                                    <span ng-switch-when="user_dir" ng-if="node.name==auxo.Auth.user.name" class="mdi mdi-account-circle" aria-hidden="true">(我的)</span>
+                                    <span ng-switch-when="user_dir" ng-if="node.name!=auxo.Auth.user.name" class="mdi mdi-account" aria-hidden="true"></span>
+                                    <span ng-switch-when="share_dir" class="mdi mdi-email" aria-hidden="true"></span>
+                                    <span ng-switch-when="user_share_dir" class="mdi mdi-share-variant" aria-hidden="true"></span>
+                                    <span ng-switch-when="admin_dir" class="mdi mdi-account-multiple" aria-hidden="true"></span>
+                                 </span>
+                                {{ transform(node.name) }}
+                            </div>
+                        </div>
+                        <div ui-layout-container="central">
+                            <div ui-view style="margin-right: 20px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+

@@ -1,0 +1,133 @@
+<div id="DashBoard-overview" class="container-fluid" window-size-getter>
+	<div class="col-fluid">
+		<uib-tabset active="0">
+			<uib-tab index="0" >
+				<uib-tab-heading>
+					<i class="glyphicon glyphicon-list text-info"></i><span class="left-margin-5">资源管理</span>
+				</uib-tab-heading>
+				<div class="panel panel-default" style="margin-top: -1px;" ng-controller="ResourceManController">
+					<div class="panel-heading" >
+						<div class="row ">
+							<div class="col-md-3">
+								<div class="input-group">
+									<input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doSearch(queryWord)">
+									<span class="input-group-btn">
+										<button class="btn btn-primary" type="button" ng-click="doSearch(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+									  </span>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="input-group">
+									  <span class="input-group-btn">
+										<button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+									  </span>
+									<input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"
+										   options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+										   ng-keydown="keydown($event)"  readonly="readonly" />
+								</div>
+							</div>
+							<div class="col-md-3 ">
+								<div  class="btn-group" ng-hide="isButtonsDisabled(['dir','datasource','dataspool','dataset','standard','schema','Dataflow','Streamflow','Workflow'])">
+									<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" >
+										<i class="iconfont icon-built"></i>新建
+										<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu">
+										<!-- dropdown menu links -->
+										<li ng-hide="isButtonDisabled('dir')"><a ng-click="addOrEditDir()"><i class="mdi mdi-folder"></i>目录</a></li>
+										<li ng-hide="isButtonDisabled('datasource')"><a ng-click="addDataSource()"><i class="mdi mdi-database"></i>DB数据源</a></li>
+										<li ng-hide="isButtonDisabled('datasource')"><a ng-click="addWEBDataSource()"><i class="mdi mdi-database"></i>WEB数据源</a></li>
+										<li ng-hide="isButtonDisabled('datasource')"><a ng-click="addOtherDataSource('HDFS')"><i class="mdi mdi-database"></i>HDFS数据源</a></li>
+										<li ng-hide="isButtonDisabled('datasource')"><a ng-click="addOtherDataSource('HIVE')"><i class="mdi mdi-database"></i>HIVE数据源</a></li>
+										<li ng-hide="isButtonDisabled('datasource')"><a ng-click="addOtherDataSource('HBASE')"><i class="mdi mdi-database"></i>HBASE数据源</a></li>
+										<li ng-hide="isButtonDisabled('datasource')"><a ng-click="addOtherDataSource('FTP')"><i class="mdi mdi-database"></i>FTP数据源</a></li>
+										<li ng-hide="isButtonDisabled('datasource')"><a ng-click="addOtherDataSource('SOCKET')"><i class="mdi mdi-database"></i>SOCKET数据源</a></li>
+										<li ng-hide="isButtonDisabled('datasource')"><a ng-click="addOtherDataSource('MQ')"><i class="mdi mdi-database"></i>MQ数据源</a></li>
+										<li ng-hide="isButtonDisabled('dataset')"><a ng-click="addDatasetFromDB()"><i class="mdi mdi-table-large"></i>数据集 (从数据源)</a></li>
+										<li ng-hide="isButtonDisabled('dataset')"><a ng-click="addDatasetFromSpool()"><i class="mdi mdi-table-large"></i>数据集</a></li>
+										<li ng-hide="isButtonDisabled('standard')"><a ng-click="addStandard()"><i class="mdi mdi-tag"></i>标准</a></li>
+										<li ng-hide="isButtonDisabled('standardMapping')"><a ng-click="addStandardMapping()"><i class="mdi mdi-link"></i>标准映射</a></li>
+										<li ng-hide="isButtonDisabled('schema')"><a ng-click="addSchema()"><i class="mdi mdi-view-column"></i>schema</a></li>
+										<li ng-hide="isButtonDisabled('Dataflow')"><a ng-click="addDataflow()"><i class="mdi mdi-view-column"></i>Dataflow</a></li>
+										<li ng-hide="isButtonDisabled('Streamflow')"><a ng-click="addStreamflow()"><i class="mdi mdi-view-column"></i>Streamflow</a></li>
+										<li ng-hide="isButtonDisabled('Workflow')"><a ng-click="addWorkflow()"><i class="mdi mdi-view-column"></i>Workflow</a></li>
+									</ul>
+								</div>
+
+								<button class="btn btn-primary" type="button" ng-click="deleteNode()" ng-hide="isButtonDisabled('delete')" uib-tooltip="删除选中的行" ><i class="iconfont icon-delete"></i>删除</button>
+								<button class="btn btn-primary" type="button" ng-click="moveNode('rows')" ng-hide="isButtonDisabled('move')" uib-tooltip="移动选中的行" ><i class="icon icon-move"></i>移动</button>
+
+								<div class="btn-group" >
+									<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="iconfont icon-arrow-bottom"></i></a>
+									<ul class="dropdown-menu">
+										<li ><a ng-click="deleteDir()"  uib-tooltip="目录删除" >删除目录</a></li>
+										<li ><a ng-click="moveNode('dir')" uib-tooltip="移动目录" >移动目录</a></li>
+										<li><a ng-click="reNameDir('dir')"  uib-tooltip="目录改名" >目录改名</a></li>
+										<li ><a ng-click="shareDir()"  uib-tooltip="目录共享..." data-ng-disabled="">共享...</a></li>
+									</ul>
+
+								</div>
+							</div>
+							<div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+							</div>
+						</div>
+					</div>
+					<div class="panel-body" style="min-height: 500px; ">
+						<div style="border: 1px lightgrey solid; padding: 5px 0 5px 0; position: relative;min-height: 729px;">
+							<div ui-layout="{flow : 'column'}">
+								<div ui-layout-container size="200px" min-size="150px" max-size="400px" style="padding-top: 10px;">
+									<div treecontrol class="tree-light"
+										 tree-model="dataForTheTree"
+										 options="treeOptions"
+										 on-selection="onSelected(node)"
+										 on-node-toggle="onNodeToggle(node,expanded)"
+										 selected-node="selectedNode">
+
+										<span ng-switch="" on="node.resType">
+											 <span ng-switch-when="dir" class="mdi mdi-folder" aria-hidden="true"></span>
+											 <span ng-switch-when="root" class="mdi mdi-folder" aria-hidden="true"></span>
+											 <span ng-switch-when="data_spool" class="mdi mdi-floppy" aria-hidden="true"></span>
+											 <span ng-switch-when="DB" class="mdi mdi-database" aria-hidden="true"></span>
+											 <span ng-switch-when="dataset_db" class="mdi mdi-table-large" aria-hidden="true"></span>
+											 <span ng-switch-when="dataset_spool" class="mdi mdi-table-large" style="color:dodgerblue;" aria-hidden="true"></span>
+										 </span>
+										<span ng-if="node.sharedUsers && node.sharedUsers.length>0 &&node.owner==auxo.Auth.user.name" class="mdi mdi-redo"></span>
+
+										{{node.name}}
+									</div>
+								</div>
+								<div ui-layout-container="central">
+									<table st-table="rowCollection" st-pipe="fetchPage2 " class="table">
+										<thead>
+										<tr>
+											<th><st-select-all all="rowCollection"></st-select-all></th>
+											<th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" >{{rh.disName}}</th>
+											<th></th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr ng-repeat="row in rowCollection">
+											<td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+											<td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" >
+												<span ng-if="rh.name != 'name' " >{{rh.converter(col,row)}}</span>
+												<a ng-if="rh.name === 'name'" ng-click="editResource(row)" >{{rh.converter(col,row)}}</a>
+											</td>
+											<td>
+												<a ng-if="'cds' === row.idPrefix" ng-click="previewData(row)" >预览</a>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</uib-tab>
+		</uib-tabset>
+	</div>
+</div>
+
+

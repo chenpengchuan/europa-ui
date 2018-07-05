@@ -1,0 +1,65 @@
+<div class="  " style="max-height: 800px;overflow: auto;" data-ng-controller="DFConfigInOutputController">
+    <form class="form-horizontal" name="dataflowForm" >
+
+        <div  ng-repeat="item in formMetas"  class="bottom-margin-2">
+            <div  data-ng-init="">
+                <label data-ng-show="!item.label_hidden" for="{{item.id}}" data-ng-class="{'col-sm-2': !item.label_length_class}"
+                       ng-style="item.label_align=='left' && {'text-align': 'left'}"
+                       class="{{item.label_length_class}}  control-label">{{item.label?item.label: item.$name}}
+                    <span class = "glyphicon glyphicon-info-sign"    uib-tooltip-html="'<div>{{item.label?item.label: item.tooltip}}</div>'"></span>
+                </label>
+                <div ng-show="item.data&&item.data.length>0" class="{{item.input_length_class}} " data-ng-class="{'col-sm-10': !item.input_length_class}" style="max-height: 60vh;overflow-y: auto;">
+                    <table style="table-layout: fixed;  width: 100%; margin-left: -5px; " >
+                        <thead>
+                        <tr>
+                            <th style="padding:5px; text-align:center;"  >名称</th>
+                            <th style="padding:5px; text-align:center; width: 30%;"  >{{item.paraName}}</th>
+                            <th style="padding:5px; text-align:center;"  >描述</th>
+                        </tr>
+                        </thead>
+                        <tbody >
+                        <tr ng-repeat="obj in item.data" style="">
+                            <td style="padding:5px;" ><input  placeholder="名称 (必填项)"
+                                                                class="form-control warning_placeholder"  ng-model="obj.name"
+                                                              ng-change="onDataChange()" normal-word-validation required></td>
+                            <td style="padding:5px;" ng-style="false&&obj.refs.length>1&& {'border-bottom': '1px solid lightgray','border-top': '1px solid lightgray'}">
+
+                                <div class="input-group" data-ng-repeat="ref in obj.refs track by $index" ng-style="{'background': obj.refs.length>1 && 'lightgrey'}">
+                                    <select class="form-control select-placeholder"  ng-model="obj.refs[$index]"
+                                            ng-change="onDataChange(obj,item.selectList)" required>
+                                        <option value="" disabled selected>选择引用（必填项）...</option>
+                                        <option data-ng-repeat="v in item.selectList" data-ng-show="obj.refs.indexOf(v.ref)<0" ng-value="'{{v.ref}}'">{{v.ref}}</option>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <a data-ng-if="obj.refs.length>1" ng-click="obj.refs.splice($index,1)" class="btn " ng-style="{'padding-right': $last?'0':'17px'}" style="padding-left: 2px;aapadding-right:0;"><span class="glyphicon glyphicon-minus-sign icon-red"></span></a>
+                                        <a data-ng-if="$last" ng-click="obj.refs.push('')" class="btn " ng-style="{'padding-right': $first?'17px':'0'}" style="padding-left: 2px; aapadding-right:0;"><span class="glyphicon glyphicon-plus-sign icon-green"></span></a>
+                                    </span>
+                                </div>
+                            </td>
+                            <td style="padding:5px;" >
+                                <div class="input-group">
+                                    <input  placeholder="描述" class="form-control" ng-change="onDataChange()" ng-model="obj.description" required>
+                                    <span class="input-group-btn">
+                                        <a ng-click="removeRow($index,item.data)" class="btn" style="padding-left: 2px; padding-right:0;" ><span class="glyphicon glyphicon-remove icon-red"></span></a>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="padding-left: 15px;">
+                    <a  ng-click="addRow(item.data)" class=""><span class="glyphicon glyphicon-plus-sign icon-green"></span></a>
+                </div>
+
+            </div>
+
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+
+    </form>
+</div>

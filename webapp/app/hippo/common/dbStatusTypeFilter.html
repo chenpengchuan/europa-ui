@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon">
+        <span>连接状态</span>
+    </span>
+    <select class="form-control" id="status_type_select" ng-model="statusTypeFilter" ng-change="onStatusTypeChange(statusTypeFilter)">
+        <option ng-repeat="o in auxo.datasourceStatusArray" value="{{o.value}}">{{o.name}}</option>
+    </select>
+</div>

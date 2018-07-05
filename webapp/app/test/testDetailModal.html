@@ -1,0 +1,29 @@
+
+
+<div class="row" style="display:none">
+    <label for="testDetail"  class="col-sm-2  control-label" style="text-align: left;">JSON数据类型</label>
+    <div class="col-sm-5" >
+        <select class="form-control"  id="currentSelect"  ng-model="tagUrl"   >
+            <option ng-repeat="d in auxo.solrTypes" ng-value="'{{d.value}}'">{{d.name}}</option>
+        </select>
+    </div>
+    <div class="col-sm-5" >
+        <input type="checkbox" ng-model="isNew" class="check" > <label  class=" control-label" style="text-align: left;">新建</label>
+    </div>
+
+    <div class="clear"></div>
+</div>
+
+<div class="row">
+        <form name="EditForm" novalidate="novalidate">
+            <label for="testDetail"  class="col-sm-12  control-label" style="text-align: left;">JSON数据</label>
+            <div class="col-sm-12" >
+                <textarea class="form-control " id="testDetail" name="testDetail" ng-model="entity"   style="height: 600px; resize: vertical; " required="required">
+                </textarea>
+            </div>
+
+            <div class="clear"></div>
+        </form>
+</div>
+
+

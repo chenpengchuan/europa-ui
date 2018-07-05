@@ -1,0 +1,9 @@
+<div class="panel panel-default" >
+    <div class="panel-heading">日志信息</div>
+    <div class="panel-body" style="width:770px;height:450px;overflow: auto;word-break:break-all;">
+        <div data-ng-model="detail.name" style="width:740px;padding-top:5px;padding-bottom:2px" data-ng-repeat="loga in log track by $index" >{{log[$index]}}</div>
+    </div>
+</div>
+<div style="text-align: center;">
+    <button type="button" class="btn btn-success glyphicon glyphicon-refresh"  data-ng-click="refresh()">刷新</button>
+</div>

@@ -1,0 +1,30 @@
+<div ng-if="runtimeProperties.length>0" style="padding-left: 15px; " class="row top-margin-5">
+                    <span>
+                        <a  data-ng-click="runtimePropertiesFormMeta.hide=!runtimePropertiesFormMeta.hide">
+                            <span class="right-padding-5 glyphicon glyphicon-menu-{{runtimePropertiesFormMeta.hide?'right':'down'}}"></span>
+                            高级选项
+                        </a>
+                        <span style="position: relative;">
+                            <div style=" border-bottom: solid 1px lightgrey; width: 650px; position: absolute; left: 10px;top:10px;height:1px;"></div>
+                        </span>
+                    </span>
+</div>
+
+<div ng-hide="runtimePropertiesFormMeta.hide">
+    <div ng-repeat="group in runtimePropertiesFormMeta.groups" class="clearfix">
+        <div style="padding-left: 30px; text-decoration: underline; padding-top: 25px; padding-bottom: 5px" class="row"><h3>{{group}}</h3></div>
+        <div ng-repeat="item in runtimePropertiesFormMeta[group].items" class="clearfix">
+            <div ng-class="" class="top-margin-10 col-sm-12 no-padding clearfix">
+                <label class="col-sm-3 control-label" style="overflow:hidden; text-overflow: ellipsis; ">{{item.name}}
+                </label>
+                <div class="col-sm-9 input-group">
+                    <select ng-if="item.options" class="form-control select-placeholder"
+                            ng-model="item.data.value">
+                        <option ng-repeat="op in item.options" value="{{op}}">{{op}}</option>
+                    </select>
+                    <input ng-if="item.options == null" class="form-control" ng-model="item.data.value" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

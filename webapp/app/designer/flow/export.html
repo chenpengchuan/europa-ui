@@ -1,0 +1,28 @@
+<div ng-controller="ExportController">
+
+    <div class="panel panel-default" style="width: 300px;" >
+        <!-- Default panel contents -->
+        <div class="panel-heading">{{exportOptions.scopeName}}</div>
+
+        <!-- List group -->
+        <ul class="list-group">
+            <div class="list-group-item"  ng-repeat="item in exportOptions.selections" ng-if="item.valid">
+                <input type="radio" ng-value="'{{item.value}}'" ng-model="exportOptions.scopeOption" name="scopeOption" ng-click="onSelectionsChange($index)">
+                <a ng-click="onSelectionsChange($index)"><span>{{item.name}} </span></a>
+            </div>
+        </ul>
+
+
+    </div>
+
+        <!-- Default panel contents -->
+        <!--
+        <div class="panel-heading">选择范围</div>
+        -->
+
+    <div class="list-group-item no-border" >
+        <input type="checkbox" aria-label="{{exportOptions.depenedency.name}}" ng-model="exportOptions.depenedency.value">
+        <a ng-click="exportOptions.depenedency.value=!exportOptions.depenedency.value"><span>{{exportOptions.depenedency.name}} </span></a>
+    </div>
+
+</div>

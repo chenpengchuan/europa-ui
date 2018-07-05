@@ -1,0 +1,58 @@
+<div class="row" style="margin-top: 5px;">
+    <div class="col-md-3">
+        <div ng-include="'app/common/flowTypeFilter.html'"></div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="请输入检索词"
+                   ng-model="queryWord"
+                   ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+            <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)">
+                                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                            </button>
+                                        </span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group">
+                                        <span class="input-group-btn">
+                                        <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)">
+                                            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                                        </button></span>
+            <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text"
+                   ng-model="dateRange"
+                   options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply2}} "
+                   ng-keydown="keydown2($event, dateRange)" readonly="readonly"/>
+        </div>
+    </div>
+    <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+    </div>
+</div>
+
+<table st-table="rowCollection" st-pipe="fetchPage2 " class="table">
+    <thead>
+    <tr>
+        <th><st-select-all all="rowCollection"></st-select-all></th>
+        <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" >{{rh.disName}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="row in rowCollection">
+        <td cs-select="row" rows="rowCollection" selected-rows="selectedRows" class="xs_wrap"></td>
+        <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]"  class="xs_wrap">
+            <span ng-if="rh.name !== 'name'">{{rh.converter(col,row)}}</span>
+            <a ng-if="rh.name === 'name' && !row.attributes.flowId"
+                    ui-sref="design.process_detail.design({action:'new', flowType:row.attributes.flowType, id: row.id})"> {{rh.converter(col,row)}} </a>
+            <a ng-if="rh.name === 'name' && row.attributes.flowId && auxo.canRW(row)"
+                    ui-sref="design.process_detail.design({action:'edit', flowType:row.attributes.flowType, id: row.id})">{{rh.converter(col,row)}}</a>
+            <a ng-if="rh.name === 'name' && row.attributes.flowId && !auxo.canRW(row)"
+               ui-sref="design.process_detail.design({action:'read', flowType:row.attributes.flowType, id: row.id})">{{rh.converter(col,row)}}</a>
+            <!--
+            <button ng-if="rh.name === 'share' && row.attributes.flowId" class="btn btn-primary" data-ng-hide="hideShareButton(row)"
+                    ng-click="shareProcessWith(row)"><span ng-if="row.sharedUsers">已共享</span><span ng-if="!row.sharedUsers">共享</span></button>
+                    -->
+        </td>
+    </tr>
+    </tbody>
+</table>

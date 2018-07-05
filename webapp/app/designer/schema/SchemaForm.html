@@ -1,0 +1,109 @@
+<div class="DraggableList" style="max-width: 800px;" window-size-getter>
+    <div class="panel panel-info" style="">
+        <div class="panel-heading">{{isNew ? "创建" : isCopy ? "复制" : "查看"}}Schema</div>
+        <div class="panel-body"  ng-style="{'max-height':'{{windowHeight-180}}px','min-height':'300px', 'overflow-y': 'auto'} " >
+            <form name="entityForm" novalidate>
+                <div ng-init="itemIndex=$index" ng-repeat="item in formDef">
+                    <div ng-if="item.type=='String' || item.type=='Number'" ng-class="" class="bottom-margin-5">
+                        <div  >
+                            <label for="{{item.name}}" class="col-md-3 control-label">{{item.label?item.label: item.name}}</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="{{item.name}}" ng-model="data[item.$name]" ng-disabled="isReadOnlyView || (!isNew && !isCopy && item.$name=='name')"
+                                  name="itemName"     validate-errors-directive   placeholder="" ng-required="item.required">
+
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div ng-if="item.type=='TimePeriod'" ng-class="" class="bottom-margin-5">
+                        <div  data-ng-init="item.initValue = data[item.$name]" >
+                            <label for="{{item.name}}" class="col-md-3 control-label">{{item.label?item.label: item.name}}</label>
+                            <div class="col-sm-9">
+                                <time-period output="data[item.$name]" init="data[item.$name]" edit-disable="isReadOnlyView"></time-period>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <br>
+                <div>
+                    <label class="col-md-12 control-label">字段</label>
+                </div>
+
+                <div class="col-md-12">
+                <ul dnd-list="fields" dnd-drop="onDrop(fields, item, index)">
+                    <li ng-repeat="item in fields"
+                        dnd-draggable="getSelectedItemsIncluding(fields, item)"
+                        dnd-moved="onMoved(fields)"
+                        dnd-effect-allowed="move"
+                        dnd-disable-if="dragDisabled"
+                        dnd-dragend="fields.dragging = false"
+                        dnd-selected="onSelected(fields,item,event)"
+                        ng-class="{'selected': item.selected}"
+                        ng-hide="fields.dragging && item.selected"
+                        data-ng-mousedown="mousedown($event)"
+                        class="clearfix"
+                    >
+
+                        <div class="col-sm-12" >
+                            <div class="col-sm-1" style="padding-top: 8px;">
+                                {{$index+1}}.
+                            </div>
+                            <div    class="col-sm-6" style="padding-left: 0px;" >
+                                <input  type="text" class="form-control" name="{{item.id}}"
+                                        ng-model="item.name"
+                                        validate-errors-directive
+                                        placeholder="{{fieldDef.name.placeholder}}"
+                                        ng-disabled="isReadOnlyView"
+                                        ng-change="synchData()"
+                                        data-ng-mousedown="mousedown($event)"  draggable="false" required>
+                            </div>
+                            <div class="col-sm-5 input-group">
+                                <select  class="form-control group_select" name="{{item.id+'sel'}}"  ng-model="item.type"
+                                            ng-change="onTypeChange(item)"
+                                          ng-options="v for v in fieldDef.type.enum" ng-disabled="isReadOnlyView"></select>
+                                <div class="input-group-btn">
+                                    <select class="form-control group_select" ng-if="item.type==='decimal'" ng-model="item.wholeLength" ng-change="onDecimalChange(item,'wholeLength')" ng-disabled="isReadOnlyView">
+                                        <option ng-repeat="a in decimalFormat.allowArray()" ng-value="'{{a}}'">{{a}}</option>
+                                    </select>
+                                </div>
+                                <div class="input-group-btn">
+                                    <select class="form-control group_select" ng-if="item.type==='decimal'"
+                                            style="margin-right: 5px;"
+                                            ng-model="item.fractionLength" ng-change="onDecimalChange(item,'fractionLength')" ng-disabled="isReadOnlyView">
+                                        <option ng-repeat="a in decimalFormat.allowArray()" ng-value="'{{a}}'">{{a}}</option>
+                                    </select>
+                                </div>
+                                <div class="input-group-btn">
+                                    <a  ng-show="!isReadOnlyView" ng-click="addFields($index)" class="btn" style="padding-left: 0;padding-right: 5px;">
+                                        <span class="glyphicon glyphicon-plus-sign icon-green"></span></a>
+                                    <a  ng-show="!isReadOnlyView" class="btn" ng-click="deleteItem($index)" ng-if="fields.length>1" style="padding-left: 0;padding-right: 0px;">
+                                        <span class="glyphicon glyphicon-minus-sign icon-red"></span> </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear" />
+
+                    </li>
+                </ul>
+                </div>
+                <div class="col-sm-2 " ng-show="!isReadOnlyView" style="padding-left: 15px;">
+                        <a  ng-click="addFields()" class="btn"><span class="glyphicon glyphicon-plus-sign icon-green"></span></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>
+
+<div class="form-group">
+    <div class="form-group">
+        <!--!entityForm.$valid ||!entityForm.$dirty|| (!isNew && !isCopy) || saving || isReadOnlyView-->
+        <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="isCopy==true? (!entityForm.$valid  || saving) : (!entityForm.$valid ||!entityForm.$dirty || saving)">{{saving ? "保存中..." : "保存"}}</button>
+        <button ng-show="!saving" type="button" class="btn btn-warning" ng-click="cancel()" >取消</button>
+    </div>
+    <div ng-show="error">
+        <uib-alert type="danger">保存失败:{{error.err}}</uib-alert>
+    </div>
+</div>

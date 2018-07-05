@@ -1,0 +1,15 @@
+<p class="input-group">
+    <input type="text" name="queryWord"
+           placeholder={{initTitle}} ng-readonly="disableEdit"
+           ng-disabled="true"
+           class="form-control warning_placeholder" ng-model="queryWord"
+           on-select-changed="doQuery(queryWord)"
+           readonly required>
+    <span class="input-group-btn">
+      <button type="button" class="btn btn-default" ng-disabled="disableEdit"
+              ng-click="addTableFromDB()"
+              ng-model="entity.schemaName">
+           <i class="glyphicon glyphicon-search"></i>
+      </button>
+    </span>
+</p>

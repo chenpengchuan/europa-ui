@@ -1,0 +1,21 @@
+<div class="input-group" style="width: 200px;">
+    <input type="number" class="form-control" placeholder="页" style="width: 60px;"
+           ng-change="view.currentPageNumber=view.currentPageNumber*1>0?view.currentPageNumber*1:1"
+           ng-model="view.currentPageNumber" ng-keyup="$event.keyCode == 13 && changeCurrentPageNumber(view.currentPageNumber)">
+    <span class="input-group-addon">  / {{totalPages}}页, 共{{total}}条</span>
+    <div class="input-group-btn" ng-init="limitOptions=[10, 20, 50, 80, 100]">
+        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
+            {{limit}}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <!-- dropdown menu links -->
+            <li ng-repeat="limit$ in limitOptions"><a  ng-click="reloadPage(limit=limit$)" >{{limit$}}</a></li>
+        </ul>
+    </div>
+
+    <span class="input-group-btn">
+        <button class="btn btn-primary" type="button" ng-click="changeCurrentPageNumber(view.currentPageNumber-1)">&larr;</button>
+        <button class="btn btn-primary" type="button" ng-click="changeCurrentPageNumber(view.currentPageNumber+1)">&rarr;</button>
+    </span>
+</div>

@@ -1,0 +1,98 @@
+<div id="DashBoard-overview" class="container-fluid" style="padding-top:10px">
+    <div class="col-fluid" ng-controller="EtlDetailController">
+        <uib-tabset active="active">
+            <uib-tab index="$index" ng-repeat="tab in tabs" select="selectTab(tab)" active="tab.active" disable="tab.disabled">
+                <uib-tab-heading>
+                    <i class="glyphicon {{tab.icon}}"></i> {{tab.title}} <span class="badge">{{tab.count}}</span>
+                </uib-tab-heading>
+                <div ng-if="tab.status==selectedTabStatus" class="panel panel-default" style="margin-top: -1px;" ng-controller="EtlController">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord" ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-success" type="button" ><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+                                    </span>
+                                    <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text" ng-model="dateRange"
+                                           options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+                                           ng-keydown="keydown($event)"  readonly="readonly" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <button ng-if="'RUNNING' == tab.status" class="btn btn-danger" type="button" ng-click="killExecution()" ng-disabled="selectedRows.length == 0"><i class="icon icon-remove-circle">&nbsp;</i>停止</button>
+                                <button class="btn btn-danger" type="button" ng-click="remove()" ng-disabled="selectedRows.length == 0"><i class="icon icon-trash">&nbsp;</i>删除</button>
+                            </div>
+                            <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+                            </div>
+                        </div><!-- 1.row -->
+
+                        <div class="row top-buffer">
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <select class="form-control" ng-model="tagSelected" ng-change="onTagSelected()" style="color:{{tags[tagSelected].color}};">
+                                        <option ng-repeat="tag in tags" value="{{tag.id}}" style="color:{{tag.color}};">{{tag.name}}</option>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="button" ng-click="addTags()" ng-disabled="selectedRows.length == 0">
+                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                        </button>
+                                        <button class="btn btn-danger" type="button" ng-click="removeTags()" ng-disabled="selectedRows.length == 0">
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div ng-include="'app/common/flowTypeFilter.html'"></div>
+                            </div>
+                        </div><!-- 2.row -->
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="checkbox">
+                                    <label ng-repeat="tf in tagfacets" style="margin-right: 25px;"><input type="checkbox" value="{{tf.name}}" ng-change="doTagFilter()" ng-model="tagfilters[tf.name]">
+                                        <span class="label" style="color:#fff;background-color:{{tf.color}};">{{tf.name}}({{tf.count}})</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body" ng-if="active == $index">
+                        <table st-table="rowCollection" st-pipe="fetchPage" class="table">
+                            <thead>
+                            <tr>
+                                <th><st-select-all all="rowCollection"></st-select-all></th>
+                                <th st-sort="{{rh.disableSort ? '' : rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders" ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="row in rowCollection" class="xs_wrap">
+                                <td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+                                <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]" ng-if="auxo.isColumnVisible(rh.name)">
+                                    <span ng-if="['flowShedulerName','flowName','status','name'].indexOf(rh.name)<0 || rh.sortName == 'status_cost'">{{rh.converter(col)}}</span>
+                                    <a ng-if="rh.name == 'name'" href="#monitor/{{row.id | escapeUri}}/{{tab.status}}">{{rh.converter(col)}}</a>
+                                    <a ng-if="rh.name == 'flowName'" href="#/designer/dataflow/{{row.flowId}}/edit/dataflow" target="_blank">{{rh.converter(col)}}</a>
+                                    <a ng-if="rh.name == 'flowShedulerName'" href="#/schedule/{{row.flowShedulerId}}" target="_blank">{{rh.converter(col)}}</a>
+
+                                    <!-- <tags ng-show="rh == rowHeaders[0]" options="{addable: false}" model="row.tags" src="s as s.name for s in tags"></tags> -->
+                                    <uib-progressbar ng-if="rh.name == 'status' && rh.sortName != 'status_cost'" class="progress-striped {{col.type == 'RUNNING' ? 'active':''}}" max="col.estimateTotal" value="col.processed" type="{{statusColor(col)}}" style="margin-bottom: 0px;min-width:50px"><i>{{rh.converter(col)}}</i></uib-progressbar>
+                                    <span ng-if="rh == rowHeaders[0]" ng-repeat="t in row.tags" class="label" style="color:#fff;background-color: {{tagsColorMap[t]}};">{{t}}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

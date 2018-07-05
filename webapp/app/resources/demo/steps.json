@@ -1,0 +1,135 @@
+{
+  "total": 3,
+  "totalPages": 1,
+  "content": [
+    {
+      "group": "source",
+      "count": 1,
+      "content": [
+        {
+          "id": "source_text",
+          "name": "source_text",
+          "type": "source_text",
+          "tags": [
+            "source"
+          ],
+          "description": null,
+          "implementation": null,
+          "libs": null,
+          "group": "source",
+          "icon": "default.png",
+          "inputCount": 0,
+          "outputCount": 1,
+          "inputConfigurations": null,
+          "outputConfigurations": [
+            {
+              "id": "string?options=output",
+              "fields": "string"
+            }
+          ],
+          "otherConfigurations": {
+            "schema": "string",
+            "path": "string",
+            "delimiter": "string?default=,"
+          },
+          "creator": "$system",
+          "createTime": 1463127762494,
+          "lastModifier": "admin",
+          "lastModifiedTime": 1463127762533,
+          "owner": "$system",
+          "version": 1,
+          "enabled": 1
+        }
+      ]
+    },
+    {
+      "group": "processing",
+      "count": 1,
+      "content": [
+        {
+          "id": "filter",
+          "name": "filter",
+          "type": "filter",
+          "tags": [
+            "processing"
+          ],
+          "description": null,
+          "implementation": null,
+          "libs": null,
+          "group": "processing",
+          "icon": "default.png",
+          "inputCount": 1,
+          "outputCount": 1,
+          "inputConfigurations": [
+            {
+              "id": "string?options=input",
+              "fields": "string"
+            }
+          ],
+          "outputConfigurations": [
+            {
+              "id": "string?options=output",
+              "fields": "string"
+            }
+          ],
+          "otherConfigurations": {
+            "condition": "string"
+          },
+          "creator": "$system",
+          "createTime": 1463127762494,
+          "lastModifier": "admin",
+          "lastModifiedTime": 1463127763180,
+          "owner": "$system",
+          "version": 1,
+          "enabled": 1
+        }
+      ]
+    },
+    {
+      "group": "sink",
+      "count": 1,
+      "content": [
+        {
+          "id": "sink_text",
+          "name": "sink_text",
+          "type": "sink_text",
+          "tags": [
+            "sink"
+          ],
+          "description": null,
+          "implementation": null,
+          "libs": null,
+          "group": "sink",
+          "icon": "default.png",
+          "inputCount": 1,
+          "outputCount": 1,
+          "inputConfigurations": [
+            {
+              "id": "string?options=input",
+              "fields": "string"
+            }
+          ],
+          "outputConfigurations": [
+            {
+              "id": "string?options=output",
+              "fields": "string"
+            }
+          ],
+          "otherConfigurations": {
+            "path": "string",
+            "delimiter": "string?default=,"
+          },
+          "creator": "$system",
+          "createTime": 1463127762494,
+          "lastModifier": "admin",
+          "lastModifiedTime": 1463127763484,
+          "owner": "$system",
+          "version": 1,
+          "enabled": 1
+        }
+      ]
+    }
+  ],
+  "first": true,
+  "last": true
+}

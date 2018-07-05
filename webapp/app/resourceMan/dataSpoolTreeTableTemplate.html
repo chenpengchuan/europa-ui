@@ -1,0 +1,5 @@
+<tr tt-node is-branch="node.resType == 'dir'"  ng-class="{'selected':node.id===selectedNode.id}">
+    <td ng-click="onNodeSelected(node)"><span ng-bind="node.name" ></span></td>
+    <td ng-click="onNodeSelected(node)"><span ng-bind="node.attributes.storeType" ></span></td>
+    <td ng-click="onNodeSelected(node)"><span ng-bind="node.attributes.path" ></span></td>
+</tr>

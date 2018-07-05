@@ -1,0 +1,46 @@
+<div class="" ng-controller="historyController">
+    <div class="row" style="margin-bottom: 10px">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <span>事件类型</span>
+                </span>
+                <select  class="form-control" id="process_event_type_select"  ng-model="processEventTypeFilter" ng-change="onProcessEventTypeChange(processEventTypeFilter)">
+                    <option ng-repeat="o in auxo.processEventTypeArray" ng-value="'{{o.value}}'">{{o.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div ng-show="auxo.amIAdmin()" class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <span>用户</span>
+                </span>
+                <select  class="form-control" id="user_loginId_select"  ng-model="userFilter" ng-change="onUserChange(userFilter)">
+                    <option value="all">全部</option>
+                    <option ng-repeat="o in userArray" ng-value="'{{o.loginId}}'">{{o.loginId}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="pre-scrollable">
+        <div infinite-scroll='fetchPage()' infinite-scroll-disabled="busy"
+             infinite-scroll-container="'.pre-scrollable'">
+            <timeline>
+                <timeline-event ng-repeat="event in events" side="alternate">
+                    <timeline-badge class="{{event.badgeClass}}">
+                        <i class="glyphicon {{event.badgeIconClass}}"></i>
+                    </timeline-badge>
+                    <timeline-panel class="{{event.badgeClass}}">
+                        <timeline-heading>
+                            <h4>{{event.title}}</h4>
+                            <i class="glyphicon glyphicon-time"> {{ event.timestamp }}</i>
+                        </timeline-heading>
+                        <p>{{event.content}}</p>
+                    </timeline-panel>
+                </timeline-event>
+            </timeline>
+        </div>
+        <div style="clear: both;"></div>
+        <div ng-show='busy'>Loading data...</div>
+    </div>
+</div>

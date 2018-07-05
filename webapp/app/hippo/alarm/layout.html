@@ -1,0 +1,102 @@
+<div id="DashBoard-overview" class="container-fluid">
+    <div class="col-fluid">
+        <uib-tabset active="0">
+            <uib-tab index="0">
+                <uib-tab-heading>
+                    <i class="glyphicon mdi mdi-file-document text-info"></i><span class="left-margin-5">告警列表</span>
+                </uib-tab-heading>
+                <div class="panel panel-default" style="margin-top: -1px;" ng-controller="AlarmController">
+                    <div class="panel-heading">
+                        <div class="row top-buffer">
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="请输入检索词" ng-model="queryWord"
+                                           ng-keyup="$event.keyCode == 13 && doQuery(queryWord)">
+                                    <span class="input-group-btn">
+				        <button class="btn btn-primary" type="button" ng-click="doQuery(queryWord)"><span
+                                class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				      </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+				      <span class="input-group-btn">
+				        <button class="btn btn-success" type="button" ng-click="doQuery(queryWord)"><span
+                                class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+				      </span>
+                                    <input placeholder="请选择时间范围" date-range-picker class="form-control" type="text"
+                                           ng-model="dateRange"
+                                           options="{eventHandlers: {'apply.daterangepicker': onDateRangeApply}} "
+                                           ng-keydown="keydown($event)" readonly="readonly"/>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <!--<a class="btn btn-primary" type="button" ui-sref="schema_new({id:row.id,action:'edit',currPage:currentPageNumber})" >创建规则</a>-->
+                                <button class="btn btn-primary" type="button" ng-click="IngoreAlarm()"
+                                        ng-disabled="selectedRows.length == 0">忽略告警
+                                </button>
+                                <button class="btn btn-danger" type="button" ng-click="remove()" ng-disabled="selectedRows.length == 0">删除告警</button>
+                            </div>
+                            <div class="col-md-3" ng-include="'app/common/pagingBar.html'">
+                            </div>
+                        </div><!-- /1.row -->
+                        <div class="row top-buffer">
+                            <div class="col-md-3">
+                                <div ng-include="'app/hippo/common/alarmTypeFilter.html'"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <div ng-include="'app/hippo/common/alarmSolvedTypeFilter.html'"></div>
+                            </div>
+                        </div><!-- /2.row -->
+                    </div>
+                    <div class="panel-body">
+                        <table st-table="rowCollection" st-pipe="fetchPage" class="table">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <st-select-all all="rowCollection"></st-select-all>
+                                </th>
+                                <th st-sort="{{rh.name}}" st-skip-natural="true" ng-repeat="rh in rowHeaders"
+                                    ng-if="auxo.isColumnVisible(rh.name)">{{rh.disName}}
+                                </th>
+                            </tr>
+                            <tbody>
+                            </thead>
+                            <tr ng-repeat="row in rowCollection">
+                                <td cs-select="row" rows="rowCollection" selected-rows="selectedRows"></td>
+                                <td ng-repeat="rh in rowHeaders" ng-init="col=row[rh.name]"
+                                    ng-if="auxo.isColumnVisible(rh.name)">
+                                    <span ng-if="rh.name != 'name' && rh.name != 'type'&&rh.name != 'status'">{{rh.converter(col)}}</span>
+                                    <!--<a ng-if="rh.name == 'name'" ng-click="go_schema_editOrCopy(row.id,'edit')" style="cursor:pointer;">{{rh.converter(col)}}</a>-->
+                                    <span ng-if="rh.name == 'name'"><font
+                                            color="#1A8CCE">{{rh.converter(col)}}</font></span>
+                                    <span ng-if="row['type'] == 'deadly' && rh.name == 'type'"
+                                          style="background-color:#C1232B;padding:4px;"><font color="black" size="2px">{{rh.converter(col)}}</font></span>
+                                    <span ng-if="row['type'] == 'serious' && rh.name == 'type'"
+                                          style="background-color:#FFE42A;padding:4px;"><font color="black" size="2px">{{rh.converter(col)}}</font></span>
+                                    <span ng-if="row['type'] == 'warning' && rh.name == 'type'"
+                                          style="background-color:#29AAE3;padding:4px;"><font color="black" size="2px">{{rh.converter(col)}}</font></span>
+                                    <span ng-if="row['status'] == 'unsolved' && rh.name == 'status'"
+                                          style="padding:4px;"><font color="red" size="2px">{{rh.converter(col)}}</font></span>
+                                    <span ng-if="row['status'] == 'solved' && rh.name == 'status'"
+                                          style="padding:4px;"><font color="green" size="2px">&nbsp;&nbsp;{{rh.converter(col)}}</font></span>
+                                    <span ng-if="row['status'] == 'ignore' && rh.name == 'status'"
+                                          style="padding:4px;"><font color="#AABF0A" size="2px">&nbsp;&nbsp;{{rh.converter(col)}}</font></span>
+                                    <span ng-if="rh == rowHeaders[0]" ng-repeat="t in row.tags" class="label"
+                                          style="color:#fff;background-color: {{tagsColorMap[t]}};">{{t}}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </uib-tab>
+
+            <uib-tab index="1" select="auxo.go('/hippo/alarm/rules')">
+                <uib-tab-heading>
+                    <i class="glyphicon glyphicon-cog text-info"></i><span class="left-margin-5">告警规则</span>
+                </uib-tab-heading>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

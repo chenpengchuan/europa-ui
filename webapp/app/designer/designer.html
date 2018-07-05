@@ -1,0 +1,94 @@
+
+   <div class="panel-heading clearfix">
+       <div class="dataflow-version-panel btn-group fl" ng-if="!action.read">
+           <div class="drop-panel">
+               <a class="btn dropdown-toggle" uib-tooltip-html="'<p>最新版本为工作版本,如果需要从历史中恢复,</p><p>请选择一个版本,(编辑)保存后即为新版本</p>'" data-toggle="dropdown" ng-click="refreshVersionList()">
+                   <i class="right-padding-5 glyphicon glyphicon-th-list"></i>历史 V{{data.dataflow.version}}<em class="iconfont icon-arrow2-bottom"></em></a>
+               <ul class="linkoop-dropdown-menu dropdown-menu"  style="max-height: 500px; overflow: auto;">
+                   <li ng-repeat="version in flowVersions">
+                       <a ng-click="loadFlow(version.oid, version.version)" uib-tooltip="{{version.version==data.dataflow.version?'当前编辑版本':''}}">{{version.version}}
+                           <i style="margin-left: 50px;" class="pull-right glyphicon glyphicon-{{version.version==data.dataflow.version?'star':''}}"></i></a></li>
+               </ul>
+           </div>
+       </div>
+       <div class="dataflow-name-panel fl">
+           <label class="fl ">名称</label>
+           <div class="dataflow-name">
+                <input type="text"  ng-change="onDataflowNameChange()" ng-model="data.dataflow.name" placeholder="Dataflow name" readonly>
+           </div>
+       </div>
+
+       <div class="dataflow-button-panel btn-group fr">
+             <a ng-click="previewDataflow(selectedNode)" ng-if="flowType=='workflow'" ng-disabled="!isDataflowNode(selectedNode)" class="btn"><i class="iconfont icon-flow"></i>预览</a>
+             <a ng-show="!action.read" ng-click="redraw('refresh')" class="btn"><i class="iconfont icon-renovate"></i>刷新</a>
+             <a ng-click="deleteNode()" ng-if="!action.read" uib-tooltip="删除选中的Node或连接（del）" tooltip-placement="bottom" data-ng-disabled="!selectedNode && !selectedConnection" class="btn"><i class="iconfont icon-delete"></i>删除</a>
+             <a ng-click="configDataflow()" class="btn"><i class="iconfont icon-settings-5"></i>设置</a>
+             <!--
+             <a ng-show="!action.read" ng-click="publishDataflow()" class="btn"><i style="margin-right:5px;" class="glyphicon glyphicon-send"></i>设为默认</a>
+             -->
+             <a ng-show="!action.read" ng-click="submitDataflow()" data-ng-disabled="isSaveDisabled()" class="btn"><i class="iconfont icon-submit"></i>提交</a>
+             <a ng-show="!action.read" ng-click="saveDataflow(null)" data-ng-disabled="isSaveDisabled()" class="btn"><i class="iconfont icon-preservation"></i>保存</a>
+             <a ng-show="!action.read" ng-click="goBack()" class="btn"><i class="iconfont icon-arrow-left"></i>返回</a>
+             <div class="drop-panel pull-right" ng-if="!action.read">
+               <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="iconfont icon-arrow-bottom"></i></a>
+                 <ul class="linkoop-dropdown-menu dropdown-menu">
+                   <li><a ng-click="renameNode()" uib-tooltip="编辑Node名称（alt+t）" data-ng-disabled="!selectedNode||action.read">编辑节点名称</a></li>
+                   <li><a ng-click="cleanSavepoints()" uib-tooltip="删除已保存状态" data-ng-disabled="isSaveDisabled()">删除已保存状态</a></li>
+                 </ul>
+             </div>
+       </div>
+     </div>
+     <div class="panel-body"  ng-style="{'min-height': '600px','height': '{{windowHeight-318}}px'}">
+         <div class="designer-body"  >
+             <div class="designer-container drop-container" ng-style="action.read&&{right:0}" droppable>
+                 <div class="plumb-item"
+                      plumb-item
+                      id="plumb-item-{{module.id}}"
+                      ng-repeat="module in data.dataflow.steps"
+                      ng-style="{ 'left':module.x, 'top':module.y }"
+                      ng-class="{ 'selected':selectedNode === module.id,}"
+                      data-identifier="{{module.id}}"
+                      on-finish-render="ngRepeatFinished"
+                      ng-click="selectNode(module.id)"
+                      uib-tooltip="{{module.name}}"
+                      ng-dblClick="configNode(module.id)">
+                     <i class="{{auxo.getIconName(module.type)}}" style="line-height:inherit;">
+                         <img ng-if="module.step.icon" ng-src="app/resources/img/designer/{{module.step.icon}}" width="50" height="50">
+                     </i>
+                     <span  ng-if="module.name!==module.id">({{module.id}})</span>
+                     <div style="position: relative;">
+                         <span style="position: absolute;width: 300px; left: -110px; text-align: center;">{{module.name}}</span>
+                     </div>
+
+                 </div>
+             </div>
+             <div class="designer-side" data-ng-show="!action.read">
+                 <div class="" ng-repeat="menuGroup in data.stepsInfo.content"
+                      data-identifier="{{menuGroup.group}}">
+                     <div class="group-title tr clearfix"><strong class="fl">{{menuGroup.group}}</strong><span>{{menuGroup.content.length}}</span></div>
+                     <div class="menu-group tc clearfix">
+                         <div class="menu-item" _title="{{module.name}}"
+                              ng-repeat="module in menuGroup.content"
+                              data-identifier="{{module.type}}"
+                              uib-tooltip-html="'<div>{{module.name}}</div>'"
+                              clone-draggable="{{module.draggable===false?false:true}}"
+                              draggable="true">
+                             <i class="{{auxo.getIconName(module.type)}}" style="line-height: inherit;">
+                                 <img ng-if="module.icon" ng-src="app/resources/img/designer/{{module.icon}}" width="30" height="30" >
+                             </i>
+
+                             <span>{{module.name | limitTo: 8}}</span>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <span ng-hide="action.read" class="btn-fold iconfont icon-arrow-right"  ng-click="onMenuBarClick()"></span>
+         </div>
+     </div>
+
+
+
+    <div class="moving-menu-item-container tc"></div>
+   <div class="clear"></div>
+   <div post-render></div>
+

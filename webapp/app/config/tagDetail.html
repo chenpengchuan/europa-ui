@@ -1,0 +1,49 @@
+<div class="panel panel-default" ng-controller="EditTagController">
+  <div class="panel-heading">{{isNew ? "创建" : "更新"}}标签</div>
+  <div class="panel-body" style="width: 750px;">
+	  <form name="entityForm" novalidate>
+
+	    <div class="form-group" ng-if="!isNew" ng-class="{ 'has-error': entityForm.id.$touched && entityForm.id.$invalid }">
+	      <label>ID</label>
+	      <input type="text" name="id" class="form-control" ng-disabled="true"
+	        ng-model="entity.id">
+	    </div>
+	    
+	    <div class="form-group" ng-class="{ 'has-error': entityForm.name.$touched && entityForm.name.$invalid }"
+	                           >
+	      <label>名称</label>
+	      <input type="text" name="name" class="form-control" 
+	        ng-model="entity.name"
+	        ng-minlength="2"
+	        ng-maxlength="32"
+	        required>
+	        
+	      <div class="help-block" ng-messages="entityForm.name.$error" ng-if="entityForm.name.$touched">
+	        <p ng-message="minlength">名称太短.</p>
+	        <p ng-message="maxlength">名称太长.</p>
+	        <p ng-message="required">名称必备</p>
+	      </div>
+	    </div>
+
+	    <div class="form-group" ng-class="{ 'has-error': entityForm.color.$touched && entityForm.color.$invalid }"
+	                           >
+	      <label>颜色</label>
+	      <input colorpicker type="text" name="color" class="form-control" style="background-color: {{entity.color}}; color: #fff;"
+	        ng-model="entity.color"
+	        required>
+	        
+	      <div class="help-block" ng-messages="entityForm.name.$error" ng-if="entityForm.name.$touched">
+	        <p ng-message="required">颜色必备</p>
+	      </div>
+	    </div>
+	    
+	    <div class="form-group">
+	      <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="!entityForm.$valid">保存</button>
+	      <button type="button" class="btn btn-warning" ng-click="cancel()">取消</button>
+	    </div>
+	    <div ng-show="error">
+		  <uib-alert type="danger">保存失败:{{error.err}}</uib-alert>
+	    </div>
+	  </form>
+  </div>
+</div>

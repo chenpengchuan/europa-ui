@@ -1,0 +1,6 @@
+<tr tt-node is-branch="node.resType == 'dir'"  ng-class="{'selected':node.id===selectedNode.id}" ng-mousedown="onNodeSelected(node)">
+    <td ><span ng-bind="node.name" ></span></td>
+    <td ng-bind="node.resType"></td>
+    <td ng-bind="node.attributes.url"></td>
+    <td ng-bind="auxo.date2str(node.attributes.lastSyncTime)"></td>
+</tr>
