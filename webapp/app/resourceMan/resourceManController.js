@@ -776,7 +776,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
         if(expanded && node.resType !== 'user') {
             auxo.array.removeAll(node.children);
 
-            Restangular.one($scope.url, node.id).get({includes: ALL_DIR, tenant:node.tenant}).then(function (e) {
+            Restangular.one($scope.url, node.id).get({includes: ALL_DIR, tenant:node.tenant.id}).then(function (e) {
                 angular.merge(node, e);
                 auxo.array.removeAll(node.children);
                 auxo.array.forEach(e.children, function (i) {
@@ -985,7 +985,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/dataSpool.html',
                 //controller : 'StepFormController', // specify controller for modal
-                data:{editingNode:{path: $scope.selectedNode.path, resType:"data_spool"}},
+                data:{editingNode:{resource: $scope.selectedNode.id, resType:"data_spool"}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);
@@ -1001,7 +1001,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
         var openDialog = function(){
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/standardDetail.html',
-                data:{editingNode:{path: $scope.selectedNode.path, type:"standard"}},
+                data:{editingNode:{resource:{id: $scope.selectedNode.id}, type:"standard"}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);
@@ -1018,7 +1018,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/SchemaDetail.html',
                 //controller : 'StepFormController', // specify controller for modal
-                data:{editingNode:{path: $scope.selectedNode.path, resType:"schema"}},
+                data:{editingNode:{resource:{id: $scope.selectedNode.id}, resType:"schema"}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);
@@ -1035,7 +1035,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/SchemaDetail.html',
                 //controller : 'StepFormController', // specify controller for modal
-                data:{editingNode:node},
+                data:{editingNode:node,editingNode:{resource:{id:node.id}}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);
@@ -1138,7 +1138,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
     }
 
     $scope.editStandardMapping = function (node) {
-        node.path = $scope.selectedNode.path;
+        node.resource = {id:$scope.selectedNode.id};
         var openDialog = function(){
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/standardMapping.html',
@@ -1160,7 +1160,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/standardMapping.html',
                 //controller : 'StepFormController', // specify controller for modal
-                data:{editingNode:{path: $scope.selectedNode.path, type:"standardMapping"}},
+                data:{editingNode:{resource: {id:$scope.selectedNode.id}, type:"standardMapping"}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);
@@ -1278,7 +1278,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/dataset.html',
                 //controller : 'StepFormController', // specify controller for modal
-                data:{editingNode:{path: $scope.selectedNode.path},
+                data:{editingNode:{resource:{id: $scope.selectedNode.id}},
                     rootId: $scope.goThroughTree(function (value) {
                         if(value && !value.parent.id ) return value;
                     }).id},
@@ -1301,7 +1301,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/datasetForDB.html',
                 //controller : 'StepFormController', // specify controller for modal
-                data:{editingNode:{path: $scope.selectedNode.path, resType:"dataset_db"},
+                data:{editingNode:{resource:{id: $scope.selectedNode.id}, resType:"dataset_db"},
                     rootId: $scope.goThroughTree(function (value) {
                         if(value && !value.parent.id && value.name === 'Datasources')
                             return value;
@@ -1335,7 +1335,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/dataSourceEditing.html',
                 //controller : 'StepFormController', // specify controller for modal
-                data:{editingNode:{path: $scope.selectedNode.path, type:"DB"}},
+                data:{editingNode:{resource: $scope.selectedNode.id, type:"DB"}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);
@@ -1364,7 +1364,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
         $scope.openDialog = function(){
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/webSourceEditing.html',
-                data:{editingNode:{path: $scope.selectedNode.path, type:"DB"}},
+                data:{editingNode:{resource:{id: $scope.selectedNode.id}, type:"DB"}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);
@@ -1394,7 +1394,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
         $scope.openDialog = function(){
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/otherSourceEditing.html',
-                data:{editingNode:{path: $scope.selectedNode.path, type:resType}},
+                data:{editingNode:{resource:{id: $scope.selectedNode.id}, type:resType}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);

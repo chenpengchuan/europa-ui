@@ -58,8 +58,8 @@ angular.module('AuxoApp')
 
         function save () {
 
-            if ($scope.editingNode.path)
-                $scope.schemaEntity.path =  $scope.editingNode.path;
+            if ($scope.editingNode.resource)
+                $scope.schemaEntity.resource =  $scope.editingNode.resource;
 
             var dataForSave = auxo.clone($scope.schemaEntity)
 
