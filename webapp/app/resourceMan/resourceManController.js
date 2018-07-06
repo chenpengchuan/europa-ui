@@ -1648,7 +1648,9 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 var intro = row.description
                 return intro;
             }},
-            {name : "tenant", "disName" : "租户", converter : auxo.same},
+            {name : "tenant", "disName" : "租户", converter : function (res) {
+                return res.name;
+            }},
             {name : "version", "disName" : "版本", converter : auxo.same},
             {name : "createTime", disName : "创建时间", converter : auxo.date2str},
             {name : "creator", disName : "创建人", converter : auxo.same},
