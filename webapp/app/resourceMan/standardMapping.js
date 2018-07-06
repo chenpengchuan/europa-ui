@@ -20,7 +20,7 @@ angular.module('AuxoApp')
         return _id++;
     }
 
-    $scope.entity={id:"", name:"", type:"standardMapping",path:"", description:"",
+    $scope.entity={id:"", name:"", type:"standardMapping", description:"",
         attributes: {source:"", target:"",mapping:$scope.standardMapping }};
     angular.extend($scope.entity, $scope.editingNode);
     if(!$scope.entity.attributes.mapping)
@@ -43,7 +43,7 @@ angular.module('AuxoApp')
     Restangular.one("europa/standardbd").get({query:"",filter:"type=standard", limit:10000}).then(function (facetResult) {
         auxo.array.forEach(facetResult.content, function (e) {
             $scope.standards.push(e);
-            $scope.standardEnum.push({name:e.path.concat("/").concat(e.name), value:e.id});
+            // $scope.standardEnum.push({name:e.path.concat("/").concat(e.name), value:e.id});
         })
     })
 

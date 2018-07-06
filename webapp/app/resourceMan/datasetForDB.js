@@ -35,7 +35,6 @@ angular.module('AuxoApp')
         "schema": "",
         "schemaName": "",
         "schemaVersion": 0,
-        "path": "",
         "storage": "JDBC",
         "expiredPeriod": 0,
         "storageConfigurations": {

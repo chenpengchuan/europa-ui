@@ -7,7 +7,7 @@ angular.module('AuxoApp')
         // from caller
         // $scope.editingNode
 
-        $scope.entity={id:"", name:"", type:"DB", description:"", path: "",
+        $scope.entity={id:"", name:"", type:"DB", description:"",
             attributes: {DBType:"",host:"",
                 port:"",database:"", user:"", password:"",
                 driver: "",

@@ -339,7 +339,6 @@ $scope.ontypechange = function(storageType){
                     "dataSpool": $scope.editingNode.attributes.dataSpool,
                     "schema": {fields: $scope.schemaFields, id: schemaCopy ? schemaCopy.id : "", reference: 'false'},
                     "dataset": {
-                        "path":$scope.editingNode.path,
                         "id": datasetCopy ? datasetCopy.id : undefined,
                         "storage": $scope.storage,
                         "expiredPeriod": datasetCopy ? datasetCopy.expiredPeriod : 0,
@@ -355,7 +354,6 @@ $scope.ontypechange = function(storageType){
                 "id": datasetCopy ? datasetCopy.id : undefined,
                 "schemaName":"",
                 "schema":"",
-                "path":$scope.editingNode.path,
                 "storage": $scope.storage,
                 "expiredPeriod": datasetCopy ? datasetCopy.expiredPeriod : 0,
                 "storageConfigurations": $scope.storageConfigurations,
@@ -366,7 +364,6 @@ $scope.ontypechange = function(storageType){
                 fields: $scope.schemaFields,
                 id: schemaCopy ? schemaCopy.id : "",
                 description:"",
-                path:"",
             }
             var attr = $scope.datasetEntity.attributes;
             angular.merge($scope.datasetEntity, $scope.editingNode);

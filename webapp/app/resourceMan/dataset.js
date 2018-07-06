@@ -28,7 +28,6 @@ angular.module('AuxoApp')
             "name": "",
             "schemaName": "",
             "schema": "",
-            "path": "",
             "storage": "HDFS",
             "expiredPeriod": 0,
             "storageConfigurations": {},

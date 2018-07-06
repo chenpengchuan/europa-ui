@@ -8,7 +8,6 @@ angular.module('AuxoApp')
             id:"",
             name:"",
             type:"HTTP",
-            path: "",
             description:"",
             attributes: {
                 method:"GET",

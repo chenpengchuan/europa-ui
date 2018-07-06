@@ -985,7 +985,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/dataSpool.html',
                 //controller : 'StepFormController', // specify controller for modal
-                data:{editingNode:{resource: $scope.selectedNode.id, resType:"data_spool"}},
+                data:{editingNode:{resource: {id:$scope.selectedNode.id}, resType:"data_spool"}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);
@@ -1335,7 +1335,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
             auxo.sgDialogService.openModal({
                 templateUrl : 'app/resourceMan/dataSourceEditing.html',
                 //controller : 'StepFormController', // specify controller for modal
-                data:{editingNode:{resource: $scope.selectedNode.id, type:"DB"}},
+                data:{editingNode:{resource: {id:$scope.selectedNode.id}, type:"DB"}},
                 callback: function(newData){
                     if(newData) {
                         $scope.onSelected($scope.selectedNode, true);

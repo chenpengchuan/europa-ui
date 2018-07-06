@@ -10,7 +10,6 @@ angular.module('AuxoApp')
         $scope.entity={id:"", name:"", resType:"data_spool",parentId:"",index:0, description:"",
             attributes: {
                 storeType:"",
-                path:"",
                 chineseName:""
             }
         };

@@ -9,7 +9,6 @@ angular.module('AuxoApp')
         $scope.schemaEntity = {
             id: "",
             name :"",
-            path : "",
             description: "",
             fields: []
         };
