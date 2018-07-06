@@ -66,25 +66,31 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
         }
     }
 
-    function matchRequstUrlFromIdPrefix(idPrefix) {
-        switch (idPrefix){
-            case "csm": return"schemas";
-            case "cds": return "datasets";
-            case "dss": return "europa/datasource";
-            case "sdb": return "europa/standardbd";
-            case "std": return "europa/standards";
-            case "smp": return "europa/standardMappings";
+    function matchRequstUrlFromIdPrefix(tableName) {
+        switch (tableName){
+                // csm : merce_schema
+                // cds:  merce_dataset
+                // dss: merce_dss
+                // sdb : merce_sdb
+                // smp : merce_standard_mapping
+                // std : merce_standard
+            case "merce_schema": return"schemas";
+            case "merce_dataset": return "datasets";
+            case "merce_dss": return "europa/datasource";
+            case "merce_sdb": return "europa/standardbd";
+            case "merce_standard": return "europa/standards";
+            case "merce_standard_mapping": return "europa/standardMappings";
         }
     }
 
     function findResourceType(node) {
-        switch (node.idPrefix){
-            case "csm": return"schema";
-            case "cds": return "dataset";
-            case "dss": return "datasource";
-            case "sdb": return "standardbd";
-            case "std": return "standard";
-            case "smp": return "standardMapping";
+        switch (node.tableName){
+            case "merce_schema": return"schema";
+            case "merce_dataset": return "dataset";
+            case "merce_dss": return "datasource";
+            case "merce_sdb": return "standardbd";
+            case "merce_standard": return "standard";
+            case "merce_standard_mapping": return "standardMapping";
         }
     }
 
@@ -884,7 +890,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 width:800
             });
         }
-        $scope.url = matchRequstUrlFromIdPrefix(node.idPrefix);
+        $scope.url = matchRequstUrlFromIdPrefix(node.tableName);
         Restangular.one($scope.url, node.id).get({tenant:node.tenant}).then(function (entity) {
             openDialog(entity);
         })
@@ -904,7 +910,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 width:800
             });
         }
-        var requstUrl = matchRequstUrlFromIdPrefix(node.idPrefix);
+        var requstUrl = matchRequstUrlFromIdPrefix(node.tableName);
         Restangular.one(requstUrl, node.id).get({tenant:node.tenant}).then(function (entity) {
             openDialog(entity);
         })
@@ -1548,7 +1554,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 width:800
             });
         }
-        $scope.url = matchRequstUrlFromIdPrefix(node.idPrefix);
+        $scope.url = matchRequstUrlFromIdPrefix(node.tableName);
         Restangular.one($scope.url, node.id).get({tenant:node.tenant}).then(function (entity) {
             openDialog(entity);
         })
@@ -1567,7 +1573,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
 
         //匹配标准的请求路径
         if (node)
-            $scope.url = matchRequstUrlFromIdPrefix(node.idPrefix);
+            $scope.url = matchRequstUrlFromIdPrefix(node.tableName);
 
         function openDialog (entity){
             entity.shared = node.shared;
@@ -1636,9 +1642,9 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 return row.name;
             }},
             {name : "type", "disName" : "类型", converter : function (value, row) {
-                    if (row.idPrefix === 'cds' && row.storage) {
+                    if (row.tableName === 'cds' && row.storage) {
                         value = row.storage;
-                    } else if (row.idPrefix === 'csm'){
+                    } else if (row.tableName === 'csm'){
                         value = "schema"
                     }
                     var r= auxo.meta.resource.displayMap[value];
