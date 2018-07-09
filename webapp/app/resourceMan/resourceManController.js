@@ -319,6 +319,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                      node.children =[];
                     if(edit) {
                         delete node.isSelected;
+                        node.parent =  {id:node.parent.id};
                         Restangular.all($scope.url).customPUT(node,node.id).then (function (result) {
                             $scope.onSelected($scope.selectedNode, true)
                             $scope.selectedNode.name = node.name;
@@ -1629,7 +1630,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 }
                 return "path_match=" + $scope.selectedNode.path  + "&owner=" + $scope.selectedNode.owner;
             } else {
-                return "path=" + $scope.selectedNode.path;
+                return "parentId=" + $scope.selectedNode.id;
             }
         },
         displayMap: {"dir":"目录","dataset":"数据源","DB":"JDBC",
