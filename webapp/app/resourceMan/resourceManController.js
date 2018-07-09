@@ -68,12 +68,6 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
 
     function matchRequstUrlFromIdPrefix(tableName) {
         switch (tableName){
-                // csm : merce_schema
-                // cds:  merce_dataset
-                // dss: merce_dss
-                // sdb : merce_sdb
-                // smp : merce_standard_mapping
-                // std : merce_standard
             case "merce_schema": return"schemas";
             case "merce_dataset": return "datasets";
             case "merce_dss": return "europa/datasource";
@@ -890,8 +884,8 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 width:800
             });
         }
-        $scope.url = matchRequstUrlFromIdPrefix(node.tableName);
-        Restangular.one($scope.url, node.id).get({tenant:node.tenant}).then(function (entity) {
+        var url = matchRequstUrlFromIdPrefix(node.tableName);
+        Restangular.one(url, node.id).get({tenant:node.tenant}).then(function (entity) {
             openDialog(entity);
         })
     }
@@ -1573,7 +1567,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
 
         //匹配标准的请求路径
         if (node)
-            $scope.url = matchRequstUrlFromIdPrefix(node.tableName);
+            var url = matchRequstUrlFromIdPrefix(node.tableName);
 
         function openDialog (entity){
             entity.shared = node.shared;
@@ -1589,7 +1583,7 @@ auxo.resourceTreeController = function ($filter, $scope, $location, $window, $ht
                 width:1024
             });
         }
-        Restangular.one($scope.url, node.id).get({tenant:node.tenant}).then(function (entity) {
+        Restangular.one(url, node.id).get({tenant:node.tenant}).then(function (entity) {
             openDialog(entity);
         })
     }
