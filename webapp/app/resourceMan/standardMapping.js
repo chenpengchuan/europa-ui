@@ -43,7 +43,7 @@ angular.module('AuxoApp')
     Restangular.one("europa/standardbd").get({query:"",filter:"type=standard", limit:10000}).then(function (facetResult) {
         auxo.array.forEach(facetResult.content, function (e) {
             $scope.standards.push(e);
-            // $scope.standardEnum.push({name:e.path.concat("/").concat(e.name), value:e.id});
+            $scope.standardEnum.push({name:e.name, value:e.id});
         })
     })
 
